@@ -90,6 +90,7 @@ h2 { font-size: clamp(30px, 8vw, 56px); font-weight: 900; line-height: 1.06; tex
 .nt strong { font-size: 20px; font-weight: 900; line-height: 1.15; text-transform: uppercase; }
 .nt p { font-size: 15.5px; color: var(--grigio); }
 .bozza { position: fixed; left: 0; bottom: 0; z-index: 60; padding: 6px 12px; font-size: 11px; font-weight: 800; letter-spacing: 2px; color: var(--nero); background: var(--oro); pointer-events: none; }
+.schede { display: none; }
 .foto-vuota { display: flex; align-items: center; justify-content: center; min-height: 220px; padding: 24px; text-align: center; font-size: 14px; font-weight: 700; color: var(--grigio); background: var(--bianco); border: 3px dashed var(--grigio); }
 .evento .ev a { display: inline-flex; align-items: center; min-height: 48px; font-size: 15px; font-weight: 800; }
 
@@ -156,7 +157,21 @@ footer .legale { display: flex; flex-direction: column; gap: 6px; width: 100%; p
   .simbolo img { width: min(100%, 440px, 58vh); }
   .verbi { font-size: min(clamp(22px, 2.6vw, 38px), 4.6vh); }
   .due { display: grid; flex-direction: unset; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 72px; align-items: center; }
-  .temi { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .temi { display: none; }
+  .schede { display: grid; grid-template-columns: minmax(300px, 1fr) 2fr; gap: 24px; align-items: stretch; }
+  .sl { display: flex; flex-direction: column; gap: 8px; }
+  .sb { flex: 1 1 0; display: flex; align-items: center; gap: 16px; min-height: 52px; padding: 0 18px; font: 900 17px 'Montserrat', Arial, sans-serif; line-height: 1.15; text-align: left; text-transform: uppercase; color: var(--nero); background: var(--bianco); border: 3px solid var(--nero); border-radius: 0; cursor: pointer; }
+  .sb .num { flex: 0 0 auto; font-size: 24px; color: var(--rosso); }
+  .sb[aria-selected=true] { color: var(--bianco); background: var(--rosso); border-color: var(--rosso); }
+  .sb[aria-selected=true] .num { color: var(--bianco); }
+  .spn { display: flex; background: var(--carta); border: 3px solid var(--nero); border-top: 10px solid var(--rosso); }
+  .sp { display: flex; flex-direction: column; justify-content: center; gap: 14px; width: 100%; padding: 28px 36px; }
+  .sp[hidden] { display: none; }
+  .sp .num { font-size: 56px; font-weight: 900; line-height: 1; color: var(--rosso); }
+  .sp h3 { font-size: 30px; font-weight: 900; line-height: 1.1; text-transform: uppercase; }
+  .sp .tx { font-size: 18px; font-weight: 700; }
+  .sp ul { display: flex; flex-direction: column; gap: 10px; font-size: 16px; }
+  .sp li { padding-left: 14px; border-left: 4px solid var(--oro); }
   .temi { gap: 16px; }
   .tema { grid-template-columns: 1fr; grid-template-areas: "num" "tt" "tx" "pi"; align-content: start; row-gap: 8px; min-height: 0; padding: 20px 20px; }
   .tema .num { font-size: 40px; }
@@ -173,6 +188,41 @@ footer .legale { display: flex; flex-direction: column; gap: 6px; width: 100%; p
   .riga { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   footer { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; text-align: left; padding: 56px clamp(24px, 5vw, 72px) 28px; }
   footer .legale { flex-direction: row; justify-content: space-between; }
+}
+@media (min-width: 900px) and (max-height: 820px) {
+  .sez { padding-block: 4svh; gap: 3svh; }
+  h2 { font-size: min(56px, 6.2svh); }
+  .occhiello { font-size: 13px; }
+  .nota { font-size: 14px; }
+  .manifesto { gap: 1.6svh; font-size: max(13px, 2.2svh); }
+  .forze li { padding: 5px 10px; font-size: 13px; }
+  .sb { min-height: 0; height: 6.2svh; font-size: max(13px, 2.2svh); }
+  .sb .num { font-size: max(16px, 3svh); }
+  .sp { gap: 1.6svh; padding: 2.5svh 32px; }
+  .sp .num { font-size: 6svh; }
+  .sp h3 { font-size: 3.8svh; }
+  .sp .tx { font-size: max(14px, 2.4svh); }
+  .sp ul { gap: 1.2svh; font-size: max(13px, 2.15svh); }
+  .passo { padding: 3svh 24px; }
+  .passo h3 { font-size: 3svh; }
+  .passo p { font-size: max(13px, 2.2svh); }
+  .foto { aspect-ratio: auto; height: 20svh; }
+  .foto img { width: auto; height: 60%; }
+  .nt { gap: 1svh; padding: 2svh 16px; }
+  .nt strong { font-size: max(15px, 2.6svh); }
+  .nt p { font-size: max(13px, 2.1svh); }
+  .eventi { gap: 1.6svh; }
+  .evento { min-height: 0; height: 12svh; }
+  .evento .gg { font-size: 3.6svh; }
+  .evento strong { font-size: max(14px, 2.4svh); }
+  .evento span { font-size: max(12px, 2svh); }
+  .evento .ev { gap: 2px; padding: 0 16px; }
+  .evento .ev a { min-height: 0; font-size: max(12px, 2svh); }
+  form { gap: 1.6svh; padding: 3svh 28px; }
+  input[type=text], input[type=email], select { height: max(40px, 6.4svh); }
+  form .btn { min-height: max(48px, 7.5svh); }
+  .consenso label { font-size: 13px; }
+  .aderisci-testo p { font-size: max(14px, 2.3svh); }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
@@ -245,6 +295,26 @@ footer .legale { display: flex; flex-direction: column; gap: 6px; width: 100%; p
 <li class="tema"><span class="num">06</span><span class="tt">Unire il Mediterraneo</span><span class="tx">Chiusura dei CPR, accoglienza pubblica e diffusa, case popolari da immobili sfitti e beni confiscati alla mafia.</span><details class="piu"><summary>Le proposte</summary><ul><li>Revoca delle concessioni dei terreni regionali ai CPR di Caltanissetta, Trapani e Lampedusa.</li><li>Accoglienza pubblica in piccoli nuclei abitativi, con iscrizione anagrafica garantita.</li><li>Immobili sfitti e beni confiscati destinati a case popolari; stop agli sfratti per morosità incolpevole.</li></ul></details></li>
 <li class="tema"><span class="num">07</span><span class="tt">Proteggere il territorio</span><span class="tx">Bonifica dei cinque poli industriali inquinati a spese di chi ha inquinato. Scuola pubblica gratuita, no all’autonomia differenziata.</span><details class="piu"><summary>Le proposte</summary><ul><li>Bonifica pubblica di Priolo-Augusta-Melilli, Gela, Milazzo, Valle del Mela e Biancavilla: paga chi ha inquinato.</li><li>Fondi solo alla scuola pubblica: edilizia, libri, mense e trasporti gratuiti.</li><li>Legge-voto contro l’autonomia differenziata e per trattenere in Sicilia il gettito delle imprese estrattive.</li></ul></details></li>
 </ol>
+<div class="schede">
+<div class="sl" role="tablist" aria-label="I sette pilastri" aria-orientation="vertical">
+<button class="sb" type="button" role="tab" id="tb01" aria-controls="pn01" aria-selected="true" tabindex="0"><span class="num">01</span><span>Ripudiare la guerra</span></button>
+<button class="sb" type="button" role="tab" id="tb02" aria-controls="pn02" aria-selected="false" tabindex="-1"><span class="num">02</span><span>Difendere il lavoro</span></button>
+<button class="sb" type="button" role="tab" id="tb03" aria-controls="pn03" aria-selected="false" tabindex="-1"><span class="num">03</span><span>Difendere la salute</span></button>
+<button class="sb" type="button" role="tab" id="tb04" aria-controls="pn04" aria-selected="false" tabindex="-1"><span class="num">04</span><span>Tenere pubblica l’acqua</span></button>
+<button class="sb" type="button" role="tab" id="tb05" aria-controls="pn05" aria-selected="false" tabindex="-1"><span class="num">05</span><span>Decidere sul proprio corpo</span></button>
+<button class="sb" type="button" role="tab" id="tb06" aria-controls="pn06" aria-selected="false" tabindex="-1"><span class="num">06</span><span>Unire il Mediterraneo</span></button>
+<button class="sb" type="button" role="tab" id="tb07" aria-controls="pn07" aria-selected="false" tabindex="-1"><span class="num">07</span><span>Proteggere il territorio</span></button>
+</div>
+<div class="spn">
+<div class="sp" role="tabpanel" id="pn01" aria-labelledby="tb01"><span class="num">01</span><h3>Ripudiare la guerra</h3><p class="tx">Chiusura progressiva delle basi USA e NATO, revoca delle autorizzazioni al MUOS di Niscemi, Sicilia zona di pace, neutrale e denuclearizzata.</p><ul><li>Revoca delle autorizzazioni agli impianti militari nelle aree protette, a partire dal MUOS di Niscemi.</li><li>Nessuna nuova concessione di demanio civile per usi bellici; niente convenzioni fra università pubbliche e industria militare.</li><li>Legge-voto al Parlamento per la chiusura delle basi, sostenuta da un referendum consultivo regionale.</li></ul></div>
+<div class="sp" role="tabpanel" id="pn02" aria-labelledby="tb02" hidden><span class="num">02</span><h3>Difendere il lavoro</h3><p class="tx">Clausola sociale in ogni appalto regionale, 12 euro netti l’ora, stop ai subappalti a cascata, lotta al caporalato e al lavoro nero.</p><ul><li>Clausola sociale in tutti gli appalti di Regione, ASP e società partecipate.</li><li>Contratti nazionali rispettati, salvaguardia dei posti nei cambi di gestione, precari storici stabilizzati.</li><li>Più ispettori contro morti sul lavoro e caporalato; legge-voto per il salario minimo nazionale.</li></ul></div>
+<div class="sp" role="tabpanel" id="pn03" aria-labelledby="tb03" hidden><span class="num">03</span><h3>Difendere la salute</h3><p class="tx">Sanità pubblica e territoriale: assunzioni stabili, ospedali e pronto soccorso delle aree interne riaperti, liste d’attesa abbattute.</p><ul><li>Stop al drenaggio di risorse verso cliniche private, cooperative e medici a gettone.</li><li>Piano straordinario di assunzioni stabili per medici, infermieri e personale sociosanitario.</li><li>Almeno 6 posti letto pubblici ogni 1.000 abitanti; legge-voto per abolire i ticket e uscire dal piano di rientro.</li></ul></div>
+<div class="sp" role="tabpanel" id="pn04" aria-labelledby="tb04" hidden><span class="num">04</span><h3>Tenere pubblica l’acqua</h3><p class="tx">Gestione dell’acqua interamente pubblica, reti e invasi riparati. No al Ponte: quei 13,5 miliardi a ferrovie, strade e territorio.</p><ul><li>Fine delle concessioni ai gestori privati: acqua pubblica e senza fini di lucro.</li><li>Piano d’emergenza per le reti colabrodo e collaudo degli invasi, per cittadini e agricoltori.</li><li>Nessuna intesa e nessun fondo regionale per il Ponte: risorse a ferrovie interne, dissesto idrogeologico, strade.</li></ul></div>
+<div class="sp" role="tabpanel" id="pn05" aria-labelledby="tb05" hidden><span class="num">05</span><h3>Decidere sul proprio corpo</h3><p class="tx">Consultori pubblici e laici, interruzione di gravidanza garantita in ogni presidio, centri antiviolenza finanziati.</p><ul><li>Interruzione di gravidanza gratuita, tempestiva e sicura in ogni presidio pubblico.</li><li>Un consultorio pubblico ogni 20.000 abitanti, contraccezione gratuita.</li><li>Carriere alias, congedo mestruale, centri antiviolenza rifinanziati; legge-voto per il matrimonio egualitario.</li></ul></div>
+<div class="sp" role="tabpanel" id="pn06" aria-labelledby="tb06" hidden><span class="num">06</span><h3>Unire il Mediterraneo</h3><p class="tx">Chiusura dei CPR, accoglienza pubblica e diffusa, case popolari da immobili sfitti e beni confiscati alla mafia.</p><ul><li>Revoca delle concessioni dei terreni regionali ai CPR di Caltanissetta, Trapani e Lampedusa.</li><li>Accoglienza pubblica in piccoli nuclei abitativi, con iscrizione anagrafica garantita.</li><li>Immobili sfitti e beni confiscati destinati a case popolari; stop agli sfratti per morosità incolpevole.</li></ul></div>
+<div class="sp" role="tabpanel" id="pn07" aria-labelledby="tb07" hidden><span class="num">07</span><h3>Proteggere il territorio</h3><p class="tx">Bonifica dei cinque poli industriali inquinati a spese di chi ha inquinato. Scuola pubblica gratuita, no all’autonomia differenziata.</p><ul><li>Bonifica pubblica di Priolo-Augusta-Melilli, Gela, Milazzo, Valle del Mela e Biancavilla: paga chi ha inquinato.</li><li>Fondi solo alla scuola pubblica: edilizia, libri, mense e trasporti gratuiti.</li><li>Legge-voto contro l’autonomia differenziata e per trattenere in Sicilia il gettito delle imprese estrattive.</li></ul></div>
+</div>
+</div>
 </section>
 
 <section class="sez" id="metodo">
@@ -325,6 +395,18 @@ footer .legale { display: flex; flex-direction: column; gap: 6px; width: 100%; p
   });
   nav.addEventListener('click', function (e) { if (e.target.closest('a')) chiudi(); });
   nav.addEventListener('keydown', function (e) { if (e.key === 'Escape') { chiudi(); btn.focus(); } });
+  var tb = [].slice.call(document.querySelectorAll('.sb'));
+  function scegli(b, fuoco) {
+    tb.forEach(function (x) { var on = x === b; x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; });
+    if (fuoco) b.focus();
+  }
+  tb.forEach(function (b, i) {
+    b.addEventListener('click', function () { scegli(b); });
+    b.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+      if (d) { e.preventDefault(); scegli(tb[(i + d + tb.length) % tb.length], true); }
+    });
+  });
   document.getElementById('adesione').addEventListener('submit', function (e) {
     e.preventDefault();
     var n = document.getElementById('f-nome').value.trim(), m = document.getElementById('f-email').value.trim(), ok = document.getElementById('f-privacy').checked, out = document.getElementById('esito');
