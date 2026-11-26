@@ -27,6 +27,7 @@ Chi aderisce a un coordinamento politico rivela un’opinione politica. Il regol
 
 - Le persone incaricate dal coordinamento di tenere i contatti: {incaricati}.
 - Il servizio che riceve il modulo: {servizio_modulo}.
+- Se è attiva l’email di conferma, il servizio di posta che la recapita.
 
 I dati non vengono pubblicati e non vengono passati alle singole organizzazioni senza che tu lo chieda.
 

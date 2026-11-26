@@ -93,6 +93,7 @@ def testo(md):
 
 
 PILASTRI = cartella('pilastri')
+MATERIALI = json.loads((CONT / 'materiali.json').read_text(encoding='utf-8'))
 NOTIZIE = sorted(cartella('notizie'), key=lambda n: n['giorno'], reverse=True)
 EVENTI = sorted(cartella('agenda'), key=lambda n: n['giorno'])
 TERRITORI = {t['titolo']: t for t in cartella('territori')}
@@ -177,6 +178,9 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="{r}risorse/loghi/sa-icona.svg" type="image/svg+xml">
+<link rel="icon" href="{r}risorse/loghi/sa-icona-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="{r}risorse/loghi/sa-icona-180.png">
+<link rel="manifest" href="{r}sito.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="Notizie" href="{r}notizie/feed.xml">
 <link rel="preload" href="{r}risorse/font/montserrat-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{r}risorse/stile.css?v={SITO['versione']}">
@@ -195,7 +199,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <footer class="piede schermo">
 <div class="in">
 <div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p style="margin-top:14px;font-size:15px">{e(SITO['descrizione'])}</p></div>
-<div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
+<div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}materiali.html">Materiali</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
 <div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
 <div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
 <div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a></span>
@@ -276,6 +280,16 @@ def LIBERO(dentro):
     return f'<section class="schermo libero"><div class="in">{dentro}</div></section>'
 
 
+def condividi(titolo, percorso):
+    """Pulsanti per mandare la pagina ad altri. Solo collegamenti: nessuno script di terze parti, nessun cookie."""
+    u = urllib.parse.quote(BASE + percorso, safe='')
+    t = urllib.parse.quote(titolo + ' — ' + SITO['nome'], safe='')
+    vie = [('WhatsApp', f'https://wa.me/?text={t}%20{u}'), ('Telegram', f'https://t.me/share/url?url={u}&text={t}'),
+           ('Facebook', f'https://www.facebook.com/sharer/sharer.php?u={u}'), ('Email', f'mailto:?subject={t}&body={u}')]
+    link = ''.join(f'<a href="{v}" target="_blank" rel="noopener">{n}</a>' for n, v in vie)
+    return f'<div class="condividi"><span class="k">Condividi</span>{link}<button type="button" data-copia="{e(BASE + percorso)}">Copia il link</button></div>'
+
+
 def testa(occhiello, titolo, sotto=''):
     return f'<header class="capo-p"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
 
@@ -324,7 +338,7 @@ for i, p in enumerate(PILASTRI):
     lato = f'''<aside class="lato"><h3>Il tavolo di questo pilastro</h3><p>Aperto a comitati, collettivi, sindacati e singole persone.</p>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in incontri) + '</ul>' if incontri else '<p><strong>Nessun incontro in calendario per ora.</strong></p>'}<a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a><a class="vai-a" href="{{r}}metodo.html">Che cosa sono i due binari →</a></aside>'''
     corpo = S(f'''<div class="col2"><div class="colonna">{testa(f"Pilastro {p['numero']} di {len(PILASTRI):02d}", e(p['titolo']), e(p['slogan']))}<p class="sintesi">{e(p['sintesi'])}</p><div class="azioni"><a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a></div></div>{foto('pilastro-' + p['numero'], p['foto_attesa'], ' grande')}</div>''')
     corpo += S(f'<div class="capo"><div><span class="k">Le proposte</span><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta')
-    corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div><nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
+    corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div>{condividi(p['titolo'], p['indirizzo'])}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
     if collegate:
         corpo += S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Su questo pilastro</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate)}</ul>', 'carta')
     pagina(p['indirizzo'], p['titolo'], p['sintesi'], corpo + aderisci_con(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'], ricerca=(p.get('titolo_ricerca'), p.get('descrizione_ricerca')) if p.get('titolo_ricerca') else None, immagine=FOTO.get('pilastro-' + p['numero']))
@@ -347,7 +361,7 @@ for n in NOTIZIE:
     legami = ''.join([f'<li><a href="{{r}}{pil["indirizzo"]}">Pilastro {pil["numero"]} · {e(pil["titolo"])}</a></li>' if pil else '', f'<li><a href="{{r}}{terr["indirizzo"]}">Provincia di {e(n["provincia"])}</a></li>' if terr else ''])
     legami = f'<ul class="etichette legami">{legami}</ul>' if legami else ''
     fonte = f'''<p class="avviso">Fonte esterna: <a href="{n['fonte']}" rel="noopener">{e(n.get('fonte_nome', 'leggi l’articolo'))} →</a></p>''' if n.get('fonte') else ''
-    pagina(n['indirizzo'], n['titolo'], n.get('sintesi', ''), S(f'''<div class="col2"><div class="colonna">{testa(f"{n['quando']}{' · ' + e(n['luogo']) if n.get('luogo') else ''}{segni(n)}", e(n['titolo']), e(n.get('sintesi', '')))}{legami}<a class="vai-a" href="#testo">Leggi ↓</a></div>{foto(n['file'], n['titolo'], ' grande')}</div>''') + LIBERO(f'''<div class="testo" id="testo">{testo(n['corpo'])}{fonte}</div><nav class="vicini"><a href="{{r}}notizie/index.html">← Tutte le notizie</a></nav>''') + ADERISCI, 'notizie', [('notizie/index.html', 'Notizie'), ('', n['titolo'])], tipo='article',
+    pagina(n['indirizzo'], n['titolo'], n.get('sintesi', ''), S(f'''<div class="col2"><div class="colonna">{testa(f"{n['quando']}{' · ' + e(n['luogo']) if n.get('luogo') else ''}{segni(n)}", e(n['titolo']), e(n.get('sintesi', '')))}{legami}<a class="vai-a" href="#testo">Leggi ↓</a></div>{foto(n['file'], n['titolo'], ' grande')}</div>''') + LIBERO(f'''<div class="testo" id="testo">{testo(n['corpo'])}{fonte}</div>{condividi(n['titolo'], n['indirizzo'])}<nav class="vicini"><a href="{{r}}notizie/index.html">← Tutte le notizie</a></nav>''') + ADERISCI, 'notizie', [('notizie/index.html', 'Notizie'), ('', n['titolo'])], tipo='article',
            dati={'@context': 'https://schema.org', '@type': 'NewsArticle', 'headline': n['titolo'], 'datePublished': n['data'], 'publisher': {'@type': 'Organization', 'name': SITO['nome']}})
 voci_rss = ''.join(f"<item><title>{e(n['titolo'])}</title><link>{BASE}{n['indirizzo']}</link><guid>{BASE}{n['indirizzo']}</guid><pubDate>{n['giorno'].strftime('%a, %d %b %Y')} 09:00:00 +0100</pubDate><description>{e(n.get('sintesi', ''))}</description></item>" for n in NOTIZIE if not n['esempio'] and not n['bozza'])
 (OUT / 'notizie').mkdir(exist_ok=True)
@@ -421,13 +435,14 @@ pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi co
 c = SITO['contatti']
 pagina('contatti.html', 'Contatti e stampa', 'Come contattare il coordinamento. Materiali per la stampa.', S(f'''<div class="col2"><div class="colonna">{testa('Contatti', 'Scrivici, chiamaci, vieni')}{'<p class="avviso">Contatti e account qui sotto sono segnaposto: vanno sostituiti con quelli veri del coordinamento.</p>' if not c['reali'] else ''}
 <dl class="elenco"><dt>Email</dt><dd>{e(c['email'])}</dd><dt>Telefono</dt><dd>{e(c['telefono'])}</dd><dt>Sede</dt><dd>{e(c['sede'])}</dd><dt>Facebook</dt><dd>{e(c['facebook'])}</dd><dt>Instagram</dt><dd>{e(c['instagram'])}</dd></dl></div>
-<aside class="lato"><h3>Per la stampa</h3><p>Simbolo e logo da scaricare:</p><ul class="testo"><li><a href="{{r}}risorse/loghi/sa-contrassegno.svg" download>Contrassegno (SVG)</a></li><li><a href="{{r}}risorse/loghi/sa-contrassegno.png" download>Contrassegno (PNG)</a></li><li><a href="{{r}}risorse/loghi/sa-logo-orizzontale.svg" download>Logo orizzontale (SVG)</a></li></ul><a class="btn b2" href="{{r}}territori/index.html">Trova la tua provincia</a><a class="btn" href="{{r}}aderisci.html">Aderisci</a></aside></div>'''), 'contatti', [('', 'Contatti')])
+<aside class="lato"><h3>Per la stampa</h3><p>Simbolo, identità visiva, programma e propaganda sono raccolti in una pagina sola, pronti da scaricare.</p><a class="btn b2" href="{{r}}materiali.html">Tutti i materiali</a><a class="btn b2" href="{{r}}territori/index.html">Trova la tua provincia</a><a class="btn" href="{{r}}aderisci.html">Aderisci</a></aside></div>'''), 'contatti', [('', 'Contatti')])
 
 # Ricerca nel sito: un indice leggero letto dal browser, nessun servizio esterno
 INDICE = [{'t': p['titolo'], 'd': p['sintesi'], 'u': p['indirizzo'], 'k': 'Programma', 'x': re.sub(r'[#*\[\]()-]', ' ', p['corpo'])} for p in PILASTRI]
 INDICE += [{'t': n['titolo'], 'd': n.get('sintesi', ''), 'u': n['indirizzo'], 'k': 'Notizie · ' + n['quando'], 'x': re.sub(r'[#*\[\]()-]', ' ', n['corpo'])} for n in NOTIZIE]
 INDICE += [{'t': v['titolo'], 'd': data_estesa(v['giorno']) + ' · ' + v.get('luogo', ''), 'u': v['indirizzo'], 'k': 'Agenda', 'x': v['corpo']} for v in EVENTI]
 INDICE += [{'t': 'Provincia di ' + nome, 'd': t.get('lotte', ''), 'u': t['indirizzo'], 'k': 'Territori', 'x': ''} for nome, t in TERRITORI.items()]
+INDICE += [{'t': 'Materiali', 'd': 'Logo, identità visiva, programma da stampare, volantini e manifesti.', 'u': 'materiali.html', 'k': 'Materiali', 'x': ' '.join(m['titolo'] + ' ' + m['descrizione'] for m in MATERIALI)}]
 INDICE += [{'t': 'Chi siamo', 'd': PAGINE['chi-siamo']['sintesi'], 'u': 'chi-siamo.html', 'k': 'Il coordinamento', 'x': PAGINE['chi-siamo']['corpo']}, {'t': 'Come lavoriamo', 'd': PAGINE['metodo']['sintesi'], 'u': 'metodo.html', 'k': 'Il metodo', 'x': PAGINE['metodo']['corpo']}, {'t': 'Aderisci', 'd': 'Lascia i tuoi contatti', 'u': 'aderisci.html', 'k': 'Partecipa', 'x': 'adesione modulo iscriversi partecipare'}]
 (OUT / 'risorse' / 'indice.json').write_text(json.dumps(INDICE, ensure_ascii=False), encoding='utf-8')
 pagina('cerca.html', 'Cerca nel sito', 'Cerca fra programma, notizie, incontri e territori.', S(testa('Cerca', 'Che cosa cerchi?') + '''<form class="cerca" role="search" onsubmit="return false"><label>Parole da cercare<input type="text" id="q" name="q" autocomplete="off" autofocus></label></form><p id="conta" role="status" aria-live="polite"></p><ul class="eventi scorre" id="esiti"></ul><noscript><p class="avviso">La ricerca ha bisogno di JavaScript. In alternativa usa il menu.</p></noscript>''', 'alto'), '', [('', 'Cerca')])
@@ -452,6 +467,33 @@ for chiave in ('privacy', 'note-legali'):
     for k_, v_ in VOCI_LEGALI.items():
         corpo_l = corpo_l.replace('{' + k_ + '}', v_)
     pagina(f'{chiave}.html', p['titolo'], p['sintesi'], S(testa(p['occhiello'], e(p['titolo']), e(p['sintesi'])) + '<a class="vai-a" href="#testo">Leggi ↓</a>') + LIBERO(f'<div class="testo" id="testo">{testo(corpo_l)}</div>'), '', [('', p['titolo'])])
+# Materiali scaricabili
+def _peso(b):
+    return f'{b / 1048576:.1f} MB'.replace('.', ',') if b >= 1048576 else f'{max(1, round(b / 1024))} KB'
+
+
+gruppi_mat, mancanti_mat = {}, 0
+for m in MATERIALI:
+    f_ = RIS / 'materiali' / m['file']
+    pronto = f_.exists()
+    if not pronto:
+        mancanti_mat += 1
+    tipo = m['file'].rsplit('.', 1)[-1].upper()
+    extra = f'<a class="vai" href="{{r}}{m["anche"]}">Leggilo sul sito →</a>' if m.get('anche') else ''
+    voce = (f'<li><span class="scheda mat"><span class="tx"><span class="k">{tipo} · {_peso(f_.stat().st_size)}</span>'
+            f'<strong>{e(m["titolo"])}</strong><p>{e(m["descrizione"])}</p>'
+            f'<a class="btn" href="{{r}}risorse/materiali/{m["file"]}" download>Scarica</a>{extra}</span></span></li>') if pronto else (
+            f'<li><span class="scheda mat attesa"><span class="tx"><span class="k">{tipo} · in preparazione</span>'
+            f'<strong>{e(m["titolo"])}</strong><p>{e(m["descrizione"])}</p>{extra}</span></span></li>')
+    gruppi_mat.setdefault(m['gruppo'], []).append(voce)
+nota_mat = '<p class="avviso">Qualche materiale è ancora in preparazione: lo trovi qui appena pronto.</p>' if mancanti_mat else ''
+gruppi_lista = list(gruppi_mat.items())
+testa_mat = testa('Materiali', 'Materiali da scaricare', 'Logo, identità visiva, programma e propaganda: tutto pronto da usare per banchetti, assemblee e social.') + (nota_mat if mancanti_mat else '')
+blocchi_mat = S(testa_mat + f'<div class="capo"><div><h2>{e(gruppi_lista[0][0])}</h2></div></div><ul class="griglia tre">{"".join(gruppi_lista[0][1])}</ul>', 'fitta')
+blocchi_mat += ''.join(S(f'<div class="capo"><div><span class="k">Materiali</span><h2>{e(g)}</h2></div></div><ul class="griglia tre">{"".join(v)}</ul>', 'carta' if i % 2 == 0 else '') for i, (g, v) in enumerate(gruppi_lista[1:]))
+pagina('materiali.html', 'Materiali', 'Logo, identità visiva, programma da stampare, volantini e manifesti da scaricare e usare.',
+       blocchi_mat + ADERISCI, '', [('', 'Materiali')])
+
 # Crediti delle fotografie (le licenze Creative Commons chiedono autore, licenza e fonte)
 righe_crediti = ''.join(f'''<li><strong>{e(c["soggetto"])}</strong><span>Foto di {e(c["autore"])}{" (" + c["anno"] + ")" if c["anno"] else ""}, licenza <a href="{c["licenza_url"]}" rel="license noopener">{e(c["licenza"])}</a>. Originale: <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(c["commons"].replace(" ", "_"))}" rel="noopener">Wikimedia Commons</a>. Ridimensionata e ritagliata.</span></li>''' for c in FOTO.values())
 pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori: qui autore, licenza e originale di ciascuna.') + '<a class="vai-a" href="#elenco">Vedi l’elenco ↓</a>') + LIBERO(f'<ul class="crediti" id="elenco">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])
@@ -473,6 +515,14 @@ pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stat
 # la pagina 404 è servita da qualunque indirizzo: i suoi collegamenti devono essere assoluti
 f404 = OUT / '404.html'
 f404.write_text(re.sub(r'(href|src)="(?!https?:|#|mailto:)([^"]+)"', lambda m: f'{m.group(1)}="{BASE}{m.group(2)}"', f404.read_text(encoding='utf-8')), encoding='utf-8')
+
+(OUT / 'sito.webmanifest').write_text(json.dumps({
+    'name': SITO['nome'] + ' — Sicilia', 'short_name': 'SA Sicilia', 'description': SITO['descrizione'], 'lang': 'it',
+    'start_url': BASE, 'scope': BASE, 'display': 'browser', 'background_color': '#ffffff', 'theme_color': '#000000',
+    'icons': [{'src': BASE + 'risorse/loghi/sa-icona-192.png', 'sizes': '192x192', 'type': 'image/png'},
+              {'src': BASE + 'risorse/loghi/sa-icona-512.png', 'sizes': '512x512', 'type': 'image/png'},
+              {'src': BASE + 'risorse/loghi/sa-icona.svg', 'sizes': 'any', 'type': 'image/svg+xml'}],
+}, ensure_ascii=False, indent=1), encoding='utf-8')
 
 # Mappa del sito e istruzioni per i motori di ricerca
 indicizzabili = [p for p in PAGINE_FATTE if p != '404.html']

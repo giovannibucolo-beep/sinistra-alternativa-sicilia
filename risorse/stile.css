@@ -290,3 +290,14 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 #adesione > *, .passo > *, .passo .riga2 > * { min-width: 0; } .passo select, .passo input { max-width: 100%; }
 #adesione { position: relative; } .trappola { left: 0; top: 0; min-height: 0; padding: 0; border: 0; pointer-events: none; }
 .chi > * { min-width: 0; } @media (max-width: 420px) { .scelta { letter-spacing: 1px; font-size: 11px; } .scelta span { padding: 6px; } }
+
+/* ---------- condivisione e materiali ---------- */
+.condividi { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 28px 0 0; padding-top: 20px; border-top: 2px solid var(--linea); }
+.condividi .k { margin-right: 4px; }
+.condividi a, .condividi button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; font: 800 13px/1 Montserrat, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--nero); background: #fff; border: 2px solid var(--nero); text-decoration: none; cursor: pointer; }
+.condividi a:hover, .condividi button:hover { color: #fff; background: var(--nero); }
+.scheda.mat .tx { display: flex; flex-direction: column; gap: 8px; height: 100%; }
+.scheda.mat .btn { align-self: flex-start; margin-top: auto; }
+.scheda.mat .vai { align-self: flex-start; }
+.scheda.mat.attesa { opacity: .62; border-style: dashed; }
+@media print { .condividi { display: none !important; } }

@@ -96,6 +96,15 @@
     });
   }
 
+  // Copia il link della pagina (accanto ai pulsanti di condivisione)
+  doc.querySelectorAll('[data-copia]').forEach(function (b2) {
+    b2.addEventListener('click', function () {
+      var fatto = function () { var o = b2.textContent; b2.textContent = 'Link copiato'; setTimeout(function () { b2.textContent = o; }, 2500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(b2.dataset.copia).then(fatto, function () { prompt('Copia il link:', b2.dataset.copia); });
+      else prompt('Copia il link:', b2.dataset.copia);
+    });
+  });
+
   // Modulo di adesione: due passi, persona oppure organizzazione
   var f = doc.getElementById('adesione');
   if (f) {

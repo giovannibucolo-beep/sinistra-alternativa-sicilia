@@ -35,7 +35,32 @@ async function ricevi(richiesta, env) {
   if (r.chi === 'organizzazione' && !r.organizzazione) return risposta(env, 400, { errore: 'manca il nome dell’organizzazione' });
   await env.DB.prepare(TABELLA).run();
   await env.DB.prepare('INSERT INTO adesioni (quando, ' + CAMPI.join(', ') + ') VALUES (?, ' + CAMPI.map(() => '?').join(', ') + ')').bind(new Date().toISOString(), ...CAMPI.map(c => r[c])).run();
+  await conferma(env, r);
   return risposta(env, 200, { ok: true });
+}
+
+// Email di conferma a chi aderisce. Parte solo se sono impostate POSTA_CHIAVE e POSTA_DA (servizio Resend).
+// Se non sono impostate, o se l'invio fallisce, l'adesione resta comunque registrata.
+async function conferma(env, r) {
+  if (!env.POSTA_CHIAVE || !env.POSTA_DA) return;
+  const nome = r.chi === 'organizzazione' ? r.organizzazione : r.nome.split(' ')[0];
+  const righe = [
+    'Ciao ' + nome + ',',
+    '',
+    'abbiamo ricevuto la tua adesione per la provincia di ' + r.provincia + '.',
+    '',
+    'Ti scriveremo quando ci sarà un incontro nel tuo territorio.',
+  ];
+  if (r.mano) righe.push('', 'Hai dato la tua disponibilità per: ' + r.mano + '. Ti ricontattiamo noi.');
+  righe.push('', 'Se non sei stato tu, o se vuoi essere cancellato, rispondi a questa email: cancelliamo subito i tuoi dati.');
+  if (env.SITO_AMMESSO) righe.push('', env.SITO_AMMESSO);
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + env.POSTA_CHIAVE, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: env.POSTA_DA, to: [r.email], subject: 'Abbiamo ricevuto la tua adesione', text: righe.join('\n') }),
+    });
+  } catch (e) { /* l'adesione è già salvata: un errore di posta non la annulla */ }
 }
 
 async function elenco(env) { await env.DB.prepare(TABELLA).run(); return (await env.DB.prepare('SELECT * FROM adesioni ORDER BY id DESC').all()).results || []; }

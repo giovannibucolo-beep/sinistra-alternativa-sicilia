@@ -49,3 +49,7 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - I nomi e i dati di chi risponde stanno in `contenuti/sito.json`, voce `legale` (più `contatti` e `committente`): si scrivono una volta e compaiono in tutte e due le pagine. Finché mancano, le pagine mostrano «da indicare».
 - Le due pagine scorrono libere, come il testo di una notizia.
 - Restano «Bozza da approvare» finché chi segue i dati per il coordinamento non le ha lette.
+
+## 11. Materiali e condivisione
+- I materiali scaricabili si elencano in `contenuti/materiali.json` e i file vanno in `risorse/materiali/`. Un materiale elencato ma non ancora caricato compare come «in preparazione»: l'elenco non mente mai.
+- Ogni notizia e ogni pilastro hanno i pulsanti per condividere (WhatsApp, Telegram, Facebook, email, copia il link). Sono solo collegamenti: nessuno script di terze parti, nessun cookie.
