@@ -1,11 +1,11 @@
 ---
-numero: 07
+numero: "07"
 titolo: Proteggere il territorio
 verbo: proteggere il territorio
 slogan: Bonifiche pagate da chi ha inquinato. Scuola pubblica gratuita.
 sintesi: Bonifica dei cinque poli industriali inquinati a spese di chi ha inquinato. Scuola pubblica gratuita, no all’autonomia differenziata.
-titolo_ricerca: Bonifiche in Sicilia: Priolo, Augusta, Gela, Milazzo
-descrizione_ricerca: Bonifica dei poli industriali inquinati a spese di chi ha inquinato: Priolo-Augusta-Melilli, Gela, Milazzo, Valle del Mela, Biancavilla.
+titolo_ricerca: "Bonifiche in Sicilia: Priolo, Augusta, Gela, Milazzo"
+descrizione_ricerca: "Bonifica dei poli industriali inquinati a spese di chi ha inquinato: Priolo-Augusta-Melilli, Gela, Milazzo, Valle del Mela, Biancavilla."
 foto_attesa: un polo industriale da bonificare
 ---
 

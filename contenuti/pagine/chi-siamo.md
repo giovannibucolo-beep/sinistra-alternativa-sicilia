@@ -2,7 +2,7 @@
 titolo: Chi siamo
 occhiello: Chi siamo
 titolone: Una nuova Sicilia. Popolare e pacifista.
-sintesi: Sette organizzazioni, un programma nato dalle lotte: fuori dal centrodestra e fuori dal «campo largo».
+sintesi: "Sette organizzazioni, un programma nato dalle lotte: fuori dal centrodestra e fuori dal «campo largo»."
 ---
 
 **Non è una crisi passeggera.** La Sicilia perde lavoro, servizi e giovani: fra il 2019 e il 2026 quasi centomila ragazze e ragazzi tra i 18 e i 35 anni in meno. Intanto l’isola resta piattaforma militare e i miliardi vanno al Ponte.

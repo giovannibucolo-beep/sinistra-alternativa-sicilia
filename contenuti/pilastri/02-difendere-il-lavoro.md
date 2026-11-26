@@ -1,10 +1,10 @@
 ---
-numero: 02
+numero: "02"
 titolo: Difendere il lavoro
 verbo: difendere il lavoro
 slogan: 12 euro l’ora, contratti veri, stop al caporalato.
 sintesi: Clausola sociale in ogni appalto regionale, 12 euro netti l’ora, stop ai subappalti a cascata, lotta al caporalato e al lavoro nero.
-titolo_ricerca: Lavoro in Sicilia: salari, appalti, caporalato
+titolo_ricerca: "Lavoro in Sicilia: salari, appalti, caporalato"
 descrizione_ricerca: Clausola sociale negli appalti regionali, 12 euro netti l’ora, stop ai subappalti a cascata, lotta al caporalato e al lavoro nero in Sicilia.
 foto_attesa: braccianti e operai in assemblea
 ---

@@ -1,8 +1,8 @@
 ---
-titolo: Pronto soccorso: a fine 2025 mancavano quattro medici su dieci. Assumere, non comprare turni
+titolo: "Pronto soccorso: a fine 2025 mancavano quattro medici su dieci. Assumere, non comprare turni"
 data: 2026-11-26
 sintesi: A fine 2025 nei pronto soccorso siciliani lavoravano 551 medici su 929 necessari. Assunzioni stabili al posto dei turni a gettone, e dati pubblici ogni mese.
-pilastro: 03
+pilastro: "03"
 ---
 
 A fine 2025 nei pronto soccorso siciliani lavoravano 551 medici. Ne servivano 929. Sono i dati dell’assessorato regionale alla Salute al 31 dicembre 2025, elaborati dal sindacato dei medici ospedalieri Cimo-Fesmed: mancava il 41 per cento.

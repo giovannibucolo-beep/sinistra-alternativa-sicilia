@@ -63,6 +63,17 @@ for f in OUT.rglob('*'):
     if f.is_file() and f.stat().st_size > 600_000 and 'risorse/materiali/' not in f.as_posix(): avvisi.append(f'{f.relative_to(OUT)}: file pesante ({f.stat().st_size // 1024} KB)')
 for a in avvisi: print('AVVISO  ', a)
 for x in errori: print('ERRORE  ', x)
+# Le intestazioni dei contenuti devono essere YAML valido: è ciò che legge anche il pannello di scrittura
+import yaml
+for f in sorted((OUT.parent / 'contenuti').glob('*/*.md')):
+    testa_f = re.match(r'---\n(.*?)\n---', f.read_text(encoding='utf-8'), re.S)
+    if not testa_f:
+        errori.append(f'contenuti/{f.parent.name}/{f.name}: manca l’intestazione fra le righe ---'); continue
+    try:
+        if not isinstance(yaml.safe_load(testa_f.group(1)), dict): raise ValueError('non è un elenco di «chiave: valore»')
+    except Exception as errore_f:
+        errori.append(f'contenuti/{f.parent.name}/{f.name}: intestazione non leggibile dal pannello · {errore_f}')
+
 # Regola 8: fotografie sempre ottimizzate per il web
 for f in sorted((OUT / 'risorse' / 'img').glob('*')):
     if f.suffix.lower() in ('.png', '.jpeg', '.webp', '.tif', '.tiff', '.gif', '.bmp', '.heic', '.heif', '.avif'): errori.append(f'risorse/img/{f.name}: fotografia non convertita in JPEG ottimizzato')

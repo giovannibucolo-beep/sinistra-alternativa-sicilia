@@ -1,5 +1,5 @@
 ---
-numero: 06
+numero: "06"
 titolo: Unire il Mediterraneo
 verbo: unire il Mediterraneo
 slogan: Chiudere i CPR. Accoglienza e casa per tutte e tutti.

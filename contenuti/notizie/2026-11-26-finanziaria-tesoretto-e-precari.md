@@ -1,8 +1,8 @@
 ---
-titolo: Finanziaria: 640 milioni di «tesoretto», ma sul tempo pieno ai precari il governo frena
+titolo: "Finanziaria: 640 milioni di «tesoretto», ma sul tempo pieno ai precari il governo frena"
 data: 2026-11-26
-sintesi: La manovra da 1,7 miliardi è in Commissione Bilancio con oltre mille emendamenti. La domanda da fare: a quali condizioni la Regione spende?
-pilastro: 02
+sintesi: "La manovra da 1,7 miliardi è in Commissione Bilancio con oltre mille emendamenti. La domanda da fare: a quali condizioni la Regione spende?"
+pilastro: "02"
 provincia: Palermo
 ---
 

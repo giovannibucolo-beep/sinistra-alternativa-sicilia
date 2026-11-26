@@ -1,9 +1,9 @@
 ---
-titolo: Lampedusa, 19 novembre: una bambina di sei anni dispersa in mare
+titolo: "Lampedusa, 19 novembre: una bambina di sei anni dispersa in mare"
 data: 2026-11-26
 luogo: Lampedusa
 sintesi: Cinquantuno persone su un barchino partito da Sfax, cinquanta salvate. Una bambina di sei anni non è stata ritrovata.
-pilastro: 06
+pilastro: "06"
 provincia: Agrigento
 ---
 

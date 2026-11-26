@@ -2,7 +2,7 @@
 titolo: A Palermo le priorità del programma comune
 data: 2026-11-16
 luogo: Palermo
-sintesi: Sette organizzazioni al tavolo e un osservatore: sanità, scuola, casa e lavoro in cima all’agenda. Lista e candidatura alla presidenza restano aperte.
+sintesi: "Sette organizzazioni al tavolo e un osservatore: sanità, scuola, casa e lavoro in cima all’agenda. Lista e candidatura alla presidenza restano aperte."
 fonte: https://www.scomunicando.it/notizie/regionali-2027-in-sicilia-la-sinistra-alternativa-sceglie-una-strada-fuori-dal-campo-largo/
 fonte_nome: Scomunicando
 provincia: Palermo

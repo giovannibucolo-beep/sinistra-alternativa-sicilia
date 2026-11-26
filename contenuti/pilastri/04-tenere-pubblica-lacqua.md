@@ -1,11 +1,11 @@
 ---
-numero: 04
+numero: "04"
 titolo: Tenere pubblica l’acqua
 verbo: tenere pubblica l’acqua
 slogan: Reti riparate. I soldi del Ponte ai territori.
-sintesi: Gestione dell’acqua interamente pubblica, reti e invasi riparati. No al Ponte: quei 13,5 miliardi a ferrovie, strade e territorio.
+sintesi: "Gestione dell’acqua interamente pubblica, reti e invasi riparati. No al Ponte: quei 13,5 miliardi a ferrovie, strade e territorio."
 titolo_ricerca: Acqua pubblica in Sicilia, no al Ponte sullo Stretto
-descrizione_ricerca: Crisi idrica, invasi e reti colabrodo: acqua pubblica senza profitto. No al Ponte sullo Stretto: le risorse a ferrovie, strade e territorio.
+descrizione_ricerca: "Crisi idrica, invasi e reti colabrodo: acqua pubblica senza profitto. No al Ponte sullo Stretto: le risorse a ferrovie, strade e territorio."
 foto_attesa: un invaso in secca
 ---
 

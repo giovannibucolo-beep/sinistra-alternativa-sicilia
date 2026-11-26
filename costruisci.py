@@ -6,6 +6,7 @@ Uso:  python3 costruisci.py              (sito pubblico: i file con «bozza: sì
       python3 costruisci.py --anteprima  (anteprima privata: entrano anche le bozze, con etichetta)
 """
 import datetime, html, json, urllib.parse, pathlib, re, shutil, sys, unicodedata
+import yaml
 
 QUI = pathlib.Path(__file__).parent
 CONT, RIS, OUT = QUI / 'contenuti', QUI / 'risorse', QUI / 'pubblico'
@@ -36,11 +37,13 @@ def leggi(percorso):
     m = re.match(r'---\n(.*?)\n---\n?(.*)', t, re.S)
     if not m:
         raise SystemExit(f'ERRORE in {percorso.name}: manca l’intestazione fra le righe ---')
-    meta = {}
-    for riga in m.group(1).splitlines():
-        if ':' in riga:
-            k, v = riga.split(':', 1)
-            meta[k.strip()] = v.strip()
+    try:
+        meta = yaml.safe_load(m.group(1)) or {}
+    except yaml.YAMLError as errore:
+        raise SystemExit(f'ERRORE in {percorso.name}: intestazione non leggibile · {errore}')
+    if not isinstance(meta, dict):
+        raise SystemExit(f'ERRORE in {percorso.name}: l’intestazione deve essere un elenco di «chiave: valore»')
+    meta = {k: ('' if v is None else (v.isoformat() if hasattr(v, 'isoformat') else str(v))) for k, v in meta.items()}
     meta['corpo'], meta['file'] = m.group(2).strip(), percorso.stem
     meta['esempio'] = meta.get('esempio', '').lower() in ('sì', 'si', 'vero', 'true')
     meta['bozza'] = meta.get('bozza', '').lower() in ('sì', 'si', 'vero', 'true')

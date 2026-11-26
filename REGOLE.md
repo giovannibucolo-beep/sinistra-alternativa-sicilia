@@ -55,3 +55,4 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Ogni notizia e ogni pilastro hanno i pulsanti per condividere (WhatsApp, Telegram, Facebook, email, copia il link). Sono solo collegamenti: nessuno script di terze parti, nessun cookie.
 - Volantino e manifesto si rifanno con `stampa/costruisci_stampa.py`: leggono i pilastri dagli stessi file del sito, così carta e sito non divergono mai. Il codice QR punta alla pagina di adesione e si rigenera da solo.
 - Su ogni materiale stampato va il committente responsabile: finché non è indicato in `sito.json`, i PDF riportano «COMMITTENTE RESPONSABILE DA INDICARE» bene in vista, così nessuno li manda in tipografia per sbaglio.
+- Le intestazioni dei file di contenuto devono essere YAML valido: un valore che contiene «: » va fra virgolette. Non è una finezza — è ciò che permette al pannello di scrittura di vedere il file. Il controllo blocca la pubblicazione se un'intestazione non si legge.
