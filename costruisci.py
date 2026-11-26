@@ -398,7 +398,7 @@ pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi co
 <label>Nome e cognome<input type="text" name="nome" autocomplete="name"></label>
 <label>Email<input type="email" name="email" autocomplete="email" inputmode="email"></label>
 <div class="riga2"><label>Comune<input type="text" name="comune" autocomplete="address-level2"></label><label>Provincia<select name="provincia"><option value="">Scegli…</option>{opz}</select></label></div>
-<label class="consenso"><input type="checkbox" name="consenso"><span>Ho letto l’<a href="{{r}}privacy.html">informativa privacy</a> e acconsento a essere ricontattato dal coordinamento.</span></label>
+<label class="consenso"><input type="checkbox" name="consenso"><span>Ho letto l’<a href="{{r}}privacy.html">informativa privacy</a> e acconsento all’uso dei miei dati, che rivelano un’adesione politica, per essere ricontattato dal coordinamento.</span></label>
 <button class="btn" type="submit">Invia adesione</button>
 <p class="esito" role="status" aria-live="polite"></p>
 </form></div>''', 'carta'), 'aderisci', [('', 'Aderisci')])
@@ -419,9 +419,25 @@ INDICE += [{'t': 'Chi siamo', 'd': PAGINE['chi-siamo']['sintesi'], 'u': 'chi-sia
 pagina('cerca.html', 'Cerca nel sito', 'Cerca fra programma, notizie, incontri e territori.', S(testa('Cerca', 'Che cosa cerchi?') + '''<form class="cerca" role="search" onsubmit="return false"><label>Parole da cercare<input type="text" id="q" name="q" autocomplete="off" autofocus></label></form><p id="conta" role="status" aria-live="polite"></p><ul class="eventi scorre" id="esiti"></ul><noscript><p class="avviso">La ricerca ha bisogno di JavaScript. In alternativa usa il menu.</p></noscript>''', 'alto'), '', [('', 'Cerca')])
 
 # Pagine di servizio
+LG = SITO.get('legale', {})
+MANCA = '**[da indicare]**'
+VOCI_LEGALI = {
+    'titolare': LG.get('titolare') or MANCA.strip('*'), 'sede_titolare': LG.get('sede_titolare') or 'sede ' + MANCA,
+    'email': SITO['contatti']['email'] if SITO['contatti'].get('reali') else 'indirizzo ' + MANCA,
+    'committente': SITO['committente'] if SITO['committente'] != 'nome da indicare' else MANCA.strip('*'),
+    'incaricati': LG.get('incaricati') or MANCA, 'servizio_modulo': LG.get('servizio_modulo') or (MANCA if SITO['modulo'].get('invia_a') else 'nessuno, per ora: il modulo non è ancora collegato'),
+    'conservazione': LG.get('conservazione') or 'Durata ' + MANCA + ' dal coordinamento. In ogni caso i dati si cancellano appena lo chiedi.',
+    'ospite': 'oggi GitHub Pages, della società statunitense GitHub' if 'github.io' in BASE else 'il fornitore dello spazio web',
+    'stato_modulo': 'Oggi il modulo di adesione **non invia e non conserva nulla**: questa informativa descrive come funzionerà quando verrà collegato. Le voci «da indicare» vanno decise dal coordinamento prima di quel momento.' if not SITO['modulo'].get('invia_a') else 'Il modulo di adesione è attivo.',
+    'stato_sito': 'Questa è una bozza dimostrativa: contatti, date e voci segnate «esempio» non sono reali, e le voci «da indicare» attendono le decisioni del coordinamento.' if SITO['bozza'] else f"Versione {SITO['versione']}.",
+    'oggi': data_estesa(OGGI),
+}
 for chiave in ('privacy', 'note-legali'):
     p = PAGINE[chiave]
-    pagina(f'{chiave}.html', p['titolo'], p['sintesi'], S(testa(p['occhiello'], e(p['titolo'])) + f'<div class="testo colonne">{testo(p["corpo"])}</div>'), '', [('', p['titolo'])])
+    corpo_l = p['corpo']
+    for k_, v_ in VOCI_LEGALI.items():
+        corpo_l = corpo_l.replace('{' + k_ + '}', v_)
+    pagina(f'{chiave}.html', p['titolo'], p['sintesi'], S(testa(p['occhiello'], e(p['titolo']), e(p['sintesi'])) + '<a class="vai-a" href="#testo">Leggi ↓</a>') + LIBERO(f'<div class="testo" id="testo">{testo(corpo_l)}</div>'), '', [('', p['titolo'])])
 # Crediti delle fotografie (le licenze Creative Commons chiedono autore, licenza e fonte)
 righe_crediti = ''.join(f'''<li><strong>{e(c["soggetto"])}</strong><span>Foto di {e(c["autore"])}{" (" + c["anno"] + ")" if c["anno"] else ""}, licenza <a href="{c["licenza_url"]}" rel="license noopener">{e(c["licenza"])}</a>. Originale: <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(c["commons"].replace(" ", "_"))}" rel="noopener">Wikimedia Commons</a>. Ridimensionata e ritagliata.</span></li>''' for c in FOTO.values())
 pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori: qui autore, licenza e originale di ciascuna.') + '<a class="vai-a" href="#elenco">Vedi l’elenco ↓</a>') + LIBERO(f'<ul class="crediti" id="elenco">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])

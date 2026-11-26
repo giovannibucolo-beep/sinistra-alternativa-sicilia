@@ -44,3 +44,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Il sito nasce senza cookie. Gli strumenti di misura si accendono scrivendo il loro codice in `contenuti/sito.json`, voce `statistiche`.
 - Quelli con cookie (Google Analytics, pixel di Meta) partono solo dopo il consenso; «Rifiuta» e «Accetta tutto» hanno lo stesso peso, la × vale rifiuto, la scelta dura sei mesi e si cambia dalla pagina «Cookie».
 - La pagina «Cookie» si scrive da sola in base a ciò che è acceso: non va mai modificata a mano. Come il testo di una notizia, scorre libera.
+
+## 10. Privacy e note legali
+- I nomi e i dati di chi risponde stanno in `contenuti/sito.json`, voce `legale` (più `contatti` e `committente`): si scrivono una volta e compaiono in tutte e due le pagine. Finché mancano, le pagine mostrano «da indicare».
+- Le due pagine scorrono libere, come il testo di una notizia.
+- Restano «Bozza da approvare» finché chi segue i dati per il coordinamento non le ha lette.

@@ -1,21 +1,48 @@
 ---
 titolo: Informativa privacy
-occhiello: Da redigere
-sintesi: Pagina da completare prima di raccogliere adesioni.
+occhiello: Bozza da approvare
+sintesi: Quali dati raccoglie il sito, perché, chi li vede e come farli cancellare.
 ---
 
-**Questa pagina è vuota di proposito.** L’informativa va scritta da chi segue la protezione dei dati per il coordinamento, prima di collegare il modulo di adesione.
+**In breve.** Il sito raccoglie dati solo se compili il modulo di adesione. Non li vende, non li cede, non li usa per altro che ricontattarti. Puoi farli cancellare quando vuoi.
 
-## Che cosa deve dire
+## Chi risponde dei tuoi dati
 
-- Chi è il titolare dei dati e come contattarlo.
-- Quali dati si raccolgono con il modulo e perché.
-- Per quanto tempo si conservano e chi può vederli.
-- Come chiedere di vederli, correggerli o farli cancellare.
-- Quali servizi esterni usa il sito.
+Titolare del trattamento: **{titolare}**, {sede_titolare}. Per ogni richiesta: {email}.
 
-## Che cosa fa oggi il sito
+## Quali dati raccogliamo
 
-- Il modulo di adesione non invia e non conserva nulla.
-- Il sito non usa cookie di profilazione e non ha strumenti di tracciamento.
-- I caratteri sono ospitati sul sito: nessuna chiamata a servizi esterni.
+- **Con il modulo di adesione:** nome e cognome, email, comune e provincia. Nient’altro.
+- **Visitando il sito:** nessun dato raccolto da noi. Il servizio che ospita le pagine ({ospite}) riceve, come ogni server, l’indirizzo di rete di chi le apre.
+- **Cookie e statistiche:** sono descritti nella pagina [Cookie e statistiche](cookie.html), che dice sempre che cosa è acceso.
+
+## Perché li raccogliamo
+
+Per ricontattarti e invitarti agli incontri e ai tavoli del tuo territorio. Nessun altro uso: niente cessione ad altri, niente profilazione, niente pubblicità.
+
+Chi aderisce a un coordinamento politico rivela un’opinione politica. Il regolamento europeo sulla protezione dei dati (articolo 9) tratta le opinioni politiche come dati da proteggere in modo particolare: per questo li usiamo solo con il tuo consenso esplicito, che dai spuntando la casella del modulo e che puoi ritirare quando vuoi.
+
+## Chi li vede
+
+- Le persone incaricate dal coordinamento di tenere i contatti: {incaricati}.
+- Il servizio che riceve il modulo: {servizio_modulo}.
+
+I dati non vengono pubblicati e non vengono passati alle singole organizzazioni senza che tu lo chieda.
+
+## Per quanto tempo
+
+{conservazione}
+
+## I tuoi diritti
+
+Puoi chiedere in ogni momento di sapere quali dati abbiamo, di correggerli, di cancellarli, di limitarne l’uso, di riceverne copia, e puoi ritirare il consenso (articoli da 15 a 22 del regolamento). Basta scrivere a {email}: rispondiamo senza chiedere spiegazioni. Se ritieni che i tuoi dati siano trattati male puoi rivolgerti al Garante per la protezione dei dati personali.
+
+## Minori
+
+Il modulo è pensato per chi ha compiuto 18 anni.
+
+## Stato di questa pagina
+
+{stato_modulo}
+
+Ultimo aggiornamento: {oggi}.
