@@ -307,7 +307,10 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 /* ---------- condivisione e materiali ---------- */
 .condividi { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 28px 0 0; padding-top: 20px; border-top: 2px solid var(--linea); }
 .condividi .k { margin-right: 4px; }
-.condividi a, .condividi button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; font: 800 13px/1 Montserrat, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--nero); background: #fff; border: 2px solid var(--nero); text-decoration: none; cursor: pointer; }
+.condividi a, .condividi button { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 16px; font: 800 13px/1 Montserrat, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--nero); background: #fff; border: 2px solid var(--nero); text-decoration: none; cursor: pointer; transition: transform .15s, background .15s, color .15s; }
+.condividi .ic { flex: none; }
+@media (hover: hover) { .condividi a:hover, .condividi button:hover { transform: translateY(-2px); } }
+@media (max-width: 520px) { .condividi a span, .condividi button span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } .condividi a, .condividi button { padding: 0; width: 46px; justify-content: center; } }
 .condividi a:hover, .condividi button:hover { color: #fff; background: var(--nero); }
 .scheda.mat .tx { display: flex; flex-direction: column; gap: 8px; height: 100%; }
 .scheda.mat .btn { align-self: flex-start; margin-top: auto; }

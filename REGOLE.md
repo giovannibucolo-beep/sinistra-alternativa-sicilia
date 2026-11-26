@@ -67,3 +67,7 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Di ogni fotografia escono due misure: la grande da 1400 px e la piccola da 700 px. È il browser a scegliere; il telefono scarica la piccola. Le copie piccole le fa `strumenti/ottimizza_foto.py` da sé: non si creano a mano.
 - I numeri in evidenza si scrivono nel contenuto con `= numero | che cosa dice | da dove viene`, e il numero per intero sta già nella pagina. Il conteggio che sale è solo un ornamento: senza JavaScript, e per chi ha chiesto meno animazioni, il numero si vede fermo e giusto. Ogni numero porta la sua fonte: nessun numero senza fonte.
 - Il movimento ammesso è uno solo: il contenuto che entra di venti pixel allo scorrimento. Niente video di sfondo, niente parallasse, niente transizioni fra pagine.
+
+## 14. Icone
+- Le icone sono nostre, disegnate nel generatore (`ICONE` in `costruisci.py`): dicono il gesto — bolla, invio, globo, busta, catena — non il marchio. I loghi di WhatsApp, Telegram, Facebook e di qualunque altro servizio sono marchi registrati: non si riproducono, nemmeno ridisegnati «somiglianti».
+- Accanto all'icona resta sempre il nome scritto. Sotto i 520 px il nome resta nel codice per chi usa il lettore di schermo, anche quando non si vede.
