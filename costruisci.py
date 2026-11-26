@@ -349,17 +349,33 @@ def icona(nome):
             f'aria-hidden="true" focusable="false">{ICONE[nome]}</svg>')
 
 
+SERVIZI = pathlib.Path(__file__).resolve().parent / 'risorse' / 'loghi' / 'servizi'
+
+
+def segno_ufficiale(marchio):
+    """Se in `risorse/loghi/servizi/` c'è `<servizio>.svg`, il sito usa quello al posto del nostro pittogramma.
+    Va messa la versione a un colore solo: il sito la usa come sagoma e le dà lui il colore del pulsante,
+    così diventa bianca sul fondo nero come tutte le altre icone.
+    I file li mette chi ha deciso di usarli, scaricandoli dalle pagine ufficiali dei marchi e rispettandone
+    le condizioni d'uso: non si ridisegnano e non si prendono da altre fonti."""
+    if not marchio or not (SERVIZI / f'{marchio}.svg').exists():
+        return ''
+    return f'<span class="ic ic-m ic-{marchio}" aria-hidden="true"></span>'
+
+
 def condividi(titolo, percorso):
     """Pulsanti per mandare la pagina ad altri. Solo collegamenti: nessuno script di terze parti, nessun cookie.
     I pittogrammi sono nostri e descrivono il gesto; il nome del servizio resta scritto, perché un'icona sola
     si legge male e chi usa il lettore di schermo non la sente."""
     u = urllib.parse.quote(BASE + percorso, safe='')
     t = urllib.parse.quote(titolo + ' — ' + SITO['nome'], safe='')
-    vie = [('WhatsApp', 'bolla', f'https://wa.me/?text={t}%20{u}'),
-           ('Telegram', 'invio', f'https://t.me/share/url?url={u}&text={t}'),
-           ('Facebook', 'megafono', f'https://www.facebook.com/sharer/sharer.php?u={u}'),
-           ('Email', 'busta', f'mailto:?subject={t}&body={u}')]
-    link = ''.join(f'<a href="{v}" target="_blank" rel="noopener">{icona(ic)}<span>{n}</span></a>' for n, ic, v in vie)
+    vie = [('WhatsApp', 'whatsapp', 'bolla', f'https://wa.me/?text={t}%20{u}'),
+           ('Telegram', 'telegram', 'invio', f'https://t.me/share/url?url={u}&text={t}'),
+           ('Facebook', 'facebook', 'megafono', f'https://www.facebook.com/sharer/sharer.php?u={u}'),
+           ('Email', '', 'busta', f'mailto:?subject={t}&body={u}')]
+    link = ''
+    for n, marchio, ic, v in vie:
+        link += f'<a href="{v}" target="_blank" rel="noopener">{segno_ufficiale(marchio) or icona(ic)}<span>{n}</span></a>'
     copia = f'<button type="button" data-copia="{e(BASE + percorso)}">{icona("catena")}<span>Copia il link</span></button>'
     return f'<div class="condividi"><span class="k">Condividi</span>{link}{copia}</div>'
 

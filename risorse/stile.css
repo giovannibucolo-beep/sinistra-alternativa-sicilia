@@ -309,6 +309,12 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 .condividi .k { margin-right: 4px; }
 .condividi a, .condividi button { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 16px; font: 800 13px/1 Montserrat, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--nero); background: #fff; border: 2px solid var(--nero); text-decoration: none; cursor: pointer; transition: transform .15s, background .15s, color .15s; }
 .condividi .ic { flex: none; }
+/* Loghi ufficiali a un colore, se qualcuno li ha messi in risorse/loghi/servizi/: il sito li usa come
+   sagoma e dà lui il colore, così si comportano come i nostri pittogrammi anche sul fondo nero. */
+.ic-m { display: inline-block; width: 20px; height: 20px; background: currentColor; -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
+.ic-whatsapp { -webkit-mask-image: url(loghi/servizi/whatsapp.svg); mask-image: url(loghi/servizi/whatsapp.svg); }
+.ic-telegram { -webkit-mask-image: url(loghi/servizi/telegram.svg); mask-image: url(loghi/servizi/telegram.svg); }
+.ic-facebook { -webkit-mask-image: url(loghi/servizi/facebook.svg); mask-image: url(loghi/servizi/facebook.svg); }
 @media (hover: hover) { .condividi a:hover, .condividi button:hover { transform: translateY(-2px); } }
 @media (max-width: 520px) { .condividi a span, .condividi button span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } .condividi a, .condividi button { padding: 0; width: 46px; justify-content: center; } }
 .condividi a:hover, .condividi button:hover { color: #fff; background: var(--nero); }

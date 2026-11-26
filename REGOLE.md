@@ -71,3 +71,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 ## 14. Icone
 - Le icone sono nostre, disegnate nel generatore (`ICONE` in `costruisci.py`): dicono il gesto — bolla, invio, globo, busta, catena — non il marchio. I loghi di WhatsApp, Telegram, Facebook e di qualunque altro servizio sono marchi registrati: non si riproducono, nemmeno ridisegnati «somiglianti».
 - Accanto all'icona resta sempre il nome scritto. Sotto i 520 px il nome resta nel codice per chi usa il lettore di schermo, anche quando non si vede.
+
+## 15. Loghi dei servizi di condivisione
+- La cartella `risorse/loghi/servizi/` è il solo posto dove possono stare i loghi veri di WhatsApp, Telegram e Facebook. Se c'è `whatsapp.svg`, `telegram.svg` o `facebook.svg`, il sito lo usa da sé al posto del proprio pittogramma; se manca, resta il pittogramma.
+- Va messa solo la versione a un colore: il sito usa il file come sagoma e gli dà il colore del pulsante, così diventa bianco sul fondo nero come le altre icone. Un file a colori diventa una macchia piena.
+- I loghi si scaricano dalle pagine ufficiali dei marchi, mai da raccolte di icone di terze parti, e non si ridisegnano «somiglianti». Sono marchi registrati: chi li mette si è letto le condizioni d'uso e se ne assume la responsabilità. Le istruzioni stanno in `risorse/loghi/servizi/LEGGIMI.md`.
