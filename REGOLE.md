@@ -8,6 +8,7 @@ Quando più riquadri stanno sulla stessa fila (pilastri, schede delle notizie, i
 
 ## 2. «SA» è il simbolo
 Quando si scrive «la Sicilia che SA…» o «la Sicilia SA…», la parola **SA non si scrive a lettere: è il monogramma**. Vale nei titoli, nelle fasce e nelle immagini di anteprima per i social. Il sito lo fa da solo: basta scrivere la frase normalmente nel titolo.
+Il simbolo non va mai a capo da solo: resta sulla stessa riga della parola che lo precede.
 Su fondo chiaro il monogramma nero, su fondo nero quello in negativo, su fondo rosso quello tutto bianco.
 Non vale dove un'immagine non può stare: il titolo nella scheda del browser, le descrizioni per i motori di ricerca, il testo corrente dei capoversi.
 *Regola del 26 novembre 2026. Controllo automatico: `controlla.py`.*

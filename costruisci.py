@@ -111,7 +111,7 @@ FUTURI = [v for v in EVENTI if not v['passato']]
 def sa(t, variante=''):
     """REGOLA DEL SITO: «la Sicilia (che) SA …» si scrive con il monogramma al posto della parola. `variante`: '' su chiaro, 'nero' su fondo nero, 'rosso' su fondo rosso."""
     file = {'': 'sa-monogramma.svg', 'nero': 'sa-monogramma-negativo-su-nero.svg', 'rosso': 'sa-monogramma-bianco.svg'}[variante]
-    return re.sub(r'(?i)(sicilia(?:\s+che)?\s+)sa\b', lambda m: f'{m.group(1)}<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42">', t)
+    return re.sub(r'(?i)(sicilia)(\s+che)?\s+sa\b', lambda m: (f'{m.group(1)} <span class="nsa">che ' if m.group(2) else f'<span class="nsa">{m.group(1)} ') + f'<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42" style="display:inline-block;height:1.06em;width:auto;vertical-align:baseline"></span>', t)
 
 
 ES = ' <em class="es">esempio</em>'
@@ -160,7 +160,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <link rel="icon" href="{r}risorse/loghi/sa-icona.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="Notizie" href="{r}notizie/feed.xml">
 <link rel="preload" href="{r}risorse/font/montserrat-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{r}risorse/stile.css">
+<link rel="stylesheet" href="{r}risorse/stile.css?v={SITO['versione']}">
 {ld}</head>
 <body>
 <a class="salta" href="#contenuto">Salta al contenuto</a>
@@ -185,7 +185,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 </div>
 </footer>
 {'<div class="bozza" aria-hidden="true">' + ('ANTEPRIMA PRIVATA · CON BOZZE' if ANTEPRIMA else 'BOZZA DIMOSTRATIVA') + '</div>' if SITO['bozza'] or ANTEPRIMA else ''}
-<script src="{r}risorse/sito.js" defer></script>
+<script src="{r}risorse/sito.js?v={SITO['versione']}" defer></script>
 </body>
 </html>
 '''
@@ -245,7 +245,7 @@ pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="aper
 <div class="dx"><img src="{{r}}risorse/loghi/sa-contrassegno.svg" alt="Contrassegno {e(SITO['nome_logo'])}" width="430" height="430"></div>
 </section>
 {prossimo}
-<section class="sez"><div class="in"><div class="capo"><div><span class="k">Il programma</span><h2>{sa('Sette cose che la Sicilia sa fare')}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia()}</div></section>
+<section class="sez"><div class="in"><div class="capo"><div><span class="k">Il programma</span><h2>{sa('La Sicilia che sa')}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia()}</div></section>
 <section class="sez carta"><div class="in"><div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{''.join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul></div></section>
 <section class="sez"><div class="in due"><div><span class="k">Territori</span><h2 style="margin:8px 0 14px">Nove province, un tavolo in ognuna</h2><p style="max-width:32em;font-size:18px">Scegli la tua provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.</p></div>{mappa()}</div></section>
 {banda_aderisci()}''', dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
