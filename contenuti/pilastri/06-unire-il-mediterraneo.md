@@ -4,6 +4,8 @@ titolo: Unire il Mediterraneo
 verbo: unire il Mediterraneo
 slogan: Chiudere i CPR. Accoglienza e casa per tutte e tutti.
 sintesi: Chiusura dei CPR, accoglienza pubblica e diffusa, case popolari da immobili sfitti e beni confiscati alla mafia.
+titolo_ricerca: CPR, accoglienza e diritto alla casa in Sicilia
+descrizione_ricerca: Chiusura dei CPR di Caltanissetta, Trapani e Lampedusa, accoglienza pubblica e diffusa, case popolari da immobili sfitti e beni confiscati.
 foto_attesa: accoglienza in un porto siciliano
 ---
 

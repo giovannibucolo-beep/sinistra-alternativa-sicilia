@@ -4,6 +4,8 @@ titolo: Decidere sul proprio corpo
 verbo: decidere sul proprio corpo
 slogan: Consultori pubblici. Diritti garantiti in ogni ospedale.
 sintesi: Consultori pubblici e laici, interruzione di gravidanza garantita in ogni presidio, centri antiviolenza finanziati.
+titolo_ricerca: Consultori, aborto e centri antiviolenza in Sicilia
+descrizione_ricerca: Consultori pubblici e laici, interruzione di gravidanza garantita in ogni ospedale, centri antiviolenza finanziati: decidere sul proprio corpo.
 foto_attesa: corteo transfemminista
 ---
 

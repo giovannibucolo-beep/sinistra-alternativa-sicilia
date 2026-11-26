@@ -4,6 +4,8 @@ titolo: Difendere la salute
 verbo: difendere la salute
 slogan: Ospedali aperti, assunzioni stabili, liste d’attesa abbattute.
 sintesi: Sanità pubblica e territoriale: assunzioni stabili, ospedali e pronto soccorso delle aree interne riaperti, liste d’attesa abbattute.
+titolo_ricerca: Sanità pubblica in Sicilia: ospedali e liste d’attesa
+descrizione_ricerca: Ospedali e pronto soccorso delle aree interne riaperti, assunzioni stabili, liste d’attesa abbattute: la proposta per la sanità pubblica siciliana.
 foto_attesa: presidio per un ospedale di un’area interna
 ---
 

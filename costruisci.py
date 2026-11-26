@@ -126,7 +126,7 @@ MENU = [('chi-siamo.html', 'Chi siamo'), ('programma/index.html', 'Programma'), 
 PAGINE_FATTE = []
 
 
-def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='generale', tipo='website', dati=None):
+def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='generale', tipo='website', dati=None, ricerca=None, immagine=None):
     """Scrive una pagina completa: testata, briciole, contenuto, piede. `percorso` è relativo alla radice del sito."""
     r = '../' * percorso.count('/')
     voci = ''.join(f'<a href="{r}{h}"' + (' aria-current="page"' if h.split('/')[0].replace('.html', '') == sezione else '') + f'>{t}</a>' for h, t in MENU)
@@ -134,17 +134,25 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
     if briciole:
         bric = '<nav class="briciole" aria-label="Percorso"><ol>' + f'<li><a href="{r}index.html">Home</a></li>' + ''.join(f'<li><a href="{r}{h}">{e(t)}</a></li>' if h else f'<li aria-current="page">{e(t)}</li>' for h, t in briciole) + '</ol></nav>'
     c = SITO['contatti']
-    titolo_pieno = f"{titolo} — {SITO['nome']}" if percorso != 'index.html' else f"{SITO['nome']} — Sicilia"
+    titolo_pieno = f"{(ricerca or (titolo, ''))[0]} | {SITO['nome']}" if percorso != 'index.html' else f"{SITO['nome']} — Sicilia, Regionali 2027"
+    if ricerca and ricerca[1]: descrizione_r = ricerca[1]
+    else: descrizione_r = descrizione
+    grafo = [dati] if dati else []
+    if briciole:
+        grafo.append({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': BASE}] + [{'@type': 'ListItem', 'position': i + 2, 'name': t, 'item': BASE + (h or percorso)} for i, (h, t) in enumerate(briciole)]})
+    if immagine:
+        grafo.append({'@context': 'https://schema.org', '@type': 'ImageObject', 'contentUrl': BASE + 'risorse/img/' + immagine['file'] + '.jpg', 'name': immagine['soggetto'], 'creditText': immagine['autore'], 'creator': {'@type': 'Person' if immagine['autore'] != 'Commissione europea' else 'Organization', 'name': immagine['autore']}, 'license': immagine['licenza_url'], 'acquireLicensePage': BASE + 'crediti.html'})
+    verifica = f'<meta name="google-site-verification" content="{e(SITO["google_verifica"])}">\n' if SITO.get('google_verifica') else ''
     robot = '' if SITO['indicizzabile'] else '<meta name="robots" content="noindex, nofollow">\n'
-    ld = f'<script type="application/ld+json">{json.dumps(dati, ensure_ascii=False)}</script>\n' if dati else ''
+    ld = ''.join(f'<script type="application/ld+json">{json.dumps(g, ensure_ascii=False)}</script>\n' for g in grafo)
     pagina_html = f'''<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="utf-8">
 <script>document.documentElement.className = "js";</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-{robot}<title>{e(titolo_pieno)}</title>
-<meta name="description" content="{e(descrizione)}">
+{robot}{verifica}<title>{e(titolo_pieno)}</title>
+<meta name="description" content="{e(descrizione_r)}">
 <link rel="canonical" href="{BASE}{'' if percorso == 'index.html' else percorso}">
 <meta property="og:type" content="{tipo}">
 <meta property="og:site_name" content="{e(SITO['nome'])}">
@@ -208,8 +216,10 @@ FOTO = {f['file']: f for f in json.loads((CONT / 'foto.json').read_text(encoding
 def foto(file, attesa, extra=''):
     """Spazio per una fotografia: mostra `risorse/img/<file>.jpg` se c'è, altrimenti il segnaposto con il nome atteso."""
     c = FOTO.get(file)
-    cred = f'<span class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</span>' if c else ''
-    return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(c["soggetto"] if c else attesa)}">{cred}</div>'
+    if c:
+        primo = ' fetchpriority="high"' if 'grande' in extra else ' loading="lazy"'
+        return f'<figure class="foto{extra}"><img src="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} onerror="this.parentNode.classList.add(\'vuota\');this.parentNode.dataset.et=\'FOTO DA INSERIRE · risorse/img/{file}.jpg\';this.remove()"><figcaption class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</figcaption></figure>'
+    return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(attesa)}"></div>'
 
 
 def scheda_notizia(n):
@@ -283,7 +293,7 @@ pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="aper
 <div class="azioni"><a class="btn" href="{{r}}aderisci.html">Aderisci ora</a><a class="btn b2" href="{{r}}programma/index.html">Il programma</a></div></div>
 <div class="dx"><img src="{{r}}risorse/loghi/sa-contrassegno.svg" alt="Contrassegno {e(SITO['nome_logo'])}" width="430" height="430"></div>
 </section>''' + S(f'<div class="capo"><div><span class="k">Il programma</span><h2>{sa("La Sicilia che sa")}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia_p}') + S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul>', 'carta') + S(f'{prossimo}<div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}') + ADERISCI,
-       dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
+       dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'alternateName': 'Sinistra Alternativa Sicilia', 'areaServed': 'Sicilia', 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
 
 # Chi siamo
 p = PAGINE['chi-siamo']; sz = dict(sezioni(p['corpo'])); forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M); oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
@@ -306,7 +316,7 @@ for i, p in enumerate(PILASTRI):
     corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div><nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
     if collegate:
         corpo += S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Su questo pilastro</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate)}</ul>', 'carta')
-    pagina(p['indirizzo'], p['titolo'], p['sintesi'], corpo + aderisci_con(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'])
+    pagina(p['indirizzo'], p['titolo'], p['sintesi'], corpo + aderisci_con(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'], ricerca=(p.get('titolo_ricerca'), p.get('descrizione_ricerca')) if p.get('titolo_ricerca') else None, immagine=FOTO.get('pilastro-' + p['numero']))
 
 # Tutto il programma in una pagina sola, da stampare o salvare in PDF (eccezione dichiarata alla regola delle schermate)
 tutto = ''.join(f'''<article class="blocco-p"><span class="k">Pilastro {p['numero']}</span><h2>{e(p['titolo'])}</h2><p class="sintesi">{e(p['sintesi'])}</p>{''.join(f'<h3>{e(t)}</h3><div class="testo">{testo(c)}</div>' for t, c in sezioni(p['corpo'])[:2])}</article>''' for p in PILASTRI)
@@ -411,6 +421,15 @@ f404.write_text(re.sub(r'(href|src)="(?!https?:|#|mailto:)([^"]+)"', lambda m: f
 
 # Mappa del sito e istruzioni per i motori di ricerca
 indicizzabili = [p for p in PAGINE_FATTE if p != '404.html']
-(OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f"<url><loc>{BASE}{'' if p == 'index.html' else p}</loc></url>\n" for p in indicizzabili) + '</urlset>\n', encoding='utf-8')
+OGGI = datetime.date.today().isoformat()
+def _voce(pg):
+    foto_pg = ''
+    m = re.match(r'programma/(.+)\.html$', pg)
+    if m:
+        for pl in PILASTRI:
+            if pl['indirizzo'] == pg and FOTO.get('pilastro-' + pl['numero']):
+                foto_pg = f"<image:image><image:loc>{BASE}risorse/img/pilastro-{pl['numero']}.jpg</image:loc></image:image>"
+    return f"<url><loc>{BASE}{'' if pg == 'index.html' else pg}</loc><lastmod>{OGGI}</lastmod>{foto_pg}</url>\n"
+(OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' + ''.join(_voce(pg) for pg in indicizzabili if pg not in ('cerca.html',)) + '</urlset>\n', encoding='utf-8')
 (OUT / 'robots.txt').write_text((f'User-agent: *\nAllow: /\nSitemap: {BASE}sitemap.xml\n' if SITO['indicizzabile'] else 'User-agent: *\nDisallow: /\n'), encoding='utf-8')
 print(f'Sito costruito: {len(PAGINE_FATTE)} pagine in {OUT.name}/ · versione {SITO["versione"]}' + (' · ANTEPRIMA con bozze' if ANTEPRIMA else '') + (f' · bozze lasciate fuori: {len(ESCLUSE)} ({", ".join(ESCLUSE)})' if ESCLUSE else ''))

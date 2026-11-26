@@ -3,7 +3,7 @@
   "nome_logo": "Sinistra Alternativa · Sicilia",
   "descrizione": "Coordinamento siciliano Sinistra per l’Alternativa: un programma nato dalle lotte, verso le Regionali 2027.",
   "indirizzo": "https://giovannibucolo-beep.github.io/sinistra-alternativa-sicilia/",
-  "versione": "0.30",
+  "versione": "0.31",
   "bozza": true,
   "indicizzabile": false,
   "contatti": {
@@ -22,5 +22,7 @@
     "codice": "",
     "nota": "Vuoto: nessun contatore di visite."
   },
-  "committente": "nome da indicare"
+  "committente": "nome da indicare",
+  "google_verifica": "",
+  "google_verifica_nota": "Codice dato da Google Search Console per dimostrare che il sito è nostro. Vuoto finché non si collega."
 }

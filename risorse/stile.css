@@ -49,6 +49,8 @@ h3 { font-size: 21px; font-weight: 900; line-height: 1.15; text-transform: upper
 .briciole { padding: 14px var(--lato) 0; font-size: 13px; font-weight: 700; } .briciole ol { max-width: var(--max); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 6px; } .briciole li + li::before { content: "›"; margin-right: 6px; color: var(--cremisi); } .briciole a { color: var(--grigio); }
 .intesta { padding: 28px var(--lato) 40px; } .intesta > .in { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 14px; } .intesta .sott { font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; max-width: 34em; }
 .foto { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--nero) center / cover no-repeat; }
+figure.foto { margin: 0; }
+.foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .foto .cred { position: absolute; right: 0; bottom: 0; max-width: 100%; padding: 4px 9px; font-size: 11px; font-weight: 700; line-height: 1.3; color: #fff; background: rgba(0,0,0,.72); }
 .foto.vuota .cred { display: none; }
 .crediti { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; max-width: 60em; }

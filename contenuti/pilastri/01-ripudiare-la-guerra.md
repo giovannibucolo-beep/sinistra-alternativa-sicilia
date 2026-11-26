@@ -4,6 +4,8 @@ titolo: Ripudiare la guerra
 verbo: ripudiare la guerra
 slogan: Via le basi. Stop al MUOS. Sicilia terra di pace.
 sintesi: Chiusura progressiva delle basi USA e NATO, revoca delle autorizzazioni al MUOS di Niscemi, Sicilia zona di pace, neutrale e denuclearizzata.
+titolo_ricerca: MUOS e basi militari in Sicilia: ripudiare la guerra
+descrizione_ricerca: MUOS di Niscemi, Sigonella, basi USA e NATO: la proposta per una Sicilia di pace, neutrale e denuclearizzata. Che cosa può fare la Regione, subito.
 foto_attesa: presidio davanti alla base di Niscemi
 ---
 

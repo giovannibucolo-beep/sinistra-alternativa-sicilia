@@ -54,7 +54,7 @@ for f in pagine:
             if ancora and ancora not in L.ids: errori.append(f'{nome}: àncora inesistente #{ancora}')
             continue
         dest = (f.parent / percorso).resolve()
-        if not dest.exists(): errori.append(f'{nome}: collegamento rotto → {h}')
+        if not dest.exists(): (avvisi if '/risorse/img/' in str(dest) else errori).append(f'{nome}: ' + ('fotografia non ancora scaricata' if '/risorse/img/' in str(dest) else 'collegamento rotto') + f' → {h}')
 for t, dove in titoli.items():
     if len(dove) > 1: errori.append(f'titolo ripetuto «{t}» in: {", ".join(dove)}')
 for f in OUT.rglob('*'):
