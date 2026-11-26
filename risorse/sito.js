@@ -29,6 +29,61 @@
     rr.forEach(function (e) { o.observe(e); });
   } else rr.forEach(function (e) { e.classList.add('vis'); });
 
+  // Numeri che salgono, una volta sola. Il numero per intero è già nella pagina: questo è solo un ornamento.
+  var cc = doc.querySelectorAll('.cifre strong[data-conta]');
+  if (cc.length && 'IntersectionObserver' in window && !fermo) {
+    var pezzi = function (s) { return /^(\D*)(\d[\d.,]*)(.*)$/.exec(s.trim()); };
+    var scrivi = function (n, dec) {
+      var s = (dec ? n.toFixed(dec) : String(Math.round(n))).split('.');
+      return s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (s[1] ? ',' + s[1] : '');
+    };
+    var sale = function (el) {
+      var m = pezzi(el.textContent);
+      if (!m) return;
+      var core = m[2], dec = (core.split(',')[1] || '').length;
+      var fine = parseFloat(core.replace(/\./g, '').replace(',', '.'));
+      if (!isFinite(fine) || fine <= 0) return;
+      var durata = 900, avvio = 0;
+      var passo = function (ora) {
+        if (!avvio) avvio = ora;
+        var q = Math.min(1, (ora - avvio) / durata), f = 1 - Math.pow(1 - q, 3);
+        el.textContent = m[1] + scrivi(fine * f, dec) + m[3];
+        if (q < 1) requestAnimationFrame(passo);
+      };
+      requestAnimationFrame(passo);
+    };
+    var oc = new IntersectionObserver(function (es) {
+      es.forEach(function (x) { if (x.isIntersecting) { oc.unobserve(x.target); sale(x.target); } });
+    }, { threshold: 0.4 });
+    cc.forEach(function (e) { oc.observe(e); });
+  }
+
+  // Dove sono nella pagina: un punto per schermata, solo su computer
+  var ss = doc.querySelectorAll('main > .schermo, main > .schermo-a');
+  if (ss.length > 2 && matchMedia('(min-width: 1000px)').matches && 'IntersectionObserver' in window) {
+    var nav = doc.createElement('nav');
+    nav.className = 'punti'; nav.setAttribute('aria-label', 'Sezioni della pagina');
+    var punti = [];
+    ss.forEach(function (s, n) {
+      if (!s.id) s.id = 'schermata-' + (n + 1);
+      var tit = s.querySelector('.k, h1, h2');
+      var nome = (tit ? tit.textContent : '').trim().replace(/\s+/g, ' ').slice(0, 42) || 'Sezione ' + (n + 1);
+      var a = doc.createElement('a');
+      a.href = '#' + s.id; a.setAttribute('aria-label', nome);
+      a.innerHTML = '<span></span>'; a.firstChild.textContent = nome;
+      nav.appendChild(a); punti.push(a);
+    });
+    doc.body.appendChild(nav);
+    var op = new IntersectionObserver(function (es) {
+      es.forEach(function (x) {
+        if (!x.isIntersecting) return;
+        var i = Array.prototype.indexOf.call(ss, x.target);
+        punti.forEach(function (a, n) { if (n === i) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+      });
+    }, { threshold: 0.5 });
+    ss.forEach(function (s) { op.observe(s); });
+  }
+
   // Fotografie: se il file indicato esiste lo mostra, altrimenti resta il segnaposto
   doc.querySelectorAll('.foto[data-file]').forEach(function (f) {
     var im = new Image(); im.onload = function () { f.style.backgroundImage = 'url("' + im.src + '")'; f.classList.remove('vuota'); }; im.src = f.dataset.file;

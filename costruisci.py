@@ -77,8 +77,24 @@ def in_linea(s):
     return re.sub(r'\[([^\]]+)\]\((https?://[^)\s]+|[^)\s]+\.html[^)\s]*)\)', lambda m: f'<a href="{m.group(2)}"' + (' rel="noopener"' if m.group(2).startswith('http') else '') + f'>{m.group(1)}</a>', s)
 
 
+def cifre(righe):
+    """Numeri in evidenza. Una riga per numero: `= numero | che cosa dice | da dove viene`.
+    Il numero è già scritto per intero nella pagina: il conteggio che sale è solo un ornamento di chi ha il
+    browser acceso, e chi ha chiesto meno animazioni lo vede fermo."""
+    voci = []
+    for r in righe:
+        parti = [x.strip() for x in r.lstrip()[2:].split('|')]
+        numero = in_linea(parti[0])
+        detto = in_linea(parti[1]) if len(parti) > 1 else ''
+        fonte = in_linea(parti[2]) if len(parti) > 2 else ''
+        voci.append(f'<li><strong data-conta>{numero}</strong><span>{detto}</span>'
+                    + (f'<small>{fonte}</small>' if fonte else '') + '</li>')
+    return '<ul class="cifre riv">' + ''.join(voci) + '</ul>'
+
+
 def testo(md):
-    """Testo semplice: righe vuote separano i capoversi, `## ` titolo, `### ` sottotitolo, `- ` elenco, **grassetto**, [testo](indirizzo)."""
+    """Testo semplice: righe vuote separano i capoversi, `## ` titolo, `### ` sottotitolo, `- ` elenco,
+    `= numero | che cosa dice | fonte` numeri in evidenza, **grassetto**, [testo](indirizzo)."""
     out = []
     for blocco in re.split(r'\n\s*\n', md.strip()):
         righe = [r for r in blocco.strip().splitlines() if r.strip()]
@@ -88,6 +104,8 @@ def testo(md):
             out.append(f'<h3>{in_linea(righe[0][4:])}</h3>')
         elif righe[0].startswith('## '):
             out.append(f'<h2>{sa(in_linea(righe[0][3:]))}</h2>')
+        elif all(r.lstrip().startswith('= ') for r in righe):
+            out.append(cifre(righe))
         elif all(r.lstrip().startswith('- ') for r in righe):
             out.append('<ul>' + ''.join(f'<li>{in_linea(r.lstrip()[2:])}</li>' for r in righe) + '</ul>')
         else:
@@ -247,12 +265,22 @@ for _p in PILASTRI:
     crediti_da_contenuto(_p, 'pilastro-' + _p['numero'])
 
 
+IMG = pathlib.Path(__file__).resolve().parent / 'risorse' / 'img'
+
+
 def foto(file, attesa, extra=''):
-    """Spazio per una fotografia: mostra `risorse/img/<file>.jpg` se c'è, altrimenti il segnaposto con il nome atteso."""
+    """Spazio per una fotografia: mostra `risorse/img/<file>.jpg` se c'è, altrimenti il segnaposto con il nome atteso.
+    Quando c'è anche la copia da 700 px, il browser scarica quella se lo schermo è piccolo (regola 8)."""
     c = FOTO.get(file)
     if c:
         primo = ' fetchpriority="high"' if 'grande' in extra else ' loading="lazy"'
-        return f'<figure class="foto{extra}"><img src="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} data-se-manca="FOTO DA INSERIRE · risorse/img/{file}.jpg"><figcaption class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</figcaption></figure>'
+        v = SITO['versione']
+        misure = ''
+        if (IMG / f'{file}-700.jpg').exists():
+            larga = '1180px' if 'grande' in extra else '390px'
+            misure = (f' srcset="{{r}}risorse/img/{file}-700.jpg?v={v} 700w, {{r}}risorse/img/{file}.jpg?v={v} 1400w"'
+                      f' sizes="(min-width: 1000px) {larga}, 100vw"')
+        return f'<figure class="foto{extra}{" riv" if "grande" in extra else ""}"><img src="{{r}}risorse/img/{file}.jpg?v={v}"{misure} alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} data-se-manca="FOTO DA INSERIRE · risorse/img/{file}.jpg"><figcaption class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</figcaption></figure>'
     return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(attesa)}"></div>'
 
 
@@ -314,7 +342,7 @@ def condividi(titolo, percorso):
 
 
 def testa(occhiello, titolo, sotto=''):
-    return f'<header class="capo-p"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
+    return f'<header class="capo-p riv"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
 
 
 def a_gruppi(lista, n):
@@ -328,24 +356,29 @@ def aderisci_con(titolo, riga, q=''):
     return S(f'<h2>{sa(titolo, "rosso")}</h2><p class="sott">{riga}</p><div class="azioni"><a class="btn bw" href="{{r}}aderisci.html{q}">Aderisci ora</a></div>', 'su-rosso centro')
 
 
+# I numeri in evidenza: scritti in «Chi siamo», mostrati anche in apertura
+CHI = PAGINE['chi-siamo']
+SZ_CHI = dict(sezioni(CHI['corpo']))
+NUMERI = testo(SZ_CHI.get('I numeri', ''))
+
 # Home
 verbi = ''.join(f"<li>{e(p['verbo'])}</li>" for p in PILASTRI)
 prossimo = ''
 if FUTURI:
     v = FUTURI[0]
     prossimo = f'''<div class="prossimo riquadro-nero"><div><span class="k">Prossimo incontro</span><h2>{e(v['titolo'])}{segni(v)}</h2><p class="quando">{data_estesa(v['giorno'])}{' · ore ' + v['ora'] if v.get('ora') else ''} · {e(v.get('luogo', ''))}</p></div><a class="btn" href="{{r}}{v['indirizzo']}">Tutti i dettagli</a></div>'''
-striscia_p = '<ol class="striscia alta">' + ''.join(f'''<li><a href="{{r}}{p['indirizzo']}"><i>{p['numero']}</i>{e(p['titolo'])}<small>{e(p['slogan'])}</small></a></li>''' for p in PILASTRI) + '</ol>'
+striscia_p = '<ol class="striscia alta riv">' + ''.join(f'''<li><a href="{{r}}{p['indirizzo']}"><i>{p['numero']}</i>{e(p['titolo'])}<small>{e(p['slogan'])}</small></a></li>''' for p in PILASTRI) + '</ol>'
 pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="apertura schermo-a">
 <div class="sx"><h1>La Sicilia che <img src="{{r}}risorse/loghi/sa-monogramma.svg" alt="SA" width="649" height="418"></h1>
 <ul class="verbi">{verbi}</ul>
 <div class="azioni"><a class="btn" href="{{r}}aderisci.html">Aderisci ora</a><a class="btn b2" href="{{r}}programma/index.html">Il programma</a></div></div>
 <div class="dx"><img src="{{r}}risorse/loghi/sa-contrassegno.svg" alt="Contrassegno {e(SITO['nome_logo'])}" width="430" height="430"></div>
-</section>''' + S(f'<div class="capo"><div><span class="k">Il programma</span><h2>{sa("La Sicilia che sa")}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia_p}') + S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul>', 'carta') + S(f'{prossimo}<div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}') + ADERISCI,
+</section>''' + S(f'<div class="capo"><div><span class="k">Il programma</span><h2>{sa("La Sicilia che sa")}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia_p}') + S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul>', 'carta') + S(f'<div class="capo"><div><span class="k">Il punto</span><h2>Perché adesso</h2></div><a href="{{r}}chi-siamo.html">Chi siamo →</a></div>{NUMERI}') + S(f'{prossimo}<div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}') + ADERISCI,
        dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'alternateName': 'Sinistra Alternativa Sicilia', 'areaServed': 'Sicilia', 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
 
 # Chi siamo
-p = PAGINE['chi-siamo']; sz = dict(sezioni(p['corpo'])); forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M); oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
-pagina('chi-siamo.html', p['titolo'], p['sintesi'], S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(sz.get("", ""))}</div></div>') + S(f'<div class="capo"><div><span class="k">Chi c’è</span><h2>Le forze del coordinamento</h2></div><a href="{{r}}metodo.html">Come lavoriamo →</a></div><ul class="griglia quattro forze">{"".join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)}<li><a class="scheda nera" href="{{r}}aderisci.html"><span class="tx"><strong>Manchi tu</strong><span class="vai">Aderisci →</span></span></a></li></ul><p class="nota">{e(oss)}</p>', 'carta') + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
+p = CHI; sz = SZ_CHI; forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M); oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
+pagina('chi-siamo.html', p['titolo'], p['sintesi'], S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(sz.get("", ""))}</div></div>') + S(f'<header class="capo-p"><span class="k">Il punto</span><h2>I numeri</h2></header>{NUMERI}') + S(f'<div class="capo"><div><span class="k">Chi c’è</span><h2>Le forze del coordinamento</h2></div><a href="{{r}}metodo.html">Come lavoriamo →</a></div><ul class="griglia quattro forze">{"".join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)}<li><a class="scheda nera" href="{{r}}aderisci.html"><span class="tx"><strong>Manchi tu</strong><span class="vai">Aderisci →</span></span></a></li></ul><p class="nota">{e(oss)}</p>', 'carta') + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
 
 # Programma
 schede = ''.join(f'''<li><a class="scheda pil riv" href="{{r}}{p['indirizzo']}"><span class="tx"><span class="n">{p['numero']}</span><strong>{e(p['titolo'])}</strong><p>{e(p['sintesi'])}</p><span class="vai">Le proposte →</span></span></a></li>''' for p in PILASTRI)
