@@ -97,5 +97,86 @@
   "anno": "2007",
   "licenza": "CC BY-SA 3.0",
   "licenza_url": "https://creativecommons.org/licenses/by-sa/3.0"
+ },
+ {
+  "file": "provincia-agrigento",
+  "commons": "Scala dei Turchi 2017.jpg",
+  "soggetto": "La Scala dei Turchi, costa agrigentina",
+  "autore": "Enrico Strocchi",
+  "anno": "2017",
+  "licenza": "CC BY-SA 2.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/2.0"
+ },
+ {
+  "file": "provincia-caltanissetta",
+  "commons": "Panorama (Caltanissetta) 30 09 2023 03.jpg",
+  "soggetto": "Caltanissetta dall’alto",
+  "autore": "Effems",
+  "anno": "2023",
+  "licenza": "CC BY-SA 4.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ {
+  "file": "provincia-catania",
+  "commons": "Piazza Duomo-Catania-Sicilia-Italy - Creative Commons by gnuckx (3682629741).jpg",
+  "soggetto": "Piazza Duomo a Catania",
+  "autore": "gnuckx",
+  "anno": "2009",
+  "licenza": "CC BY 2.0",
+  "licenza_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ {
+  "file": "provincia-enna",
+  "commons": "Castello di Lombardia (Enna) - Panarama.jpg",
+  "soggetto": "Il Castello di Lombardia a Enna",
+  "autore": "Sweetie candykim",
+  "anno": "2011",
+  "licenza": "CC0",
+  "licenza_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+ },
+ {
+  "file": "provincia-messina",
+  "commons": "Messina-panorama dello stretto.jpg",
+  "soggetto": "Messina e lo Stretto",
+  "autore": "Franc rc",
+  "anno": "2010",
+  "licenza": "CC BY-SA 3.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/3.0"
+ },
+ {
+  "file": "provincia-palermo",
+  "commons": "Palermo da Monte Pellegrino.JPG",
+  "soggetto": "Palermo vista da Monte Pellegrino",
+  "autore": "Tripoli99",
+  "anno": "2012",
+  "licenza": "CC BY-SA 3.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/3.0"
+ },
+ {
+  "file": "provincia-ragusa",
+  "commons": "Panorama Ragusa Ibla.JPG",
+  "soggetto": "Ragusa Ibla",
+  "autore": "Hein56didden",
+  "anno": "2009",
+  "licenza": "CC BY-SA 3.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/3.0"
+ },
+ {
+  "file": "provincia-siracusa",
+  "commons": "Chiesa del Collegio dei Gesuiti (Siracusa) 11 11 2019 06.jpg",
+  "soggetto": "La punta di Ortigia, Siracusa",
+  "autore": "Effems",
+  "anno": "2019",
+  "licenza": "CC BY-SA 4.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ {
+  "file": "provincia-trapani",
+  "commons": "Saline trapani -mulino con riflesso.JPG",
+  "soggetto": "Le saline di Trapani",
+  "autore": "Renato Raimondo",
+  "anno": "2011",
+  "licenza": "CC BY-SA 3.0",
+  "licenza_url": "https://creativecommons.org/licenses/by-sa/3.0"
  }
 ]

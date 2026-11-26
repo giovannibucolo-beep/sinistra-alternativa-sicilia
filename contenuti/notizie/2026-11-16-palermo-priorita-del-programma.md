@@ -12,4 +12,4 @@ Il 15 novembre 2026 il coordinamento si è riunito a Palermo e ha fissato le pri
 
 La scelta di fondo è confermata: fuori dal centrodestra e fuori dal «campo largo». Lista e candidatura alla presidenza restano aperte.
 
-**Da completare:** qui va la cronaca scritta dal coordinamento, con una foto autorizzata dell’incontro.
+Il lavoro continua nei tavoli tematici e negli incontri provinciali.
