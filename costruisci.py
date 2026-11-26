@@ -173,7 +173,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <main id="contenuto">
 {corpo.replace('{r}', r)}
 </main>
-<footer class="piede">
+<footer class="piede schermo">
 <div class="in">
 <div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p style="margin-top:14px;font-size:15px">{e(SITO['descrizione'])}</p></div>
 <div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
@@ -234,67 +234,105 @@ OUT.mkdir()
 shutil.copytree(RIS, OUT / 'risorse')
 (OUT / '.nojekyll').write_text('')
 
+# ====================================================================================================
+# REGOLA DELLE SCHERMATE: ogni pagina è fatta di blocchi grandi quanto lo schermo (su computer).
+# Ogni `S(...)` è una schermata intera: quando la pagina si ferma, nessun blocco resta tagliato.
+# Unica eccezione dichiarata: `LIBERO(...)`, per il testo lungo di una notizia e per la pagina da stampare.
+# ====================================================================================================
+def S(dentro, classe=''):
+    return f'<section class="schermo {classe}"><div class="in">{dentro}</div></section>'
+
+
+def LIBERO(dentro):
+    return f'<section class="schermo libero"><div class="in">{dentro}</div></section>'
+
+
+def testa(occhiello, titolo, sotto=''):
+    return f'<header class="capo-p"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
+
+
+def a_gruppi(lista, n):
+    return [lista[i:i + n] for i in range(0, len(lista), n)]
+
+
+ADERISCI = S(f'<h2>{sa("Il programma si scrive ai tavoli", "rosso")}</h2><p class="sott">Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.</p><div class="azioni"><a class="btn bw" href="{{r}}aderisci.html">Aderisci ora</a></div>', 'su-rosso centro')
+
+
+def aderisci_con(titolo, riga, q=''):
+    return S(f'<h2>{sa(titolo, "rosso")}</h2><p class="sott">{riga}</p><div class="azioni"><a class="btn bw" href="{{r}}aderisci.html{q}">Aderisci ora</a></div>', 'su-rosso centro')
+
+
 # Home
 verbi = ''.join(f"<li>{e(p['verbo'])}</li>" for p in PILASTRI)
 prossimo = ''
 if FUTURI:
     v = FUTURI[0]
-    prossimo = f'''<section class="sez su-nero"><div class="in prossimo"><div><span class="k">Prossimo incontro</span><h2 style="margin:8px 0">{e(v['titolo'])}{ES if v['esempio'] else ''}</h2><p class="quando">{data_estesa(v['giorno'])}{' · ore ' + v['ora'] if v.get('ora') else ''} · {e(v.get('luogo', ''))}</p></div><a class="btn" href="{{r}}{v['indirizzo']}">Tutti i dettagli</a></div></section>'''
-pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="apertura">
+    prossimo = f'''<div class="prossimo riquadro-nero"><div><span class="k">Prossimo incontro</span><h2>{e(v['titolo'])}{segni(v)}</h2><p class="quando">{data_estesa(v['giorno'])}{' · ore ' + v['ora'] if v.get('ora') else ''} · {e(v.get('luogo', ''))}</p></div><a class="btn" href="{{r}}{v['indirizzo']}">Tutti i dettagli</a></div>'''
+striscia_p = '<ol class="striscia alta">' + ''.join(f'''<li><a href="{{r}}{p['indirizzo']}"><i>{p['numero']}</i>{e(p['titolo'])}<small>{e(p['slogan'])}</small></a></li>''' for p in PILASTRI) + '</ol>'
+pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="apertura schermo-a">
 <div class="sx"><h1>La Sicilia che <img src="{{r}}risorse/loghi/sa-monogramma.svg" alt="SA" width="649" height="418"></h1>
 <ul class="verbi">{verbi}</ul>
 <div class="azioni"><a class="btn" href="{{r}}aderisci.html">Aderisci ora</a><a class="btn b2" href="{{r}}programma/index.html">Il programma</a></div></div>
 <div class="dx"><img src="{{r}}risorse/loghi/sa-contrassegno.svg" alt="Contrassegno {e(SITO['nome_logo'])}" width="430" height="430"></div>
-</section>
-{prossimo}
-<section class="sez"><div class="in"><div class="capo"><div><span class="k">Il programma</span><h2>{sa('La Sicilia che sa')}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia()}</div></section>
-<section class="sez carta"><div class="in"><div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{''.join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul></div></section>
-<section class="sez"><div class="in"><div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}</div></section>
-{banda_aderisci()}''', dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
+</section>''' + S(f'<div class="capo"><div><span class="k">Il programma</span><h2>{sa("La Sicilia che sa")}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia_p}') + S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul>', 'carta') + S(f'{prossimo}<div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}') + ADERISCI,
+       dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
 
 # Chi siamo
-p = PAGINE['chi-siamo']
-pagina('chi-siamo.html', p['titolo'], p['sintesi'], intesta(p['occhiello'], e(p['titolone']), e(p['sintesi'])) + f'<section class="sez" style="padding-top:0"><div class="in"><div class="testo">{testo(p["corpo"])}</div></div></section>' + banda_aderisci(), 'chi-siamo', [('', 'Chi siamo')])
+p = PAGINE['chi-siamo']; sz = dict(sezioni(p['corpo'])); forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M); oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
+pagina('chi-siamo.html', p['titolo'], p['sintesi'], S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(sz.get("", ""))}</div></div>') + S(f'<div class="capo"><div><span class="k">Chi c’è</span><h2>Le forze del coordinamento</h2></div><a href="{{r}}metodo.html">Come lavoriamo →</a></div><ul class="griglia quattro forze">{"".join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)}<li><a class="scheda nera" href="{{r}}aderisci.html"><span class="tx"><strong>Manchi tu</strong><span class="vai">Aderisci →</span></span></a></li></ul><p class="nota">{e(oss)}</p>', 'carta') + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
 
 # Programma
 schede = ''.join(f'''<li><a class="scheda pil riv" href="{{r}}{p['indirizzo']}"><span class="tx"><span class="n">{p['numero']}</span><strong>{e(p['titolo'])}</strong><p>{e(p['sintesi'])}</p><span class="vai">Le proposte →</span></span></a></li>''' for p in PILASTRI)
-pagina('programma/index.html', 'Il programma', 'Sette pilastri per un’alternativa popolare in Sicilia: pace, lavoro, salute, acqua, diritti, accoglienza, territorio.', intesta('Il programma', 'La Sicilia che SA', 'Sette pilastri. È una bozza: i testi vengono dall’appello per l’assemblea verso le Regionali 2027 e aspettano l’approvazione del coordinamento.') + f'<section class="sez carta"><div class="in"><ul class="griglia tre">{schede}</ul><div class="azioni" style="justify-content:flex-start"><a class="btn b2" href="{{r}}metodo.html">Come lavoriamo: i due binari</a><a class="btn b2" href="{{r}}programma/tutto.html">Tutto in una pagina</a></div></div></section>' + banda_aderisci(), 'programma', [('', 'Programma')])
+schede += '<li><span class="scheda pil nera"><span class="tx"><strong>Come si legge</strong><p>Ogni pilastro dice che cosa può fare la Regione subito e che cosa va strappato allo Stato.</p><a class="vai" href="{r}metodo.html">I due binari →</a><a class="vai" href="{r}programma/tutto.html">Tutto in una pagina →</a></span></span></li>'
+pagina('programma/index.html', 'Il programma', 'Sette pilastri per un’alternativa popolare in Sicilia: pace, lavoro, salute, acqua, diritti, accoglienza, territorio.', S(testa('Il programma', 'La Sicilia che SA', 'Sette pilastri. Bozza in attesa di approvazione del coordinamento.') + f'<ul class="griglia quattro">{schede}</ul>', 'carta fitta') + ADERISCI, 'programma', [('', 'Programma')])
 for i, p in enumerate(PILASTRI):
     prima, dopo = PILASTRI[i - 1], PILASTRI[(i + 1) % len(PILASTRI)]
-    incontri = [v for v in FUTURI if v.get('pilastro') == p['numero']]
-    collegate = [n for n in NOTIZIE if n.get('pilastro') == p['numero']]
+    incontri = [v for v in FUTURI if v.get('pilastro') == p['numero']][:2]
+    collegate = [n for n in NOTIZIE if n.get('pilastro') == p['numero']][:3]
     sz = sezioni(p['corpo'])
     binari = ''.join(f'<div class="binario b{k}"><span class="k">{"Primo" if k == 1 else "Secondo"} binario</span><h2>{e(t)}</h2><div class="testo">{testo(c)}</div></div>' for k, (t, c) in enumerate(sz[:2], 1))
     resto = ''.join(f'<h2>{e(t)}</h2>{testo(c)}' for t, c in sz[2:])
-    lato = f'''<aside class="lato"><h3>Il tavolo di questo pilastro</h3><p style="font-size:15px">Aperto a comitati, collettivi, sindacati e singole persone.</p>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in incontri) + '</ul>' if incontri else '<p style="font-size:15px;font-weight:700">Nessun incontro in calendario per ora.</p>'}<a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a><a class="vai-a" href="{{r}}metodo.html">Che cosa sono i due binari →</a></aside>'''
-    notizie_p = f'<h2>Notizie su questo pilastro</h2><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate[:3])}</ul>' if collegate else ''
-    pagina(p['indirizzo'], p['titolo'], p['sintesi'], intesta(f"Pilastro {p['numero']} di {len(PILASTRI):02d}", e(p['titolo']), e(p['slogan'])) + f'''<section class="sez" style="padding-top:0"><div class="in">{foto('pilastro-' + p['numero'], p['foto_attesa'])}<p class="sintesi">{e(p['sintesi'])}</p><div class="binari">{binari}</div><div class="due"><div class="testo">{resto}</div>{lato}</div>{notizie_p}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav></div></section>''' + banda_aderisci(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'])
+    lato = f'''<aside class="lato"><h3>Il tavolo di questo pilastro</h3><p>Aperto a comitati, collettivi, sindacati e singole persone.</p>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in incontri) + '</ul>' if incontri else '<p><strong>Nessun incontro in calendario per ora.</strong></p>'}<a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a><a class="vai-a" href="{{r}}metodo.html">Che cosa sono i due binari →</a></aside>'''
+    corpo = S(f'''<div class="col2"><div class="colonna">{testa(f"Pilastro {p['numero']} di {len(PILASTRI):02d}", e(p['titolo']), e(p['slogan']))}<p class="sintesi">{e(p['sintesi'])}</p><div class="azioni"><a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a></div></div>{foto('pilastro-' + p['numero'], p['foto_attesa'], ' grande')}</div>''')
+    corpo += S(f'<div class="capo"><div><span class="k">Le proposte</span><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta')
+    corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div><nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
+    if collegate:
+        corpo += S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Su questo pilastro</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate)}</ul>', 'carta')
+    pagina(p['indirizzo'], p['titolo'], p['sintesi'], corpo + aderisci_con(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'])
 
-# Tutto il programma in una pagina sola, da stampare o salvare in PDF
+# Tutto il programma in una pagina sola, da stampare o salvare in PDF (eccezione dichiarata alla regola delle schermate)
 tutto = ''.join(f'''<article class="blocco-p"><span class="k">Pilastro {p['numero']}</span><h2>{e(p['titolo'])}</h2><p class="sintesi">{e(p['sintesi'])}</p>{''.join(f'<h3>{e(t)}</h3><div class="testo">{testo(c)}</div>' for t, c in sezioni(p['corpo'])[:2])}</article>''' for p in PILASTRI)
-pagina('programma/tutto.html', 'Il programma completo', 'I sette pilastri in una pagina sola, da leggere di seguito o da stampare.', intesta('Il programma', 'Tutto in una pagina', 'I sette pilastri di seguito. Bozza in attesa di approvazione del coordinamento.') + f'<section class="sez" style="padding-top:0"><div class="in"><div class="azioni" style="justify-content:flex-start"><button class="btn bn" type="button" onclick="window.print()">Stampa o salva in PDF</button><a class="btn b2" href="{{r}}programma/index.html">Torna ai pilastri</a></div>{tutto}</div></section>', 'programma', [('programma/index.html', 'Programma'), ('', 'Tutto in una pagina')])
+pagina('programma/tutto.html', 'Il programma completo', 'I sette pilastri in una pagina sola, da leggere di seguito o da stampare.', LIBERO(testa('Il programma', 'Tutto in una pagina', 'I sette pilastri di seguito. Bozza in attesa di approvazione del coordinamento.') + f'<div class="azioni"><button class="btn bn" type="button" onclick="window.print()">Stampa o salva in PDF</button><a class="btn b2" href="{{r}}programma/index.html">Torna ai pilastri</a></div>{tutto}'), 'programma', [('programma/index.html', 'Programma'), ('', 'Tutto in una pagina')])
 
 # Il metodo
-p = PAGINE['metodo']
-pagina('metodo.html', p['titolo'], p['sintesi'], intesta(p['occhiello'], e(p['titolone']), e(p['sintesi'])) + f'<section class="sez" style="padding-top:0"><div class="in"><div class="testo">{testo(p["corpo"])}</div><div class="azioni" style="justify-content:flex-start"><a class="btn" href="{{r}}programma/index.html">Vai al programma</a></div></div></section>' + banda_aderisci(), 'programma', [('programma/index.html', 'Programma'), ('', 'Come lavoriamo')])
+p = PAGINE['metodo']; sz = sezioni(p['corpo']); d = {t: c for t, c in sz}; nomi = [t for t, _ in sz if t]
+binari_m = ''.join(f'<div class="binario b{k}"><span class="k">{"Primo" if k == 1 else "Secondo"} binario</span><h2>{e(t.split(": ", 1)[-1][0].upper() + t.split(": ", 1)[-1][1:])}</h2><div class="testo">{testo(d[t])}</div></div>' for k, t in enumerate(nomi[:2], 1))
+pagina('metodo.html', p['titolo'], p['sintesi'], S(f'<div class="col2"><div class="colonna">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(d.get("", ""))}</div></div><aside class="lato"><h3>{e(nomi[2]) if len(nomi) > 2 else ""}</h3><div class="testo">{testo(d[nomi[2]]) if len(nomi) > 2 else ""}</div><a class="btn" href="{{r}}programma/index.html">Vai al programma</a></aside></div>') + S(f'<div class="capo"><div><span class="k">Ogni proposta dice su quale sta</span><h2>I due binari</h2></div></div><div class="binari">{binari_m}</div>', 'carta') + ADERISCI, 'programma', [('programma/index.html', 'Programma'), ('', 'Come lavoriamo')])
 
-# Notizie
-pagina('notizie/index.html', 'Notizie', 'Le notizie del coordinamento: incontri, presìdi, tavoli.', intesta('Notizie', 'Che cosa succede') + f'<section class="sez" style="padding:0 var(--lato) 24px"><div class="in"><a class="vai-a" href="{{r}}cerca.html">Cerca nel sito →</a></div></section><section class="sez carta"><div class="in"><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE)}</ul></div></section>', 'notizie', [('', 'Notizie')])
+# Notizie: tre per schermata
+gruppi = a_gruppi(NOTIZIE, 3) or [[]]
+corpo = ''.join(S((testa('Notizie', 'Che cosa succede') if k == 0 else f'<div class="capo"><div><span class="k">Notizie</span><h2>Meno recenti · {k + 1}</h2></div></div>') + f'<ul class="griglia tre">{"".join(scheda_notizia(n) for n in g)}</ul>' + ('<a class="vai-a" href="{r}cerca.html">Cerca nel sito →</a>' if k == 0 else ''), 'carta') for k, g in enumerate(gruppi))
+pagina('notizie/index.html', 'Notizie', 'Le notizie del coordinamento: incontri, presìdi, tavoli.', corpo + ADERISCI, 'notizie', [('', 'Notizie')])
 for n in NOTIZIE:
     pil = next((p for p in PILASTRI if p['numero'] == n.get('pilastro')), None); terr = TERRITORI.get(n.get('provincia', ''))
     legami = ''.join([f'<li><a href="{{r}}{pil["indirizzo"]}">Pilastro {pil["numero"]} · {e(pil["titolo"])}</a></li>' if pil else '', f'<li><a href="{{r}}{terr["indirizzo"]}">Provincia di {e(n["provincia"])}</a></li>' if terr else ''])
     legami = f'<ul class="etichette legami">{legami}</ul>' if legami else ''
     fonte = f'''<p class="avviso">Fonte esterna: <a href="{n['fonte']}" rel="noopener">{e(n.get('fonte_nome', 'leggi l’articolo'))} →</a></p>''' if n.get('fonte') else ''
-    pagina(n['indirizzo'], n['titolo'], n.get('sintesi', ''), intesta(f"{n['quando']}{' · ' + e(n['luogo']) if n.get('luogo') else ''}{segni(n)}", e(n['titolo']), e(n.get('sintesi', ''))) + f'''<section class="sez" style="padding-top:0"><div class="in">{foto(n['file'], n['titolo'])}<div class="testo">{testo(n['corpo'])}{fonte}</div>{legami}<nav class="vicini"><a href="{{r}}notizie/index.html">← Tutte le notizie</a></nav></div></section>''' + banda_aderisci(), 'notizie', [('notizie/index.html', 'Notizie'), ('', n['titolo'])], tipo='article',
+    pagina(n['indirizzo'], n['titolo'], n.get('sintesi', ''), S(f'''<div class="col2"><div class="colonna">{testa(f"{n['quando']}{' · ' + e(n['luogo']) if n.get('luogo') else ''}{segni(n)}", e(n['titolo']), e(n.get('sintesi', '')))}{legami}<a class="vai-a" href="#testo">Leggi ↓</a></div>{foto(n['file'], n['titolo'], ' grande')}</div>''') + LIBERO(f'''<div class="testo" id="testo">{testo(n['corpo'])}{fonte}</div><nav class="vicini"><a href="{{r}}notizie/index.html">← Tutte le notizie</a></nav>''') + ADERISCI, 'notizie', [('notizie/index.html', 'Notizie'), ('', n['titolo'])], tipo='article',
            dati={'@context': 'https://schema.org', '@type': 'NewsArticle', 'headline': n['titolo'], 'datePublished': n['data'], 'publisher': {'@type': 'Organization', 'name': SITO['nome']}})
-# Notizie in RSS
 voci_rss = ''.join(f"<item><title>{e(n['titolo'])}</title><link>{BASE}{n['indirizzo']}</link><guid>{BASE}{n['indirizzo']}</guid><pubDate>{n['giorno'].strftime('%a, %d %b %Y')} 09:00:00 +0100</pubDate><description>{e(n.get('sintesi', ''))}</description></item>" for n in NOTIZIE if not n['esempio'] and not n['bozza'])
+(OUT / 'notizie').mkdir(exist_ok=True)
 (OUT / 'notizie' / 'feed.xml').write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>{e(SITO["nome"])} — Notizie</title><link>{BASE}</link><description>{e(SITO["descrizione"])}</description><language>it</language>{voci_rss}</channel></rss>\n', encoding='utf-8')
 
-# Agenda
-futuri = ''.join(riga_evento(v) for v in FUTURI) or '<li><p style="padding:16px 0;font-weight:700">Nessun incontro in calendario per ora.</p></li>'
-passati = ''.join(riga_evento(v) for v in reversed([v for v in EVENTI if v['passato']]))
-pagina('agenda/index.html', 'Agenda', 'Assemblee, tavoli e presìdi del coordinamento in Sicilia.', intesta('Agenda', 'Dove ci vediamo') + f'''<section class="sez" style="padding-top:0"><div class="in"><h2>Prossimi incontri</h2><ul class="eventi">{futuri}</ul>{'<h2 style="margin-top:20px">Già svolti</h2><ul class="eventi">' + passati + '</ul>' if passati else ''}</div></section>''' + banda_aderisci('Vuoi sapere quando siamo vicino a te?', 'Lascia i tuoi contatti e la provincia: ti scriviamo noi.'), 'agenda', [('', 'Agenda')])
+# Agenda: quattro incontri per schermata
+passati_l = list(reversed([v for v in EVENTI if v['passato']]))
+corpo = ''
+for k, g in enumerate(a_gruppi(FUTURI, 4) or [[]]):
+    corpo += S((testa('Agenda', 'Dove ci vediamo') if k == 0 else f'<div class="capo"><div><span class="k">Agenda</span><h2>Prossimi incontri · {k + 1}</h2></div></div>') + ('<ul class="eventi">' + ''.join(riga_evento(v) for v in g) + '</ul>' if g else '<p class="sott">Nessun incontro in calendario per ora.</p>'))
+for k, g in enumerate(a_gruppi(passati_l, 4)):
+    corpo += S(f'<div class="capo"><div><span class="k">Agenda</span><h2>Già svolti{" · " + str(k + 1) if k else ""}</h2></div></div><ul class="eventi">{"".join(riga_evento(v) for v in g)}</ul>', 'carta')
+pagina('agenda/index.html', 'Agenda', 'Assemblee, tavoli e presìdi del coordinamento in Sicilia.', corpo + aderisci_con('Vuoi sapere quando siamo vicino a te?', 'Lascia i tuoi contatti e la provincia: ti scriviamo noi.'), 'agenda', [('', 'Agenda')])
+(OUT / 'agenda').mkdir(exist_ok=True)
 for v in EVENTI:
     d = v['giorno']
     ics = ''
@@ -309,22 +347,24 @@ for v in EVENTI:
     pil = next((p for p in PILASTRI if p['numero'] == v.get('pilastro')), None)
     terr = TERRITORI.get(v.get('provincia', ''))
     scheda = f'''<aside class="lato"><dl><dt>Quando</dt><dd>{data_estesa(d)}{' · ore ' + v['ora'] if v.get('ora') else ''}</dd><dt>Dove</dt><dd>{e(v.get('luogo', 'da indicare'))}</dd>{f'<dt>Provincia</dt><dd><a href="{{r}}{terr["indirizzo"]}">{e(v["provincia"])}</a></dd>' if terr else ''}{f'<dt>Pilastro</dt><dd><a href="{{r}}{pil["indirizzo"]}">{pil["numero"]} · {e(pil["titolo"])}</a></dd>' if pil else ''}</dl>{ics}<a class="btn" href="{{r}}aderisci.html{'?provincia=' + v['provincia'] if v.get('provincia') else ''}">{'Aderisci' if v['passato'] else 'Ci sarò: aderisci'}</a></aside>'''
-    pagina(v['indirizzo'], v['titolo'], f"{data_estesa(d)} · {v.get('luogo', '')}", intesta(f"{'Incontro già svolto' if v['passato'] else 'Incontro'}{ES if v['esempio'] else ''}", e(v['titolo'])) + f'''<section class="sez" style="padding-top:0"><div class="in"><div class="due"><div class="testo">{testo(v['corpo']) if v['corpo'] else '<p>Dettagli in arrivo.</p>'}</div>{scheda}</div><nav class="vicini"><a href="{{r}}agenda/index.html">← Tutta l’agenda</a></nav></div></section>''', 'agenda', [('agenda/index.html', 'Agenda'), ('', v['titolo'])],
+    pagina(v['indirizzo'], v['titolo'], f"{data_estesa(d)} · {v.get('luogo', '')}", S(f'''<div class="due"><div class="colonna">{testa(f"{'Incontro già svolto' if v['passato'] else 'Incontro'}{segni(v)}", e(v['titolo']))}<div class="testo">{testo(v['corpo']) if v['corpo'] else '<p>Dettagli in arrivo.</p>'}</div><a class="vai-a" href="{{r}}agenda/index.html">← Tutta l’agenda</a></div>{scheda}</div>'''), 'agenda', [('agenda/index.html', 'Agenda'), ('', v['titolo'])],
            dati=None if v['esempio'] else {'@context': 'https://schema.org', '@type': 'Event', 'name': v['titolo'], 'startDate': v['data'] + (f"T{v['ora']}" if v.get('ora') else ''), 'location': {'@type': 'Place', 'name': v.get('luogo', '')}, 'organizer': {'@type': 'Organization', 'name': SITO['nome']}})
 
 # Territori
-pagina('territori/index.html', 'Territori', 'Nove province, un tavolo in ognuna: le lotte, gli incontri, come partecipare.', intesta('Territori', 'Dov’è la tua Sicilia?', 'Scegli la provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.') + f'''<section class="sez" style="padding-top:0"><div class="in"><ul class="griglia tre">{''.join(f'<li><a class="scheda riv" href="{{r}}{t["indirizzo"]}"><span class="tx"><strong>{e(nome)}</strong><p>{e(t.get("lotte", ""))}</p><span class="vai">Vai →</span></span></a></li>' for nome, t in sorted(TERRITORI.items()))}</ul></div></section>''', 'territori', [('', 'Territori')])
+pagina('territori/index.html', 'Territori', 'Nove province, un tavolo in ognuna: le lotte, gli incontri, come partecipare.', S(testa('Territori', 'Dov’è la tua Sicilia?', 'Scegli la provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.') + f'''<ul class="griglia tre">{''.join(f'<li><a class="scheda riv" href="{{r}}{t["indirizzo"]}"><span class="tx"><strong>{e(nome)}</strong><p>{e(t.get("lotte", ""))}</p><span class="vai">Vai →</span></span></a></li>' for nome, t in sorted(TERRITORI.items()))}</ul>''', 'carta fitta') + ADERISCI, 'territori', [('', 'Territori')])
 for nome, t in TERRITORI.items():
-    inc = [v for v in EVENTI if v.get('provincia') == nome]
-    not_p = [n for n in NOTIZIE if n.get('provincia') == nome]
+    inc = [v for v in EVENTI if v.get('provincia') == nome][:3]
+    not_p = [n for n in NOTIZIE if n.get('provincia') == nome][:3]
     lotte = ''.join(f'<li>{e(x.strip())}</li>' for x in t.get('lotte', '').split(','))
-    pagina(t['indirizzo'], f'Provincia di {nome}', f"Le lotte e gli incontri del coordinamento in provincia di {nome}: {t.get('lotte', '')}.", intesta(f"Territori{ES if t['esempio'] else ''}", e(nome)) + f'''<section class="sez" style="padding-top:0"><div class="in"><div class="due"><div class="testo"><h2 style="margin-top:0">Le lotte</h2><ul class="etichette" style="flex-direction:row;flex-wrap:wrap">{lotte}</ul>{testo(t['corpo'])}<h2>Gli incontri</h2>{'<ul class="eventi" style="gap:0">' + ''.join(riga_evento(v) for v in inc) + '</ul>' if inc else '<p>Nessun incontro in calendario per ora in questa provincia.</p>'}</div>
-<aside class="lato"><dl><dt>Referente</dt><dd>{e(t.get('referente', 'da indicare'))}</dd><dt>Contatto</dt><dd>{e(t.get('contatto', 'da indicare'))}</dd></dl><a class="btn" href="{{r}}aderisci.html?provincia={nome}">Aderisci da {e(nome)}</a></aside></div>
-{'<h2>Notizie da questa provincia</h2><ul class="griglia tre">' + ''.join(scheda_notizia(n) for n in not_p[:3]) + '</ul>' if not_p else ''}<h2>Le altre province</h2>{mappa(nome)}</div></section>''', 'territori', [('territori/index.html', 'Territori'), ('', nome)])
+    corpo = S(f'''<div class="due"><div class="colonna">{testa(f"Territori{segni(t)}", e(nome))}<h2>Le lotte</h2><ul class="etichette">{lotte}</ul><div class="testo">{testo(t['corpo'])}</div></div><aside class="lato"><dl><dt>Referente</dt><dd>{e(t.get('referente', 'da indicare'))}</dd><dt>Contatto</dt><dd>{e(t.get('contatto', 'da indicare'))}</dd></dl><a class="btn" href="{{r}}aderisci.html?provincia={nome}">Aderisci da {e(nome)}</a></aside></div>''')
+    corpo += S(f'''<div class="capo"><div><span class="k">In provincia di {e(nome)}</span><h2>Gli incontri</h2></div><a href="{{r}}agenda/index.html">Tutta l’agenda →</a></div>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in inc) + '</ul>' if inc else '<p class="sott">Nessun incontro in calendario per ora in questa provincia.</p>'}<div class="capo"><div><h2>Le altre province</h2></div></div>{mappa(nome)}''', 'carta')
+    if not_p:
+        corpo += S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Da questa provincia</h2></div></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in not_p)}</ul>')
+    pagina(t['indirizzo'], f'Provincia di {nome}', f"Le lotte e gli incontri del coordinamento in provincia di {nome}: {t.get('lotte', '')}.", corpo + aderisci_con('Il programma si scrive ai tavoli', f'Aderisci dalla provincia di {e(nome)}: ti scriviamo per il prossimo incontro.', f'?provincia={nome}'), 'territori', [('territori/index.html', 'Territori'), ('', nome)])
 
 # Aderisci
 opz = ''.join(f'<option>{p}</option>' for p in PROVINCE)
-pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.', intesta('Partecipa', 'Aderisci al coordinamento', 'Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per i tavoli e gli incontri nel tuo territorio.') + f'''<section class="sez carta" style="padding-top:36px"><div class="in due">
+pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.', S(f'''<div class="col2"><div class="colonna">{testa('Partecipa', 'Aderisci al coordinamento', 'Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per i tavoli e gli incontri nel tuo territorio.')}<ul class="testo passi"><li>Ricevi una conferma.</li><li>Ti scriviamo quando c’è un incontro nella tua provincia.</li><li>Puoi partecipare a uno dei sette tavoli del programma.</li></ul>{'<p class="avviso">Il modulo non è ancora collegato: in questa bozza non invia e non conserva nulla.</p>' if not SITO['modulo']['invia_a'] else ''}</div>
 <form id="adesione" novalidate data-invia-a="{e(SITO['modulo']['invia_a'])}">
 <label>Nome e cognome<input type="text" name="nome" autocomplete="name"></label>
 <label>Email<input type="email" name="email" autocomplete="email" inputmode="email"></label>
@@ -332,17 +372,13 @@ pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi co
 <label class="consenso"><input type="checkbox" name="consenso"><span>Ho letto l’<a href="{{r}}privacy.html">informativa privacy</a> e acconsento a essere ricontattato dal coordinamento.</span></label>
 <button class="btn" type="submit">Invia adesione</button>
 <p class="esito" role="status" aria-live="polite"></p>
-</form>
-<aside class="lato"><h3>Che cosa succede dopo</h3><ul class="testo" style="font-size:16px"><li>Ricevi una conferma.</li><li>Ti scriviamo quando c’è un incontro nella tua provincia.</li><li>Puoi partecipare a uno dei sette tavoli del programma.</li></ul>{'<p class="avviso">Il modulo non è ancora collegato: in questa bozza non invia e non conserva nulla.</p>' if not SITO['modulo']['invia_a'] else ''}</aside>
-</div></section>''', 'aderisci', [('', 'Aderisci')])
+</form></div>''', 'carta'), 'aderisci', [('', 'Aderisci')])
 
 # Contatti
 c = SITO['contatti']
-pagina('contatti.html', 'Contatti e stampa', 'Come contattare il coordinamento. Materiali per la stampa.', intesta('Contatti', 'Scrivici, chiamaci, vieni') + f'''<section class="sez" style="padding-top:0"><div class="in due"><div class="testo">{'<p class="avviso">Contatti e account qui sotto sono segnaposto: vanno sostituiti con quelli veri del coordinamento.</p>' if not c['reali'] else ''}
-<h2 style="margin-top:0">Coordinamento regionale</h2><ul><li>Email: {e(c['email'])}</li><li>Telefono: {e(c['telefono'])}</li><li>Sede: {e(c['sede'])}</li></ul>
-<h2>Social</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li></ul>
-<h2>Per la stampa</h2><p>Simbolo e logo in formato vettoriale:</p><ul><li><a href="{{r}}risorse/loghi/sa-contrassegno.svg" download>Contrassegno (SVG)</a></li><li><a href="{{r}}risorse/loghi/sa-contrassegno.png" download>Contrassegno (PNG)</a></li><li><a href="{{r}}risorse/loghi/sa-logo-orizzontale.svg" download>Logo orizzontale (SVG)</a></li></ul></div>
-<aside class="lato"><h3>Nei territori</h3><p style="font-size:15px">Ogni provincia ha la sua pagina con referente e incontri.</p><a class="btn b2" href="{{r}}territori/index.html">Trova la tua provincia</a><a class="btn" href="{{r}}aderisci.html">Aderisci</a></aside></div></section>''', 'contatti', [('', 'Contatti')])
+pagina('contatti.html', 'Contatti e stampa', 'Come contattare il coordinamento. Materiali per la stampa.', S(f'''<div class="col2"><div class="colonna">{testa('Contatti', 'Scrivici, chiamaci, vieni')}{'<p class="avviso">Contatti e account qui sotto sono segnaposto: vanno sostituiti con quelli veri del coordinamento.</p>' if not c['reali'] else ''}
+<dl class="elenco"><dt>Email</dt><dd>{e(c['email'])}</dd><dt>Telefono</dt><dd>{e(c['telefono'])}</dd><dt>Sede</dt><dd>{e(c['sede'])}</dd><dt>Facebook</dt><dd>{e(c['facebook'])}</dd><dt>Instagram</dt><dd>{e(c['instagram'])}</dd></dl></div>
+<aside class="lato"><h3>Per la stampa</h3><p>Simbolo e logo da scaricare:</p><ul class="testo"><li><a href="{{r}}risorse/loghi/sa-contrassegno.svg" download>Contrassegno (SVG)</a></li><li><a href="{{r}}risorse/loghi/sa-contrassegno.png" download>Contrassegno (PNG)</a></li><li><a href="{{r}}risorse/loghi/sa-logo-orizzontale.svg" download>Logo orizzontale (SVG)</a></li></ul><a class="btn b2" href="{{r}}territori/index.html">Trova la tua provincia</a><a class="btn" href="{{r}}aderisci.html">Aderisci</a></aside></div>'''), 'contatti', [('', 'Contatti')])
 
 # Ricerca nel sito: un indice leggero letto dal browser, nessun servizio esterno
 INDICE = [{'t': p['titolo'], 'd': p['sintesi'], 'u': p['indirizzo'], 'k': 'Programma', 'x': re.sub(r'[#*\[\]()-]', ' ', p['corpo'])} for p in PILASTRI]
@@ -351,13 +387,13 @@ INDICE += [{'t': v['titolo'], 'd': data_estesa(v['giorno']) + ' · ' + v.get('lu
 INDICE += [{'t': 'Provincia di ' + nome, 'd': t.get('lotte', ''), 'u': t['indirizzo'], 'k': 'Territori', 'x': ''} for nome, t in TERRITORI.items()]
 INDICE += [{'t': 'Chi siamo', 'd': PAGINE['chi-siamo']['sintesi'], 'u': 'chi-siamo.html', 'k': 'Il coordinamento', 'x': PAGINE['chi-siamo']['corpo']}, {'t': 'Come lavoriamo', 'd': PAGINE['metodo']['sintesi'], 'u': 'metodo.html', 'k': 'Il metodo', 'x': PAGINE['metodo']['corpo']}, {'t': 'Aderisci', 'd': 'Lascia i tuoi contatti', 'u': 'aderisci.html', 'k': 'Partecipa', 'x': 'adesione modulo iscriversi partecipare'}]
 (OUT / 'risorse' / 'indice.json').write_text(json.dumps(INDICE, ensure_ascii=False), encoding='utf-8')
-pagina('cerca.html', 'Cerca nel sito', 'Cerca fra programma, notizie, incontri e territori.', intesta('Cerca', 'Che cosa cerchi?') + '''<section class="sez" style="padding-top:0"><div class="in"><form class="cerca" role="search" onsubmit="return false"><label>Parole da cercare<input type="text" id="q" name="q" autocomplete="off" autofocus></label></form><p id="conta" role="status" aria-live="polite" style="font-weight:700"></p><ul class="eventi" id="esiti"></ul><noscript><p class="avviso">La ricerca ha bisogno di JavaScript. In alternativa usa il menu.</p></noscript></div></section>''', '', [('', 'Cerca')])
+pagina('cerca.html', 'Cerca nel sito', 'Cerca fra programma, notizie, incontri e territori.', S(testa('Cerca', 'Che cosa cerchi?') + '''<form class="cerca" role="search" onsubmit="return false"><label>Parole da cercare<input type="text" id="q" name="q" autocomplete="off" autofocus></label></form><p id="conta" role="status" aria-live="polite"></p><ul class="eventi scorre" id="esiti"></ul><noscript><p class="avviso">La ricerca ha bisogno di JavaScript. In alternativa usa il menu.</p></noscript>''', 'alto'), '', [('', 'Cerca')])
 
 # Pagine di servizio
 for chiave in ('privacy', 'note-legali'):
     p = PAGINE[chiave]
-    pagina(f'{chiave}.html', p['titolo'], p['sintesi'], intesta(p['occhiello'], e(p['titolo'])) + f'<section class="sez" style="padding-top:0"><div class="in"><div class="testo">{testo(p["corpo"])}</div></div></section>', '', [('', p['titolo'])])
-pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stata spostata.', intesta('Errore 404', 'Questa pagina non c’è', 'Forse è stata spostata. Riparti da qui:') + f'<section class="sez" style="padding-top:0"><div class="in"><div class="azioni" style="justify-content:flex-start"><a class="btn" href="{BASE}index.html">Pagina iniziale</a><a class="btn b2" href="{BASE}programma/index.html">Il programma</a></div></div></section>')
+    pagina(f'{chiave}.html', p['titolo'], p['sintesi'], S(testa(p['occhiello'], e(p['titolo'])) + f'<div class="testo colonne">{testo(p["corpo"])}</div>'), '', [('', p['titolo'])])
+pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stata spostata.', S(testa('Errore 404', 'Questa pagina non c’è', 'Forse è stata spostata. Riparti da qui:') + f'<div class="azioni"><a class="btn" href="{BASE}index.html">Pagina iniziale</a><a class="btn b2" href="{BASE}programma/index.html">Il programma</a></div>'))
 # la pagina 404 è servita da qualunque indirizzo: i suoi collegamenti devono essere assoluti
 f404 = OUT / '404.html'
 f404.write_text(re.sub(r'(href|src)="(?!https?:|#|mailto:)([^"]+)"', lambda m: f'{m.group(1)}="{BASE}{m.group(2)}"', f404.read_text(encoding='utf-8')), encoding='utf-8')

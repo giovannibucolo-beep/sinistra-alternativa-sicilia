@@ -16,8 +16,12 @@ Non vale dove un'immagine non può stare: il titolo nella scheda del browser, le
 ## 3. Prima il telefono
 Tasti grandi, almeno 44 px di altezza, nessuno scorrimento orizzontale. *Controllo automatico: `strumenti/prova_resa.py`.*
 
-## 4. Apertura della home in una schermata
-Su computer la prima sezione della home occupa esattamente una schermata. Le pagine interne scorrono.
+## 4. Blocchi uniformi per schermata, nessun blocco tagliato
+Su computer **ogni pagina è fatta di blocchi grandi esattamente quanto lo schermo**, e la pagina si ferma sempre su un blocco intero: non si vede mai un riquadro tagliato a metà. Il contenuto di ogni blocco deve starci tutto: se è troppo, si divide in più schermate (tre notizie per schermata, quattro incontri per schermata).
+Anche il piede è una schermata.
+Eccezioni dichiarate, dove il testo ha lunghezza libera: il corpo di una notizia e la pagina «Tutto in una pagina», fatta per la stampa.
+Su telefono i blocchi stanno in colonna, uno sotto l'altro, e la pagina scorre.
+*Regola del 26 novembre 2026 (riprende quella della pagina unica). Controllo automatico: `strumenti/prova_schermate.py`, a quattro misure di schermo.*
 
 ## 5. Versione e data in fondo
 Ogni pagina riporta nel piede «Versione X.Y · aggiornato il …». La versione aumenta a ogni pubblicazione; 1.0 è la prima approvata dal coordinamento.

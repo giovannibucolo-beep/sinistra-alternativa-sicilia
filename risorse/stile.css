@@ -173,3 +173,74 @@ img.sa { display: inline-block; height: 1.06em; width: auto; margin: 0 .06em; ve
 .piede .in > * { min-width: 0; } .piede li, .testo li, .lato dd { overflow-wrap: anywhere; }
 .due > *, .binari > *, .prossimo > *, .griglia > * { min-width: 0; } .etichette li, .testo h2, .testo h3, .binario h2 { overflow-wrap: anywhere; }
 .evento > span:last-child { min-width: 0; } .evento strong, .evento span { overflow-wrap: anywhere; }
+
+/* ====================================================================================================
+   REGOLA DELLE SCHERMATE — su computer ogni blocco della pagina è grande quanto lo schermo
+   e la pagina si ferma sempre su una schermata intera: nessun blocco resta tagliato.
+   Su telefono i blocchi restano in colonna, uno sotto l'altro.
+   ==================================================================================================== */
+.schermo { padding: 44px var(--lato); } .schermo > .in { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.schermo.carta { background: var(--carta); } .schermo.su-rosso { color: #fff; background: var(--rosso); } .schermo.su-rosso .k { color: #fff; }
+.capo-p { display: flex; flex-direction: column; gap: 12px; } .capo-p .sott, .schermo .sott { font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; max-width: 34em; }
+.col2, .colonna { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.riquadro-nero { padding: 22px; color: #fff; background: var(--nero); } .riquadro-nero .k { color: var(--rosso); } .riquadro-nero h2 { margin: 6px 0; font-size: clamp(22px, 3vw, 32px); }
+.striscia small { display: none; }
+.scheda.nera, .scheda.pil.nera { color: #fff; background: var(--nero); border-color: var(--nero); } .scheda.nera .vai, .scheda.nera a { color: #fff; }
+.forze .scheda strong { font-size: 17px; }
+.nota { font-size: 14px; color: var(--grigio); }
+dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; font-size: 18px; } dl.elenco dt { padding-top: 5px; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--cremisi); } dl.elenco dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.piede.schermo { padding: 48px var(--lato) 36px; }
+.schermo.centro .azioni { justify-content: flex-start; }
+
+@media (min-width: 1000px) and (min-height: 600px) {
+  html { scroll-snap-type: y mandatory; scroll-padding-top: var(--hh); }
+  body { font-size: clamp(13px, 1.95svh, 17px); }
+  .briciole { position: absolute; left: 0; right: 0; z-index: 5; padding-top: 1.4svh; font-size: clamp(11px, 1.5svh, 13px); pointer-events: none; } .briciole a { pointer-events: auto; }
+  .schermo, .schermo-a { box-sizing: border-box; height: calc(100svh - var(--hh)); min-height: 0; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; }
+  .schermo { display: flex; flex-direction: column; justify-content: center; padding: 5svh var(--lato) 3.5svh; }
+  .schermo > .in { width: 100%; max-height: 100%; gap: 2.6svh; }
+  .schermo.libero { height: auto; min-height: calc(100svh - var(--hh)); overflow: visible; justify-content: flex-start; padding-top: 7svh; }
+  .schermo.alto { justify-content: flex-start; padding-top: 8svh; }
+  .schermo h1 { font-size: min(64px, 7.4svh); } .schermo h2 { font-size: min(44px, 5.2svh); } .schermo h3 { font-size: min(21px, 2.7svh); }
+  .schermo .k { font-size: clamp(11px, 1.5svh, 13px); }
+  .capo-p { gap: 1.4svh; } .capo-p .sott, .schermo .sott { font-size: min(22px, 2.7svh); }
+  .sintesi { font-size: min(22px, 2.6svh); }
+  .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: center; } .colonna { gap: 2.4svh; }
+  .schermo .due { align-items: center; gap: 4vw; }
+  .schermo .testo { font-size: min(18px, 2.25svh); gap: 1.6svh; } .schermo .testo h2 { margin-top: .6svh; font-size: min(28px, 3.3svh); } .schermo .testo ul { gap: 1svh; }
+  .schermo .testo.colonne { display: block; columns: 2; column-gap: 5vw; max-width: none; } .schermo .testo.colonne > * { margin-bottom: 1.6svh; break-inside: avoid; } .schermo .testo.colonne h2 { break-after: avoid; }
+  .schermo .btn { min-height: min(60px, 7svh); font-size: clamp(12px, 1.75svh, 15px); }
+  .schermo .foto.grande { aspect-ratio: auto; height: 60svh; }
+  .schermo .griglia { gap: 1.8svh 18px; grid-auto-rows: auto; }
+  .schermo .griglia .foto { aspect-ratio: auto; height: 24svh; }
+  .schermo .scheda .tx { padding: 2svh 16px; gap: 1svh; } .schermo .scheda strong { font-size: min(20px, 2.5svh); }
+  .schermo .scheda p { font-size: min(15px, 1.95svh); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .schermo .scheda .vai { font-size: clamp(11px, 1.5svh, 13px); padding-top: .4svh; } .schermo .scheda .quando { font-size: clamp(10px, 1.4svh, 12px); }
+  .schermo.fitta .griglia { grid-auto-rows: 1fr; } .schermo.fitta .pil .n { font-size: min(40px, 4.6svh); } .schermo.fitta .scheda p { -webkit-line-clamp: 4; }
+  .schermo .griglia.quattro { grid-template-columns: repeat(4, 1fr); }
+  .schermo .striscia a { min-height: 0; } .striscia.alta a { height: 34svh; justify-content: flex-start; padding: 2.4svh 12px; font-size: min(15px, 2svh); }
+  .striscia.alta a i { font-size: min(44px, 5.4svh); } .striscia.alta small { display: block; margin-top: auto; font-size: min(13px, 1.7svh); font-weight: 500; line-height: 1.3; text-transform: none; }
+  .schermo .striscia.province a { height: 13svh; }
+  .schermo .binari { gap: 18px; } .schermo .binario { padding: 3svh 24px; gap: 1.4svh; } .schermo .binario h2 { font-size: min(26px, 3.2svh); } .schermo .binario .testo { font-size: min(17px, 2.15svh); }
+  .schermo .lato { padding: 3svh 22px; gap: 1.6svh; } .schermo .lato p, .schermo .lato dl { font-size: min(15px, 1.95svh); }
+  .schermo .evento { padding: 1.5svh 0; } .schermo .evento strong { font-size: min(18px, 2.3svh); } .schermo .evento span { font-size: min(15px, 1.9svh); } .schermo .evento .d { padding: .8svh 0; } .schermo .evento .d b { font-size: min(30px, 3.6svh); }
+  .schermo .riquadro-nero { padding: 2.6svh 24px; } .schermo .riquadro-nero h2 { font-size: min(30px, 3.6svh); } .schermo .prossimo .quando { font-size: min(22px, 2.6svh); }
+  .schermo form { padding: 3svh 24px; gap: 1.7svh; } .schermo input[type=text], .schermo input[type=email], .schermo select { min-height: min(56px, 6.4svh); font-size: min(17px, 2.2svh); } .schermo label { font-size: clamp(10px, 1.4svh, 12px); gap: .6svh; } .schermo .consenso { font-size: min(14px, 1.8svh); } .schermo .consenso input { flex-basis: min(44px, 5svh); width: min(44px, 5svh); height: min(44px, 5svh); } .schermo .esito { min-height: 2.4svh; font-size: min(15px, 1.9svh); }
+  .schermo .avviso { padding: 1.6svh 16px; font-size: min(15px, 1.9svh); } .schermo .etichette li { padding: .8svh 12px; font-size: min(14px, 1.8svh); } dl.elenco { font-size: min(18px, 2.3svh); gap: 1.2svh 18px; }
+  .schermo.centro > .in { gap: 3svh; } .schermo.centro h2 { font-size: min(64px, 7.6svh); max-width: 16em; } .schermo.centro .sott { font-size: min(24px, 3svh); }
+  .schermo .scorre { max-height: 46svh; overflow-y: auto; }
+  .piede.schermo { justify-content: center; padding: 4svh var(--lato); border-top-width: 10px; } .piede.schermo .in { gap: 4svh 32px; max-height: none; } .piede.schermo ul { font-size: min(15px, 1.9svh); gap: 0; } .piede.schermo a { min-height: min(44px, 4.6svh); } .piede.schermo .fondo { font-size: clamp(11px, 1.5svh, 12.5px); }
+  .apertura.schermo-a { min-height: 0; } .apertura.schermo-a .sx { padding-block: 2svh; gap: 2.2svh; } .apertura.schermo-a h1 { font-size: min(40px, 4.8svh); } .apertura.schermo-a h1 img { width: min(clamp(260px, 28vw, 440px), 38svh); } .apertura.schermo-a .verbi { font-size: min(30px, 3.5svh); }
+}
+.piede.schermo > .in { display: grid; gap: 32px; }
+@media (min-width: 900px) { .piede.schermo > .in { grid-template-columns: 1.3fr 1fr 1fr 1fr; } }
+@media (min-width: 1000px) and (min-height: 600px) {
+  .schermo.fitta > .in { gap: 2svh; } .schermo.fitta h1 { font-size: min(48px, 5.4svh); } .schermo.fitta .capo-p { gap: .8svh; } .schermo.fitta .capo-p .sott { font-size: min(18px, 2.2svh); }
+  .schermo.fitta .pil .n { font-size: min(32px, 3.6svh); } .schermo.fitta .scheda .tx { padding: 1.6svh 14px; gap: .7svh; } .schermo.fitta .scheda strong { font-size: min(18px, 2.2svh); } .schermo.fitta .scheda p { -webkit-line-clamp: 3; font-size: min(14px, 1.8svh); }
+  .schermo.fitta .griglia { gap: 1.4svh 14px; } .schermo.fitta .pil { border-top-width: 6px; }
+}
+.piede.schermo h2 { font-size: 13px; }
+@media (min-width: 1000px) and (min-height: 600px) { .schermo .col2 h1, .schermo .due h1 { font-size: min(52px, 6svh); overflow-wrap: normal; } .piede.schermo h2 { font-size: clamp(11px, 1.5svh, 13px); } }
+@media (min-width: 1000px) and (min-height: 600px) { .schermo .griglia { grid-auto-rows: 1fr; } .striscia.alta a { padding-inline: 10px; font-size: min(12.5px, 1.9svh); } }
+@media (min-width: 1360px) and (min-height: 600px) { .striscia.alta a { font-size: min(15px, 2svh); padding-inline: 12px; } }
+@media (min-width: 1000px) and (min-height: 600px) { .schermo .consenso input { flex-basis: 44px; width: 44px; height: 44px; } }

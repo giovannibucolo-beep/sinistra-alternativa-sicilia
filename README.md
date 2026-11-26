@@ -114,4 +114,4 @@ Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione:
 
 - `python3 costruisci.py` costruisce il sito in `pubblico/` (solo libreria standard).
 - `python3 controlla.py` lo controlla.
-- `strumenti/anteprime.py` ridisegna le immagini di anteprima per i social; `strumenti/prova_resa.py` apre ogni pagina a misura telefono e computer. Servono Playwright e Chrome.
+- `strumenti/anteprime.py` ridisegna le immagini di anteprima per i social; `strumenti/prova_resa.py` apre ogni pagina a cinque misure, dal telefono al computer; `strumenti/prova_schermate.py` verifica che su computer nessun blocco resti tagliato. Servono Playwright e Chrome.
