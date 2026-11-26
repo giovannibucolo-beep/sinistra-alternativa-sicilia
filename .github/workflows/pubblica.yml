@@ -1,0 +1,26 @@
+# A ogni modifica dei contenuti: costruisce il sito, lo controlla e, se i controlli passano, lo pubblica.
+name: Pubblica il sito
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pubblica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Costruisce le pagine
+        run: python3 costruisci.py
+      - name: Controlla collegamenti, titoli e anteprime
+        run: python3 controlla.py
+      - name: Pubblica
+        run: |
+          cd pubblico
+          git init -q -b gh-pages
+          git config user.name "Pubblicazione automatica"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Sito pubblicato da ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" gh-pages

@@ -1,0 +1,26 @@
+{
+  "nome": "Sinistra per l'Alternativa",
+  "nome_logo": "Sinistra Alternativa · Sicilia",
+  "descrizione": "Coordinamento siciliano Sinistra per l’Alternativa: un programma nato dalle lotte, verso le Regionali 2027.",
+  "indirizzo": "https://giovannibucolo-beep.github.io/sinistra-alternativa-sicilia/",
+  "versione": "0.20",
+  "bozza": true,
+  "indicizzabile": false,
+  "contatti": {
+    "email": "adesioni@sinistraperlalternativa.example",
+    "telefono": "091 000 00 00",
+    "sede": "Coordinamento regionale · Palermo",
+    "facebook": "Sinistra per l’Alternativa Sicilia",
+    "instagram": "@sinistraperlalternativa.sicilia",
+    "reali": false
+  },
+  "modulo": {
+    "invia_a": "",
+    "nota": "Indirizzo del servizio che riceve le adesioni. Finché è vuoto il modulo non invia nulla."
+  },
+  "statistiche": {
+    "codice": "",
+    "nota": "Vuoto: nessun contatore di visite."
+  },
+  "committente": "nome da indicare"
+}
