@@ -209,7 +209,7 @@ def foto(file, attesa, extra=''):
     """Spazio per una fotografia: mostra `risorse/img/<file>.jpg` se c'è, altrimenti il segnaposto con il nome atteso."""
     c = FOTO.get(file)
     cred = f'<span class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</span>' if c else ''
-    return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(c["soggetto"] if c else attesa)}">{cred}</div>'
+    return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(c["soggetto"] if c else attesa)}">{cred}</div>'
 
 
 def scheda_notizia(n):
