@@ -110,6 +110,9 @@ Vanno scritte le pagine `privacy` e `note-legali`.
 
 Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione: i riquadri affiancati devono avere la stessa altezza, e «la Sicilia che SA» nei titoli diventa il simbolo.
 
+
+**Più foto in una notizia (galleria).** Oltre alla foto di apertura, carica in `risorse/img/` i file con lo stesso nome della notizia seguito da `-1`, `-2`… (formato 4:3, 1200×900). Nell’intestazione della notizia: `foto_1:`, `foto_2:`… per le didascalie e `foto_credito:` per chi le ha scattate.
+
 ## Per chi lavora al codice
 
 - `python3 costruisci.py` costruisce il sito in `pubblico/` (solo libreria standard).

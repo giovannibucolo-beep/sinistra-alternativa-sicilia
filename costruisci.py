@@ -56,7 +56,7 @@ ESCLUSE = []
 
 
 def cartella(nome):
-    tutte = [leggi(p) for p in sorted((CONT / nome).glob('*.md'))]
+    tutte = [leggi(p) for p in sorted((CONT / nome).glob('*.md')) if not p.name.startswith('.')]  # salta i file nascosti che macOS crea sui dischi esterni
     ESCLUSE.extend(f'{nome}/{x["file"]}' for x in tutte if x['bozza'] and not ANTEPRIMA)
     return [x for x in tutte if ANTEPRIMA or not x['bozza']]
 
@@ -222,6 +222,19 @@ def foto(file, attesa, extra=''):
     return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(attesa)}"></div>'
 
 
+def galleria(n):
+    """Foto in fondo a una notizia: `risorse/img/<nome della notizia>-1.jpg`, `-2.jpg`… (4:3, 1200×900); didascalie in `foto_1:`, `foto_2:`…; firma in `foto_credito:`."""
+    scatti = sorted((RIS / 'img').glob(n['file'] + '-[0-9]*.jpg'), key=lambda p: int(p.stem.rsplit('-', 1)[1]))
+    out = ''
+    for p in scatti:
+        dida = n.get('foto_' + p.stem.rsplit('-', 1)[1], '')
+        out += '<figure><img src="{r}risorse/img/' + p.name + '?v=' + SITO['versione'] + '" alt="' + e(dida or n['titolo']) + '" width="1200" height="900" loading="lazy" decoding="async">' + ('<figcaption>' + e(dida) + '</figcaption>' if dida else '') + '</figure>'
+    out = '<div class="galleria">' + out + '</div>' if out else ''
+    if n.get('foto_credito') and (scatti or (RIS / 'img' / (n['file'] + '.jpg')).exists()):
+        out += '<p class="credito">Foto: ' + e(n['foto_credito']) + '</p>'
+    return out
+
+
 def scheda_notizia(n):
     return f'''<li><a class="scheda riv" href="{{r}}{n['indirizzo']}">{foto(n['file'], n['titolo'])}<span class="tx"><span class="quando">{n['quando']}{segni(n)}</span><strong>{e(n['titolo'])}</strong><p>{e(n.get('sintesi', ''))}</p><span class="vai">Leggi →</span></span></a></li>'''
 
@@ -336,7 +349,7 @@ for n in NOTIZIE:
     legami = ''.join([f'<li><a href="{{r}}{pil["indirizzo"]}">Pilastro {pil["numero"]} · {e(pil["titolo"])}</a></li>' if pil else '', f'<li><a href="{{r}}{terr["indirizzo"]}">Provincia di {e(n["provincia"])}</a></li>' if terr else ''])
     legami = f'<ul class="etichette legami">{legami}</ul>' if legami else ''
     fonte = f'''<p class="avviso">Fonte esterna: <a href="{n['fonte']}" rel="noopener">{e(n.get('fonte_nome', 'leggi l’articolo'))} →</a></p>''' if n.get('fonte') else ''
-    pagina(n['indirizzo'], n['titolo'], n.get('sintesi', ''), S(f'''<div class="col2"><div class="colonna">{testa(f"{n['quando']}{' · ' + e(n['luogo']) if n.get('luogo') else ''}{segni(n)}", e(n['titolo']), e(n.get('sintesi', '')))}{legami}<a class="vai-a" href="#testo">Leggi ↓</a></div>{foto(n['file'], n['titolo'], ' grande')}</div>''') + LIBERO(f'''<div class="testo" id="testo">{testo(n['corpo'])}{fonte}</div><nav class="vicini"><a href="{{r}}notizie/index.html">← Tutte le notizie</a></nav>''') + ADERISCI, 'notizie', [('notizie/index.html', 'Notizie'), ('', n['titolo'])], tipo='article',
+    pagina(n['indirizzo'], n['titolo'], n.get('sintesi', ''), S(f'''<div class="col2"><div class="colonna">{testa(f"{n['quando']}{' · ' + e(n['luogo']) if n.get('luogo') else ''}{segni(n)}", e(n['titolo']), e(n.get('sintesi', '')))}{legami}<a class="vai-a" href="#testo">Leggi ↓</a></div>{foto(n['file'], n['titolo'], ' grande')}</div>''') + LIBERO(f'''<div class="testo" id="testo">{testo(n['corpo'])}{galleria(n)}{fonte}</div><nav class="vicini"><a href="{{r}}notizie/index.html">← Tutte le notizie</a></nav>''') + ADERISCI, 'notizie', [('notizie/index.html', 'Notizie'), ('', n['titolo'])], tipo='article',
            dati={'@context': 'https://schema.org', '@type': 'NewsArticle', 'headline': n['titolo'], 'datePublished': n['data'], 'publisher': {'@type': 'Organization', 'name': SITO['nome']}})
 voci_rss = ''.join(f"<item><title>{e(n['titolo'])}</title><link>{BASE}{n['indirizzo']}</link><guid>{BASE}{n['indirizzo']}</guid><pubDate>{n['giorno'].strftime('%a, %d %b %Y')} 09:00:00 +0100</pubDate><description>{e(n.get('sintesi', ''))}</description></item>" for n in NOTIZIE if not n['esempio'] and not n['bozza'])
 (OUT / 'notizie').mkdir(exist_ok=True)
