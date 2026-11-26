@@ -49,6 +49,11 @@ h3 { font-size: 21px; font-weight: 900; line-height: 1.15; text-transform: upper
 .briciole { padding: 14px var(--lato) 0; font-size: 13px; font-weight: 700; } .briciole ol { max-width: var(--max); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 6px; } .briciole li + li::before { content: "›"; margin-right: 6px; color: var(--cremisi); } .briciole a { color: var(--grigio); }
 .intesta { padding: 28px var(--lato) 40px; } .intesta > .in { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 14px; } .intesta .sott { font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; max-width: 34em; }
 .foto { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--nero) center / cover no-repeat; }
+.foto .cred { position: absolute; right: 0; bottom: 0; max-width: 100%; padding: 4px 9px; font-size: 11px; font-weight: 700; line-height: 1.3; color: #fff; background: rgba(0,0,0,.72); }
+.foto.vuota .cred { display: none; }
+.crediti { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; max-width: 60em; }
+.crediti li { display: grid; gap: 2px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.18); }
+.crediti span { font-size: 15px; overflow-wrap: anywhere; }
 .foto.vuota { background-image: repeating-linear-gradient(115deg, #000 0 46px, #1b1b1b 46px 92px); }
 .foto.vuota::after { content: attr(data-et); position: absolute; left: 10px; bottom: 10px; max-width: calc(100% - 20px); padding: 4px 9px; font-size: 11px; font-weight: 800; line-height: 1.3; color: var(--nero); background: #fff; }
 .foto.vuota::before { content: ""; position: absolute; left: 50%; top: 50%; width: 34%; aspect-ratio: 649 / 418; transform: translate(-50%, -55%); background: url(loghi/sa-monogramma-negativo-su-nero.svg) center / contain no-repeat; opacity: .9; }
@@ -244,3 +249,4 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 @media (min-width: 1000px) and (min-height: 600px) { .schermo .griglia { grid-auto-rows: 1fr; } .striscia.alta a { padding-inline: 10px; font-size: min(12.5px, 1.9svh); } }
 @media (min-width: 1360px) and (min-height: 600px) { .striscia.alta a { font-size: min(15px, 2svh); padding-inline: 12px; } }
 @media (min-width: 1000px) and (min-height: 600px) { .schermo .consenso input { flex-basis: 44px; width: 44px; height: 44px; } }
+@media (min-width: 1000px) { .crediti { grid-template-columns: 1fr 1fr; gap: 8px 32px; max-width: none; } .crediti li { padding-bottom: 8px; font-size: 15px; } .crediti span { font-size: 13px; } }

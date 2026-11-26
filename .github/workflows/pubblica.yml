@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Scarica le fotografie da Wikimedia Commons
+        run: python3 strumenti/scarica_foto.py
       - name: Costruisce le pagine
         run: python3 costruisci.py
       - name: Controlla collegamenti, titoli e anteprime

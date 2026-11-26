@@ -31,3 +31,9 @@ Contenuti dimostrativi con l'etichetta «esempio»; testi non approvati con `boz
 
 ## 7. Identità
 Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per la Sicilia nel simbolo e per il testo rosso piccolo. Carattere Montserrat. I file del simbolo non si modificano.
+
+## 8. Fotografie
+- Ogni pilastro ha una fotografia **mirata al suo tema** (MUOS, ospedale di un’area interna, Stretto…), non un’immagine generica.
+- Solo fotografie con licenza libera (Wikimedia Commons: dominio pubblico, CC0, CC BY, CC BY-SA) o nostre. Elenco in `contenuti/foto.json`.
+- Sotto ogni foto: soggetto, autore, licenza. Tutti i dettagli nella pagina «Crediti fotografici».
+- Niente volti riconoscibili di persone estranee al coordinamento; niente opere d’arte di autori viventi.

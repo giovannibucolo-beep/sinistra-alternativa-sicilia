@@ -5,7 +5,7 @@ Solo libreria standard di Python: gira ovunque, anche nella pubblicazione automa
 Uso:  python3 costruisci.py              (sito pubblico: i file con «bozza: sì» restano fuori)
       python3 costruisci.py --anteprima  (anteprima privata: entrano anche le bozze, con etichetta)
 """
-import datetime, html, json, pathlib, re, shutil, sys, unicodedata
+import datetime, html, json, urllib.parse, pathlib, re, shutil, sys, unicodedata
 
 QUI = pathlib.Path(__file__).parent
 CONT, RIS, OUT = QUI / 'contenuti', QUI / 'risorse', QUI / 'pubblico'
@@ -179,7 +179,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
 <div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
 <div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
-<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a></span>
+<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}crediti.html">Crediti fotografici</a></span>
 {'<span>Bozza dimostrativa: contatti, account e voci segnate «esempio» non sono reali.</span>' if SITO['bozza'] else ''}
 <span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
 </div>
@@ -199,9 +199,14 @@ def intesta(occhiello, titolo, sotto=''):
     return f'<div class="intesta"><div class="in"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
 
 
+FOTO = {f['file']: f for f in json.loads((CONT / 'foto.json').read_text(encoding='utf-8'))}
+
+
 def foto(file, attesa, extra=''):
     """Spazio per una fotografia: mostra `risorse/img/<file>.jpg` se c'è, altrimenti il segnaposto con il nome atteso."""
-    return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(attesa)}"></div>'
+    c = FOTO.get(file)
+    cred = f'<span class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</span>' if c else ''
+    return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(c["soggetto"] if c else attesa)}">{cred}</div>'
 
 
 def scheda_notizia(n):
@@ -393,6 +398,9 @@ pagina('cerca.html', 'Cerca nel sito', 'Cerca fra programma, notizie, incontri e
 for chiave in ('privacy', 'note-legali'):
     p = PAGINE[chiave]
     pagina(f'{chiave}.html', p['titolo'], p['sintesi'], S(testa(p['occhiello'], e(p['titolo'])) + f'<div class="testo colonne">{testo(p["corpo"])}</div>'), '', [('', p['titolo'])])
+# Crediti delle fotografie (le licenze Creative Commons chiedono autore, licenza e fonte)
+righe_crediti = ''.join(f'''<li><strong>{e(c["soggetto"])}</strong><span>Foto di {e(c["autore"])} ({c["anno"]}), licenza <a href="{c["licenza_url"]}" rel="license noopener">{e(c["licenza"])}</a>. Originale: <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(c["commons"].replace(" ", "_"))}" rel="noopener">Wikimedia Commons</a>. Ridimensionata e ritagliata.</span></li>''' for c in FOTO.values())
+pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori: qui autore, licenza e originale di ciascuna.') + f'<ul class="crediti">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])
 pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stata spostata.', S(testa('Errore 404', 'Questa pagina non c’è', 'Forse è stata spostata. Riparti da qui:') + f'<div class="azioni"><a class="btn" href="{BASE}index.html">Pagina iniziale</a><a class="btn b2" href="{BASE}programma/index.html">Il programma</a></div>'))
 # la pagina 404 è servita da qualunque indirizzo: i suoi collegamenti devono essere assoluti
 f404 = OUT / '404.html'
