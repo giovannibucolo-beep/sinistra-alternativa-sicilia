@@ -41,6 +41,15 @@ collections:
           - { label: '07 · Proteggere il territorio', value: '07' }
       - { name: esempio, label: 'Solo un esempio (non è una notizia vera)', widget: boolean, required: false, default: false }
       - { name: bozza, label: 'Tieni fuori dal sito', widget: boolean, required: false, default: false }
+      - name: foto_soggetto
+        label: 'Fotografia · che cosa si vede'
+        widget: string
+        required: false
+        hint: 'La foto va caricata in risorse/img con lo stesso nome del file della notizia. Autore e licenza qui sotto sono obbligatori: senza, la foto non compare.'
+      - { name: foto_autore, label: 'Fotografia · autore', widget: string, required: false }
+      - { name: foto_licenza, label: 'Fotografia · licenza', widget: string, required: false, hint: 'Per esempio CC BY-SA 4.0, oppure «foto nostra».' }
+      - { name: foto_licenza_url, label: 'Fotografia · indirizzo della licenza', widget: string, required: false }
+      - { name: foto_anno, label: 'Fotografia · anno', widget: string, required: false }
       - { name: body, label: Testo, widget: markdown, hint: 'In fondo la riga delle fonti: **Fonti:** testata, data.' }
 
   - name: agenda

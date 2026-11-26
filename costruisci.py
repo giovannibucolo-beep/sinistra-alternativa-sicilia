@@ -226,6 +226,18 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'strumenti'))
 import ottimizza_foto
 ottimizza_foto.ottimizza(pathlib.Path(__file__).resolve().parent / 'risorse' / 'img')  # regola 8
 FOTO = {f['file']: f for f in json.loads((CONT / 'foto.json').read_text(encoding='utf-8'))}
+def crediti_da_contenuto(v, file):
+    """Se chi scrive ha compilato autore e licenza nel pannello, valgono quelli: foto.json resta per le foto già a posto."""
+    if v.get('foto_autore') and v.get('foto_licenza'):
+        FOTO[file] = {'file': file, 'commons': v.get('foto_origine', ''), 'soggetto': v.get('foto_soggetto') or v.get('titolo', ''),
+                      'autore': v['foto_autore'], 'anno': v.get('foto_anno', ''), 'licenza': v['foto_licenza'],
+                      'licenza_url': v.get('foto_licenza_url', '')}
+
+
+for _n in NOTIZIE:
+    crediti_da_contenuto(_n, _n['file'])
+for _p in PILASTRI:
+    crediti_da_contenuto(_p, 'pilastro-' + _p['numero'])
 
 
 def foto(file, attesa, extra=''):

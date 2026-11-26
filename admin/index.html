@@ -6,29 +6,11 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Pannello di scrittura — Sinistra per l’Alternativa</title>
 <link rel="icon" href="../risorse/loghi/sa-icona.svg" type="image/svg+xml">
-<style>
-  body { margin:0; font:16px/1.5 -apple-system, "Segoe UI", system-ui, sans-serif; }
-  #spento { max-width:38em; margin:12vh auto; padding:0 24px; }
-  #spento h1 { font-size:22px; }
-  #spento ol { padding-left:20px; }
-  #spento li { margin-bottom:8px; }
-  #spento code { padding:2px 6px; font-size:14px; background:#f1f2f4; border-radius:4px; }
-  #spento p.k { font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:#B01030; font-weight:700; }
-</style>
 </head>
 <body>
-<!-- Pagina del pannello di scrittura. Finché l'accesso non è configurato mostra le istruzioni
-     invece di una schermata di errore. Il contenuto di questa pagina non è indicizzato. -->
-<div id="spento">
-  <p class="k">Pannello di scrittura</p>
-  <h1>Non ancora attivo</h1>
-  <p>La configurazione dei contenuti è pronta in <code>admin/config.yml</code>: notizie, agenda, province, programma, materiali e impostazioni, con i campi giusti e il percorso bozza → revisione → pubblicato.</p>
-  <p>Per accendere il pannello mancano due passaggi, da fare con gli account del coordinamento:</p>
-  <ol>
-    <li>registrare l’applicazione GitHub che permette l’accesso (gratuita);</li>
-    <li>indicare qui sotto, nel file di questa pagina, quale programma del pannello caricare e dove sta il servizio di accesso.</li>
-  </ol>
-  <p>Fino ad allora il sito si aggiorna come sempre: modificando i file nel repository, oppure chiedendolo a chi lo segue.</p>
-</div>
+<!-- Pannello di scrittura (Sveltia CMS). I contenuti sono descritti in config.yml.
+     Chi entra scrive nel repository: il sito si ricostruisce e si pubblica da solo.
+     Questa pagina non è indicizzata e non compare nel menù del sito. -->
+<script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </body>
 </html>
