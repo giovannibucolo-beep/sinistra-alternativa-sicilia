@@ -61,5 +61,9 @@ for f in OUT.rglob('*'):
     if f.is_file() and f.stat().st_size > 600_000: avvisi.append(f'{f.relative_to(OUT)}: file pesante ({f.stat().st_size // 1024} KB)')
 for a in avvisi: print('AVVISO  ', a)
 for x in errori: print('ERRORE  ', x)
+# Regola 8: fotografie sempre ottimizzate per il web
+for f in sorted((OUT / 'risorse' / 'img').glob('*')):
+    if f.suffix.lower() in ('.png', '.jpeg', '.webp', '.tif', '.tiff', '.gif', '.bmp', '.heic', '.heif', '.avif'): errori.append(f'risorse/img/{f.name}: fotografia non convertita in JPEG ottimizzato')
+    elif f.suffix == '.jpg' and f.stat().st_size > 350 * 1024: errori.append(f'risorse/img/{f.name}: fotografia non ottimizzata ({f.stat().st_size // 1024} KB, massimo 350)')
 print(f'Controllate {len(pagine)} pagine: {len(errori)} errori, {len(avvisi)} avvisi')
 sys.exit(1 if errori else 0)

@@ -199,6 +199,9 @@ def intesta(occhiello, titolo, sotto=''):
     return f'<div class="intesta"><div class="in"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
 
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'strumenti'))
+import ottimizza_foto
+ottimizza_foto.ottimizza(pathlib.Path(__file__).resolve().parent / 'risorse' / 'img')  # regola 8
 FOTO = {f['file']: f for f in json.loads((CONT / 'foto.json').read_text(encoding='utf-8'))}
 
 

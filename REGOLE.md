@@ -37,3 +37,4 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Solo fotografie con licenza libera (Wikimedia Commons: dominio pubblico, CC0, CC BY, CC BY-SA) o nostre. Elenco in `contenuti/foto.json`.
 - Sotto ogni foto: soggetto, autore, licenza. Tutti i dettagli nella pagina «Crediti fotografici».
 - Niente volti riconoscibili di persone estranee al coordinamento; niente opere d’arte di autori viventi.
+- **Sempre ottimizzate per il web, qualunque formato abbiano**: si mette il file in `risorse/img/` (JPEG, PNG, HEIC, WebP, TIFF…) e il sito lo trasforma da solo in JPEG progressivo largo al massimo 1400 px, sotto i 350 KB, senza dati incorporati (posizione, apparecchio). Il controllo blocca la pubblicazione se una foto pesa di più.
