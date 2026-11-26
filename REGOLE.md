@@ -76,3 +76,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - La cartella `risorse/loghi/servizi/` è il solo posto dove possono stare i loghi veri di WhatsApp, Telegram e Facebook. Se c'è `whatsapp.svg`, `telegram.svg` o `facebook.svg`, il sito lo usa da sé al posto del proprio pittogramma; se manca, resta il pittogramma.
 - Va messa solo la versione a un colore: il sito usa il file come sagoma e gli dà il colore del pulsante, così diventa bianco sul fondo nero come le altre icone. Un file a colori diventa una macchia piena.
 - I loghi si scaricano dalle pagine ufficiali dei marchi, mai da raccolte di icone di terze parti, e non si ridisegnano «somiglianti». Sono marchi registrati: chi li mette si è letto le condizioni d'uso e se ne assume la responsabilità. Le istruzioni stanno in `risorse/loghi/servizi/LEGGIMI.md`.
+
+## 16. Niente sopratitoli decorativi
+- Sopra un titolo non va la micro-etichetta maiuscola a lettere spaziate quando ripete quello che il titolo, la briciola o il menù dicono già. È la cosa che fa sembrare tutte le pagine uguali e fatte a stampo.
+- Il sopratitolo resta solo dove porta un dato che non c'è altrove: «Prossimo incontro», «In provincia di ‹nome›», il tipo e il peso di un materiale, i due binari.
+- Dove il numero conta — i pilastri — il numero è grande, rosso, da manifesto (`.ordinale`), non un sopratitolo.

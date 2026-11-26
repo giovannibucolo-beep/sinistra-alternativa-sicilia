@@ -244,7 +244,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 
 
 def intesta(occhiello, titolo, sotto=''):
-    return f'<div class="intesta"><div class="in"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
+    return f'<div class="intesta"><div class="in"><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
 
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'strumenti'))
@@ -380,8 +380,22 @@ def condividi(titolo, percorso):
     return f'<div class="condividi"><span class="k">Condividi</span>{link}{copia}</div>'
 
 
+PAROLE = {1: 'uno', 2: 'due', 3: 'tre', 4: 'quattro', 5: 'cinque', 6: 'sei', 7: 'sette', 8: 'otto', 9: 'nove', 10: 'dieci'}
+
+
+def testa_numerata(numero, quanti, cosa, titolo, sotto=''):
+    """Testa con il numero grande, da manifesto: la cifra è il segno, non un sopratitolo in maiuscolo."""
+    quanti_ = PAROLE.get(quanti, str(quanti))
+    return (f'<header class="capo-p numerata riv"><p class="ordinale"><b>{e(numero)}</b>'
+            f'<i>{e(cosa)}<br>di {quanti_}</i></p><h1>{sa(titolo)}</h1>'
+            + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>')
+
+
 def testa(occhiello, titolo, sotto=''):
-    return f'<header class="capo-p riv"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
+    """Niente sopratitolo: la briciola in cima e la voce accesa nel menù dicono già la sezione, e la
+    micro-etichetta maiuscola sopra ogni titolo è la cosa che fa sembrare uguali tutte le pagine.
+    L'`occhiello` resta nella firma perché è il nome della sezione e lo usa chi chiama."""
+    return f'<header class="capo-p riv"><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
 
 
 def a_gruppi(lista, n):
@@ -412,12 +426,12 @@ pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="aper
 <ul class="verbi">{verbi}</ul>
 <div class="azioni"><a class="btn" href="{{r}}aderisci.html">Aderisci ora</a><a class="btn b2" href="{{r}}programma/index.html">Il programma</a></div></div>
 <div class="dx"><img src="{{r}}risorse/loghi/sa-contrassegno.svg" alt="Contrassegno {e(SITO['nome_logo'])}" width="430" height="430"></div>
-</section>''' + S(f'<div class="capo"><div><span class="k">Il programma</span><h2>{sa("La Sicilia che sa")}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia_p}') + S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul>', 'carta') + S(f'<div class="capo"><div><span class="k">Il punto</span><h2>Perché adesso</h2></div><a href="{{r}}chi-siamo.html">Chi siamo →</a></div>{NUMERI}') + S(f'{prossimo}<div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}') + ADERISCI,
+</section>''' + S(f'<div class="capo"><div><h2>{sa("La Sicilia che sa")}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia_p}') + S(f'<div class="capo"><div><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul>', 'carta') + S(f'<div class="capo"><div><h2>Perché adesso</h2></div><a href="{{r}}chi-siamo.html">Chi siamo →</a></div>{NUMERI}') + S(f'{prossimo}<div class="capo"><div><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}') + ADERISCI,
        dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'alternateName': 'Sinistra Alternativa Sicilia', 'areaServed': 'Sicilia', 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
 
 # Chi siamo
 p = CHI; sz = SZ_CHI; forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M); oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
-pagina('chi-siamo.html', p['titolo'], p['sintesi'], S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(sz.get("", ""))}</div></div>') + S(f'<header class="capo-p"><span class="k">Il punto</span><h2>I numeri</h2></header>{NUMERI}') + S(f'<div class="capo"><div><span class="k">Chi c’è</span><h2>Le forze del coordinamento</h2></div><a href="{{r}}metodo.html">Come lavoriamo →</a></div><ul class="griglia quattro forze">{"".join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)}<li><a class="scheda nera" href="{{r}}aderisci.html"><span class="tx"><strong>Manchi tu</strong><span class="vai">Aderisci →</span></span></a></li></ul><p class="nota">{e(oss)}</p>', 'carta') + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
+pagina('chi-siamo.html', p['titolo'], p['sintesi'], S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(sz.get("", ""))}</div></div>') + S(f'<header class="capo-p"><h2>I numeri</h2></header>{NUMERI}') + S(f'<div class="capo"><div><h2>Le forze del coordinamento</h2></div><a href="{{r}}metodo.html">Come lavoriamo →</a></div><ul class="griglia quattro forze">{"".join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)}<li><a class="scheda nera" href="{{r}}aderisci.html"><span class="tx"><strong>Manchi tu</strong><span class="vai">Aderisci →</span></span></a></li></ul><p class="nota">{e(oss)}</p>', 'carta') + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
 
 # Programma
 schede = ''.join(f'''<li><a class="scheda pil riv" href="{{r}}{p['indirizzo']}"><span class="tx"><span class="n">{p['numero']}</span><strong>{e(p['titolo'])}</strong><p>{e(p['sintesi'])}</p><span class="vai">Le proposte →</span></span></a></li>''' for p in PILASTRI)
@@ -431,11 +445,11 @@ for i, p in enumerate(PILASTRI):
     binari = ''.join(f'<div class="binario b{k}"><span class="k">{"Primo" if k == 1 else "Secondo"} binario</span><h2>{e(t)}</h2><div class="testo">{testo(c)}</div></div>' for k, (t, c) in enumerate(sz[:2], 1))
     resto = ''.join(f'<h2>{e(t)}</h2>{testo(c)}' for t, c in sz[2:])
     lato = f'''<aside class="lato"><h3>Il tavolo di questo pilastro</h3><p>Aperto a comitati, collettivi, sindacati e singole persone.</p>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in incontri) + '</ul>' if incontri else '<p><strong>Nessun incontro in calendario per ora.</strong></p>'}<a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a><a class="vai-a" href="{{r}}metodo.html">Che cosa sono i due binari →</a></aside>'''
-    corpo = S(f'''<div class="col2"><div class="colonna">{testa(f"Pilastro {p['numero']} di {len(PILASTRI):02d}", e(p['titolo']), e(p['slogan']))}<p class="sintesi">{e(p['sintesi'])}</p><div class="azioni"><a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a></div></div>{foto('pilastro-' + p['numero'], p['foto_attesa'], ' grande')}</div>''')
-    corpo += S(f'<div class="capo"><div><span class="k">Le proposte</span><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta')
+    corpo = S(f'''<div class="col2"><div class="colonna">{testa_numerata(p['numero'], len(PILASTRI), 'pilastro', e(p['titolo']), e(p['slogan']))}<p class="sintesi">{e(p['sintesi'])}</p><div class="azioni"><a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a></div></div>{foto('pilastro-' + p['numero'], p['foto_attesa'], ' grande')}</div>''')
+    corpo += S(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta')
     corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div>{condividi(p['titolo'], p['indirizzo'])}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
     if collegate:
-        corpo += S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Su questo pilastro</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate)}</ul>', 'carta')
+        corpo += S(f'<div class="capo"><div><h2>Su questo pilastro</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate)}</ul>', 'carta')
     pagina(p['indirizzo'], p['titolo'], p['sintesi'], corpo + aderisci_con(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'], ricerca=(p.get('titolo_ricerca'), p.get('descrizione_ricerca')) if p.get('titolo_ricerca') else None, immagine=FOTO.get('pilastro-' + p['numero']))
 
 # Tutto il programma in una pagina sola, da stampare o salvare in PDF (eccezione dichiarata alla regola delle schermate)
@@ -449,7 +463,7 @@ pagina('metodo.html', p['titolo'], p['sintesi'], S(f'<div class="col2"><div clas
 
 # Notizie: tre per schermata
 gruppi = a_gruppi(NOTIZIE, 3) or [[]]
-corpo = ''.join(S((testa('Notizie', 'Che cosa succede') if k == 0 else f'<div class="capo"><div><span class="k">Notizie</span><h2>Meno recenti · {k + 1}</h2></div></div>') + f'<ul class="griglia tre">{"".join(scheda_notizia(n) for n in g)}</ul>' + ('<a class="vai-a" href="{r}cerca.html">Cerca nel sito →</a>' if k == 0 else ''), 'carta') for k, g in enumerate(gruppi))
+corpo = ''.join(S((testa('Notizie', 'Che cosa succede') if k == 0 else f'<div class="capo"><div><h2>Meno recenti · {k + 1}</h2></div></div>') + f'<ul class="griglia tre">{"".join(scheda_notizia(n) for n in g)}</ul>' + ('<a class="vai-a" href="{r}cerca.html">Cerca nel sito →</a>' if k == 0 else ''), 'carta') for k, g in enumerate(gruppi))
 pagina('notizie/index.html', 'Notizie', 'Le notizie del coordinamento: incontri, presìdi, tavoli.', corpo + ADERISCI, 'notizie', [('', 'Notizie')])
 for n in NOTIZIE:
     pil = next((p for p in PILASTRI if p['numero'] == n.get('pilastro')), None); terr = TERRITORI.get(n.get('provincia', ''))
@@ -466,9 +480,9 @@ voci_rss = ''.join(f"<item><title>{e(n['titolo'])}</title><link>{BASE}{n['indiri
 passati_l = list(reversed([v for v in EVENTI if v['passato']]))
 corpo = ''
 for k, g in enumerate(a_gruppi(FUTURI, 4) or [[]]):
-    corpo += S((testa('Agenda', 'Dove ci vediamo') if k == 0 else f'<div class="capo"><div><span class="k">Agenda</span><h2>Prossimi incontri · {k + 1}</h2></div></div>') + ('<ul class="eventi">' + ''.join(riga_evento(v) for v in g) + '</ul>' if g else '<p class="sott">Nessun incontro in calendario per ora.</p>'))
+    corpo += S((testa('Agenda', 'Dove ci vediamo') if k == 0 else f'<div class="capo"><div><h2>Prossimi incontri · {k + 1}</h2></div></div>') + ('<ul class="eventi">' + ''.join(riga_evento(v) for v in g) + '</ul>' if g else '<p class="sott">Nessun incontro in calendario per ora.</p>'))
 for k, g in enumerate(a_gruppi(passati_l, 4)):
-    corpo += S(f'<div class="capo"><div><span class="k">Agenda</span><h2>Già svolti{" · " + str(k + 1) if k else ""}</h2></div></div><ul class="eventi">{"".join(riga_evento(v) for v in g)}</ul>', 'carta')
+    corpo += S(f'<div class="capo"><div><h2>Già svolti{" · " + str(k + 1) if k else ""}</h2></div></div><ul class="eventi">{"".join(riga_evento(v) for v in g)}</ul>', 'carta')
 pagina('agenda/index.html', 'Agenda', 'Assemblee, tavoli e presìdi del coordinamento in Sicilia.', corpo + aderisci_con('Vuoi sapere quando siamo vicino a te?', 'Lascia i tuoi contatti e la provincia: ti scriviamo noi.'), 'agenda', [('', 'Agenda')])
 (OUT / 'agenda').mkdir(exist_ok=True)
 for v in EVENTI:
@@ -497,7 +511,7 @@ for nome, t in TERRITORI.items():
     corpo = S(f'''<div class="due"><div class="colonna">{testa(f"Territori{segni(t)}", e(nome))}<h2>Le lotte</h2><ul class="etichette">{lotte}</ul><div class="testo">{testo(t['corpo'])}</div></div><aside class="lato">{foto('provincia-' + t['indirizzo'].split('/')[-1][:-5], nome)}<dl><dt>Referente</dt><dd>{e(t.get('referente', 'da indicare'))}</dd><dt>Contatto</dt><dd>{e(t.get('contatto', 'da indicare'))}</dd></dl><a class="btn" href="{{r}}aderisci.html?provincia={nome}">Aderisci da {e(nome)}</a></aside></div>''')
     corpo += S(f'''<div class="capo"><div><span class="k">In provincia di {e(nome)}</span><h2>Gli incontri</h2></div><a href="{{r}}agenda/index.html">Tutta l’agenda →</a></div>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in inc) + '</ul>' if inc else '<p class="sott">Nessun incontro in calendario per ora in questa provincia.</p>'}<div class="capo"><div><h2>Le altre province</h2></div></div>{mappa(nome)}''', 'carta')
     if not_p:
-        corpo += S(f'<div class="capo"><div><span class="k">Notizie</span><h2>Da questa provincia</h2></div></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in not_p)}</ul>')
+        corpo += S(f'<div class="capo"><div><h2>Da questa provincia</h2></div></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in not_p)}</ul>')
     pagina(t['indirizzo'], f'Provincia di {nome}', f"Le lotte e gli incontri del coordinamento in provincia di {nome}: {t.get('lotte', '')}.", corpo + aderisci_con('Il programma si scrive ai tavoli', f'Aderisci dalla provincia di {e(nome)}: ti scriviamo per il prossimo incontro.', f'?provincia={nome}'), 'territori', [('territori/index.html', 'Territori'), ('', nome)])
 
 # Aderisci
@@ -589,7 +603,7 @@ nota_mat = '<p class="avviso">Qualche materiale è ancora in preparazione: lo tr
 gruppi_lista = list(gruppi_mat.items())
 testa_mat = testa('Materiali', 'Materiali da scaricare', 'Logo, identità visiva, programma e propaganda: tutto pronto da usare per banchetti, assemblee e social.') + (nota_mat if mancanti_mat else '')
 blocchi_mat = S(testa_mat + f'<div class="capo"><div><h2>{e(gruppi_lista[0][0])}</h2></div></div><ul class="griglia tre">{"".join(gruppi_lista[0][1])}</ul>', 'fitta')
-blocchi_mat += ''.join(S(f'<div class="capo"><div><span class="k">Materiali</span><h2>{e(g)}</h2></div></div><ul class="griglia tre">{"".join(v)}</ul>', 'carta' if i % 2 == 0 else '') for i, (g, v) in enumerate(gruppi_lista[1:]))
+blocchi_mat += ''.join(S(f'<div class="capo"><div><h2>{e(g)}</h2></div></div><ul class="griglia tre">{"".join(v)}</ul>', 'carta' if i % 2 == 0 else '') for i, (g, v) in enumerate(gruppi_lista[1:]))
 pagina('materiali.html', 'Materiali', 'Logo, identità visiva, programma da stampare, volantini e manifesti da scaricare e usare.',
        blocchi_mat + ADERISCI, '', [('', 'Materiali')])
 
@@ -610,7 +624,7 @@ corpo_ck = f'''<div class="testo"><h2>1. Che cosa sono i cookie</h2><p>Piccoli f
 <h2>4. Bloccarli dal browser</h2><p>Ogni browser permette di bloccare o cancellare i cookie dalle proprie impostazioni: <a href="https://support.google.com/chrome/answer/95647" rel="noopener">Chrome</a>, <a href="https://support.mozilla.org/it/kb/protezione-antitracciamento-avanzata-firefox-desktop" rel="noopener">Firefox</a>, <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" rel="noopener">Safari</a>, <a href="https://support.microsoft.com/it-it/microsoft-edge" rel="noopener">Edge</a>.</p>
 <h2>5. I tuoi diritti</h2><p>Per sapere quali dati ti riguardano, correggerli o farli cancellare scrivi a {e(SITO["contatti"]["email"])}. Il resto è nell’<a href="{{r}}privacy.html">informativa privacy</a>.</p></div>'''
 pagina('cookie.html', 'Cookie e statistiche', 'Che cosa usa il sito per misurare le visite e come cambiare la propria scelta.', S(testa('Cookie', 'Cookie e statistiche', 'Che cosa usa questo sito, detto in chiaro.') + '<a class="vai-a" href="#cookie">Leggi ↓</a>') + LIBERO(f'<div id="cookie">{corpo_ck}</div>'), '', [('', 'Cookie e statistiche')])
-pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stata spostata.', S(testa('Errore 404', 'Questa pagina non c’è', 'Forse è stata spostata. Riparti da qui:') + f'<div class="azioni"><a class="btn" href="{BASE}index.html">Pagina iniziale</a><a class="btn b2" href="{BASE}programma/index.html">Il programma</a></div>'))
+pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stata spostata.', S(testa('Errore 404', 'Questa pagina non c’è', 'Errore 404: l’indirizzo non esiste o è stato spostato. Riparti da qui:') + f'<div class="azioni"><a class="btn" href="{BASE}index.html">Pagina iniziale</a><a class="btn b2" href="{BASE}programma/index.html">Il programma</a></div>'))
 # la pagina 404 è servita da qualunque indirizzo: i suoi collegamenti devono essere assoluti
 f404 = OUT / '404.html'
 f404.write_text(re.sub(r'(href|src)="(?!https?:|#|mailto:)([^"]+)"', lambda m: f'{m.group(1)}="{BASE}{m.group(2)}"', f404.read_text(encoding='utf-8')), encoding='utf-8')

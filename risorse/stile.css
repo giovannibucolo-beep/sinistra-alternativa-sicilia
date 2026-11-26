@@ -36,6 +36,10 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 60px; padding: 0 28px; font: 900 15px Montserrat, Arial, sans-serif; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: #fff; background: var(--rosso); border: 3px solid var(--rosso); cursor: pointer; transition: transform .18s, box-shadow .18s; }
 .btn.b2 { color: var(--nero); background: #fff; border-color: var(--nero); } .btn.bn { background: var(--nero); border-color: var(--nero); } .btn.bw { color: var(--nero); background: #fff; border-color: #fff; }
 @media (hover: hover) { .btn:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--nero); } .su-nero .btn:hover, .btn.bn:hover { box-shadow: 6px 6px 0 var(--rosso); } }
+.ordinale { display: flex; align-items: flex-end; gap: 13px; margin: 0 0 2px; }
+.ordinale b { font-size: clamp(56px, 12vw, 104px); font-weight: 900; line-height: .76; letter-spacing: -.045em; color: var(--rosso); font-variant-numeric: tabular-nums; }
+.ordinale i { padding-bottom: 7px; font-size: 13px; font-style: normal; font-weight: 800; line-height: 1.18; color: var(--grigio); }
+.su-nero .ordinale i, .su-rosso .ordinale i { color: rgba(255,255,255,.8); }
 .k { display: block; font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--cremisi); }
 .su-nero .k, .su-rosso .k { color: #fff; }
 .es { display: inline-block; padding: 1px 7px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-style: normal; color: #fff; background: var(--nero); vertical-align: middle; }
@@ -221,6 +225,7 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
   .schermo > .in { width: 100%; max-height: 100%; gap: 2.6svh; }
   .schermo.libero { height: auto; min-height: calc(100svh - var(--hh)); overflow: visible; justify-content: flex-start; padding-top: 7svh; }
   .schermo.alto { justify-content: flex-start; padding-top: 8svh; }
+  .ordinale b { font-size: min(104px, 13svh); } .ordinale i { font-size: min(13px, 1.8svh); }
   .schermo h1 { font-size: min(64px, 7.4svh); } .schermo h2 { font-size: min(44px, 5.2svh); } .schermo h3 { font-size: min(21px, 2.7svh); }
   .schermo .k { font-size: clamp(11px, 1.5svh, 13px); }
   .capo-p { gap: 1.4svh; } .capo-p .sott, .schermo .sott { font-size: min(22px, 2.7svh); }
