@@ -222,7 +222,9 @@ def banda_aderisci(titolo='Il programma si scrive ai tavoli', testo_='Comitati, 
 
 
 def mappa(corrente=''):
-    return '<nav class="mappa" aria-label="Province">' + ''.join(f'''<a class="{c}" href="{{r}}{TERRITORI[p]['indirizzo']}"{' aria-current="page"' if p == corrente else ''}>{s}<small>{p}</small></a>''' for s, p, c in SIGLE if p in TERRITORI) + '</nav>'
+    """Le nove province come blocchi uguali, in ordine alfabetico (stessa forma della fascia dei pilastri)."""
+    sigla = {p: sg for sg, p, _ in SIGLE}
+    return '<ol class="striscia province">' + ''.join(f'''<li><a href="{{r}}{TERRITORI[p]['indirizzo']}"{' aria-current="page"' if p == corrente else ''}><i>{sigla[p]}</i>{e(p)}</a></li>''' for p in PROVINCE if p in TERRITORI) + '</ol>'
 
 
 # ---------- costruzione ----------
@@ -247,7 +249,7 @@ pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="aper
 {prossimo}
 <section class="sez"><div class="in"><div class="capo"><div><span class="k">Il programma</span><h2>{sa('La Sicilia che sa')}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia()}</div></section>
 <section class="sez carta"><div class="in"><div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{''.join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul></div></section>
-<section class="sez"><div class="in due"><div><span class="k">Territori</span><h2 style="margin:8px 0 14px">Nove province, un tavolo in ognuna</h2><p style="max-width:32em;font-size:18px">Scegli la tua provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.</p></div>{mappa()}</div></section>
+<section class="sez"><div class="in"><div class="capo"><div><span class="k">Territori</span><h2>Nove province, un tavolo in ognuna</h2></div><a href="{{r}}territori/index.html">Tutti i territori →</a></div>{mappa()}</div></section>
 {banda_aderisci()}''', dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
 
 # Chi siamo
@@ -311,7 +313,7 @@ for v in EVENTI:
            dati=None if v['esempio'] else {'@context': 'https://schema.org', '@type': 'Event', 'name': v['titolo'], 'startDate': v['data'] + (f"T{v['ora']}" if v.get('ora') else ''), 'location': {'@type': 'Place', 'name': v.get('luogo', '')}, 'organizer': {'@type': 'Organization', 'name': SITO['nome']}})
 
 # Territori
-pagina('territori/index.html', 'Territori', 'Nove province, un tavolo in ognuna: le lotte, gli incontri, come partecipare.', intesta('Territori', 'Dov’è la tua Sicilia?', 'Scegli la provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.') + f'''<section class="sez" style="padding-top:0"><div class="in">{mappa()}<p style="font-size:13px;color:var(--grigio)">Mappa schematica: le caselle seguono la posizione delle province, non i confini.</p><ul class="griglia tre">{''.join(f'<li><a class="scheda riv" href="{{r}}{t["indirizzo"]}"><span class="tx"><strong>{e(nome)}</strong><p>{e(t.get("lotte", ""))}</p><span class="vai">Vai →</span></span></a></li>' for nome, t in sorted(TERRITORI.items()))}</ul></div></section>''', 'territori', [('', 'Territori')])
+pagina('territori/index.html', 'Territori', 'Nove province, un tavolo in ognuna: le lotte, gli incontri, come partecipare.', intesta('Territori', 'Dov’è la tua Sicilia?', 'Scegli la provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.') + f'''<section class="sez" style="padding-top:0"><div class="in"><ul class="griglia tre">{''.join(f'<li><a class="scheda riv" href="{{r}}{t["indirizzo"]}"><span class="tx"><strong>{e(nome)}</strong><p>{e(t.get("lotte", ""))}</p><span class="vai">Vai →</span></span></a></li>' for nome, t in sorted(TERRITORI.items()))}</ul></div></section>''', 'territori', [('', 'Territori')])
 for nome, t in TERRITORI.items():
     inc = [v for v in EVENTI if v.get('provincia') == nome]
     not_p = [n for n in NOTIZIE if n.get('provincia') == nome]

@@ -164,3 +164,12 @@ form.cerca { padding: 0; border: 0; background: none; max-width: 620px; } form.c
 img.sa { display: inline-block; height: 1.06em; width: auto; margin: 0 .06em; vertical-align: baseline; }
 @media (min-width: 1100px) { .striscia a { padding: 12px 10px; font-size: 13px; overflow-wrap: normal; } }
 .nsa { white-space: nowrap; }
+
+/* ---------- province: nove blocchi uguali, come i pilastri ---------- */
+.striscia.province { grid-template-columns: repeat(2, 1fr); } @media (min-width: 480px) { .striscia.province { grid-template-columns: repeat(3, 1fr); } }
+.striscia.province a { align-items: flex-start; justify-content: flex-start; padding: 12px 10px; font-size: 11.5px; } @media (min-width: 560px) { .striscia.province a { padding: 14px; font-size: 15px; } }
+.striscia.province a[aria-current] { color: #fff; background: var(--nero); border-color: var(--nero); } .striscia.province a[aria-current] i { color: var(--rosso); }
+@media (min-width: 1280px) { .striscia.province { grid-template-columns: repeat(9, 1fr); } .striscia.province a { font-size: 12px; padding: 12px 8px; } }
+.piede .in > * { min-width: 0; } .piede li, .testo li, .lato dd { overflow-wrap: anywhere; }
+.due > *, .binari > *, .prossimo > *, .griglia > * { min-width: 0; } .etichette li, .testo h2, .testo h3, .binario h2 { overflow-wrap: anywhere; }
+.evento > span:last-child { min-width: 0; } .evento strong, .evento span { overflow-wrap: anywhere; }
