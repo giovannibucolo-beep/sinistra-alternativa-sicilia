@@ -79,6 +79,9 @@
         if (!x.isIntersecting) return;
         var i = Array.prototype.indexOf.call(ss, x.target);
         punti.forEach(function (a, n) { if (n === i) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+        // su fondo scuro i punti diventano bianchi, altrimenti spariscono
+        var scuro = x.target.classList.contains('su-nero') || x.target.classList.contains('su-rosso');
+        nav.classList.toggle('chiaro', scuro);
       });
     }, { threshold: 0.5 });
     ss.forEach(function (s) { op.observe(s); });

@@ -335,6 +335,9 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
   .punti { position: fixed; right: 14px; top: 50%; z-index: 48; display: flex; flex-direction: column; gap: 10px; transform: translateY(-50%); }
   .punti a { position: relative; display: block; width: 11px; height: 11px; border: 2px solid var(--nero); border-radius: 50%; background: transparent; transition: background .2s, transform .2s; }
   .punti a[aria-current] { background: var(--rosso); border-color: var(--rosso); transform: scale(1.35); }
+  .punti.chiaro a { border-color: rgba(255,255,255,.85); }
+  .punti.chiaro a[aria-current] { background: #fff; border-color: #fff; }
+  .punti.chiaro a span { color: var(--nero); background: #fff; }
   .punti a span { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); padding: 3px 9px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; color: #fff; background: var(--nero); opacity: 0; pointer-events: none; transition: opacity .18s; }
   .punti a:hover span, .punti a:focus-visible span { opacity: 1; }
   .cifre strong { font-size: min(86px, 10svh); }
