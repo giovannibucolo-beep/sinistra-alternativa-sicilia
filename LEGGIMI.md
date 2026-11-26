@@ -106,6 +106,10 @@ In `contenuti/sito.json`:
 
 Vanno scritte le pagine `privacy` e `note-legali`.
 
+## Regole del sito
+
+Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione: i riquadri affiancati devono avere la stessa altezza, e «la Sicilia che SA» nei titoli diventa il simbolo.
+
 ## Per chi lavora al codice
 
 - `python3 costruisci.py` costruisce il sito in `pubblico/` (solo libreria standard).

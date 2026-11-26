@@ -84,7 +84,7 @@ def testo(md):
         if righe[0].startswith('### '):
             out.append(f'<h3>{in_linea(righe[0][4:])}</h3>')
         elif righe[0].startswith('## '):
-            out.append(f'<h2>{in_linea(righe[0][3:])}</h2>')
+            out.append(f'<h2>{sa(in_linea(righe[0][3:]))}</h2>')
         elif all(r.lstrip().startswith('- ') for r in righe):
             out.append('<ul>' + ''.join(f'<li>{in_linea(r.lstrip()[2:])}</li>' for r in righe) + '</ul>')
         else:
@@ -108,6 +108,12 @@ for v in EVENTI:
 for nome, t in TERRITORI.items():
     t['indirizzo'] = f'territori/{slug(nome)}.html'
 FUTURI = [v for v in EVENTI if not v['passato']]
+def sa(t, variante=''):
+    """REGOLA DEL SITO: «la Sicilia (che) SA …» si scrive con il monogramma al posto della parola. `variante`: '' su chiaro, 'nero' su fondo nero, 'rosso' su fondo rosso."""
+    file = {'': 'sa-monogramma.svg', 'nero': 'sa-monogramma-negativo-su-nero.svg', 'rosso': 'sa-monogramma-bianco.svg'}[variante]
+    return re.sub(r'(?i)(sicilia(?:\s+che)?\s+)sa\b', lambda m: f'{m.group(1)}<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42">', t)
+
+
 ES = ' <em class="es">esempio</em>'
 BZ = ' <em class="es bz">bozza non pubblica</em>'
 
@@ -190,7 +196,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 
 
 def intesta(occhiello, titolo, sotto=''):
-    return f'<div class="intesta"><div class="in"><span class="k">{occhiello}</span><h1>{titolo}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
+    return f'<div class="intesta"><div class="in"><span class="k">{occhiello}</span><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
 
 
 def foto(file, attesa, extra=''):
@@ -212,7 +218,7 @@ def striscia():
 
 
 def banda_aderisci(titolo='Il programma si scrive ai tavoli', testo_='Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.', q=''):
-    return f'<section class="sez su-rosso"><div class="in" style="align-items:flex-start"><h2>{titolo}</h2><p style="max-width:36em;font-size:19px;font-weight:700">{testo_}</p><a class="btn bw" href="{{r}}aderisci.html{q}">Aderisci ora</a></div></section>'
+    return f'<section class="sez su-rosso"><div class="in" style="align-items:flex-start"><h2>{sa(titolo, "rosso")}</h2><p style="max-width:36em;font-size:19px;font-weight:700">{testo_}</p><a class="btn bw" href="{{r}}aderisci.html{q}">Aderisci ora</a></div></section>'
 
 
 def mappa(corrente=''):
@@ -239,7 +245,7 @@ pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="aper
 <div class="dx"><img src="{{r}}risorse/loghi/sa-contrassegno.svg" alt="Contrassegno {e(SITO['nome_logo'])}" width="430" height="430"></div>
 </section>
 {prossimo}
-<section class="sez"><div class="in"><div class="capo"><div><span class="k">Il programma</span><h2>Sette cose che la Sicilia sa fare</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia()}</div></section>
+<section class="sez"><div class="in"><div class="capo"><div><span class="k">Il programma</span><h2>{sa('Sette cose che la Sicilia sa fare')}</h2></div><a href="{{r}}programma/index.html">Tutto il programma →</a></div>{striscia()}</div></section>
 <section class="sez carta"><div class="in"><div class="capo"><div><span class="k">Notizie</span><h2>Che cosa succede</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{''.join(scheda_notizia(n) for n in NOTIZIE[:3])}</ul></div></section>
 <section class="sez"><div class="in due"><div><span class="k">Territori</span><h2 style="margin:8px 0 14px">Nove province, un tavolo in ognuna</h2><p style="max-width:32em;font-size:18px">Scegli la tua provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.</p></div>{mappa()}</div></section>
 {banda_aderisci()}''', dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})

@@ -43,6 +43,9 @@ for f in pagine:
     titoli.setdefault(L.titolo.strip(), []).append(nome)
     og = L.meta.get('og:image', '')
     if og and not (OUT / 'risorse' / 'og' / og.rsplit('/', 1)[-1]).exists(): errori.append(f'{nome}: immagine di anteprima mancante ({og.rsplit("/", 1)[-1]})')
+    # REGOLA: nei titoli «la Sicilia (che) SA» si scrive con il simbolo, non a lettere
+    for m in re.finditer(r'<h[12][^>]*>(.*?)</h[12]>', f.read_text(encoding='utf-8'), re.S):
+        if re.search(r'(?i)sicilia(\s+che)?\s+sa\b', re.sub(r'<[^>]+>', '', m.group(1))): errori.append(f'{nome}: «SA» scritto a lettere in un titolo, deve essere il simbolo')
     if nome == '404.html': continue
     for h in L.link:
         if re.match(r'(https?:|mailto:|tel:|data:)', h): continue

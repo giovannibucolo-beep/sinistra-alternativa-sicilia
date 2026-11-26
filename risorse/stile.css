@@ -154,3 +154,12 @@ input[type=text], input[type=email], select, textarea { width: 100%; min-height:
 form.cerca { padding: 0; border: 0; background: none; max-width: 620px; } form.cerca input { min-height: 64px; font-size: 20px; border-color: var(--nero); border-width: 3px; }
 #esiti .evento { align-items: flex-start; } #esiti .evento span.et { display: block; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cremisi); } #esiti mark { background: var(--tinta); color: inherit; }
 @media print { .blocco-p { break-inside: avoid; } .briciole, .azioni, .salta { display: none !important; } .intesta { padding: 0 0 12px; } body { font-size: 12pt; } .sez { padding: 0; } }
+
+/* ---------- REGOLA: blocchi affiancati = stessa dimensione, stesso bordo inferiore ---------- */
+.griglia, .striscia, .binari, .mappa { grid-auto-rows: 1fr; align-items: stretch; }
+.griglia > li, .striscia > li { display: flex; min-width: 0; }
+.griglia > li > .scheda, .striscia > li > a { flex: 1 1 auto; width: 100%; height: auto; }
+.binari > .binario { height: 100%; }
+/* ---------- REGOLA: «SA» è il simbolo ---------- */
+img.sa { display: inline-block; height: 1.06em; width: auto; margin: 0 .06em; vertical-align: baseline; }
+@media (min-width: 1100px) { .striscia a { padding: 12px 10px; font-size: 13px; overflow-wrap: normal; } }

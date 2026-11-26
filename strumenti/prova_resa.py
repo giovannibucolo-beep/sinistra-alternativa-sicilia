@@ -16,8 +16,12 @@ with sync_playwright() as p:
             pg.goto('http://127.0.0.1:8791/' + nome); pg.wait_for_timeout(250)
             r = pg.evaluate('''()=>{const W=innerWidth;const fuori=[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.right>W+1||r.left<-1)&&!e.closest('.salta')&&!e.closest('.menu:not(.aperto)')}).slice(0,3).map(e=>e.tagName+'.'+e.className);
               const picc=[...document.querySelectorAll('main a.btn, main button, .menu-b, main input, main select, .mappa a, a.evento, a.scheda, .striscia a')].filter(e=>{const r=e.getBoundingClientRect();return r.height>0&&r.height<44}).map(e=>(e.textContent||e.name||'').trim().slice(0,18)+':'+Math.round(e.getBoundingClientRect().height));
-              return {sw:document.documentElement.scrollWidth,W,fuori,picc}}''')
-            if r['sw'] > r['W'] or r['fuori'] or r['picc'] or err: guai += 1; print(nome, et, json.dumps(r, ensure_ascii=False), err)
+              // REGOLA: i blocchi sulla stessa fila hanno la stessa altezza e lo stesso bordo inferiore
+              const storti=[];document.querySelectorAll('.griglia,.striscia,.binari,.mappa').forEach(g=>{const righe={};[...g.children].forEach(c=>{const b=(c.matches('li')?c.firstElementChild:c).getBoundingClientRect();if(!b.height)return;const k=Math.round(b.top);(righe[k]=righe[k]||[]).push([Math.round(b.height),Math.round(b.bottom)])});
+                const tutte=Object.values(righe).flat();if(new Set(tutte.map(x=>x[0])).size>1)storti.push(g.className+': altezze '+[...new Set(tutte.map(x=>x[0]))].join('/'));
+                Object.values(righe).forEach(rg=>{if(new Set(rg.map(x=>x[1])).size>1)storti.push(g.className+': bordi inferiori non allineati')})});
+              return {sw:document.documentElement.scrollWidth,W,fuori,picc,storti}}''')
+            if r['sw'] > r['W'] or r['fuori'] or r['picc'] or r['storti'] or err: guai += 1; print(nome, et, json.dumps(r, ensure_ascii=False), err)
             pg.close()
     b.close()
 print('pagine con problemi:', guai); sys.exit(1 if guai else 0)
