@@ -7,11 +7,15 @@ sintesi: Gestione dell’acqua interamente pubblica, reti e invasi riparati. No 
 foto_attesa: un invaso in secca
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Fine delle concessioni ai gestori privati: acqua pubblica e senza fini di lucro.
 - Piano d’emergenza per le reti colabrodo e collaudo degli invasi, per cittadini e agricoltori.
 - Nessuna intesa e nessun fondo regionale per il Ponte: risorse a ferrovie interne, dissesto idrogeologico, strade.
+
+## Cosa va strappato allo Stato
+
+- Legge-voto per revocare la concessione del Ponte, sciogliere la società e vincolare i 13,5 miliardi a ferrovie interne, sicurezza idrogeologica e viabilità ordinaria.
 
 ## Come ci arriviamo
 

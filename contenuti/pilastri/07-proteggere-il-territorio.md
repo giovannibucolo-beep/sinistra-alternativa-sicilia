@@ -7,10 +7,13 @@ sintesi: Bonifica dei cinque poli industriali inquinati a spese di chi ha inquin
 foto_attesa: un polo industriale da bonificare
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Bonifica pubblica di Priolo-Augusta-Melilli, Gela, Milazzo, Valle del Mela e Biancavilla: paga chi ha inquinato.
 - Fondi solo alla scuola pubblica: edilizia, libri, mense e trasporti gratuiti.
+
+## Cosa va strappato allo Stato
+
 - Legge-voto contro l’autonomia differenziata e per trattenere in Sicilia il gettito delle imprese estrattive.
 
 ## Come ci arriviamo

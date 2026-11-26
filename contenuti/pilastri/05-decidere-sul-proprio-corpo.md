@@ -7,11 +7,15 @@ sintesi: Consultori pubblici e laici, interruzione di gravidanza garantita in og
 foto_attesa: corteo transfemminista
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Interruzione di gravidanza gratuita, tempestiva e sicura in ogni presidio pubblico.
 - Un consultorio pubblico ogni 20.000 abitanti, contraccezione gratuita.
-- Carriere alias, congedo mestruale, centri antiviolenza rifinanziati; legge-voto per il matrimonio egualitario.
+- Carriere alias, congedo mestruale, centri antiviolenza rifinanziati.
+
+## Cosa va strappato allo Stato
+
+- Legge-voto per il matrimonio egualitario.
 
 ## Come ci arriviamo
 

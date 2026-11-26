@@ -53,6 +53,7 @@ Due righe su che cosa si fa e chi può partecipare.
 ```
 
 `provincia` lo fa comparire nella pagina della provincia; `pilastro` (da 01 a 07) nella pagina del pilastro.
+Le stesse due righe funzionano anche nelle notizie: la notizia compare nella pagina del pilastro e in quella della provincia.
 L'incontro passa da solo fra quelli «già svolti» il giorno dopo.
 
 ## Le altre cartelle
@@ -65,6 +66,27 @@ L'incontro passa da solo fra quelli «già svolti» il giorno dopo.
 | `contenuti/sito.json` | Nome, contatti, versione, indirizzo del servizio per le adesioni |
 
 Una riga `esempio: sì` nell'intestazione mette l'etichetta «esempio» sulla pagina: va tolta quando il contenuto è vero.
+
+## Bozze: scrivere senza pubblicare
+
+Una riga `bozza: sì` nell'intestazione di una notizia o di un incontro lo tiene **fuori dal sito pubblico**.
+Il file resta nella cartella, pronto: quando il testo è verificato e approvato si toglie la riga e va in linea.
+
+## Come è scritto un pilastro
+
+Due capitoli fissi, che diventano i due riquadri della pagina:
+
+```
+## Cosa può fare la Regione, subito
+
+- una proposta per riga
+
+## Cosa va strappato allo Stato
+
+- una legge-voto per riga
+```
+
+Quello che segue (altri `## titoli`) compare sotto come testo normale.
 
 ## Che cosa succede quando salvi
 

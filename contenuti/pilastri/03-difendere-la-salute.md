@@ -7,11 +7,15 @@ sintesi: Sanità pubblica e territoriale: assunzioni stabili, ospedali e pronto 
 foto_attesa: presidio per un ospedale di un’area interna
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Stop al drenaggio di risorse verso cliniche private, cooperative e medici a gettone.
 - Piano straordinario di assunzioni stabili per medici, infermieri e personale sociosanitario.
-- Almeno 6 posti letto pubblici ogni 1.000 abitanti; legge-voto per abolire i ticket e uscire dal piano di rientro.
+- Almeno 6 posti letto pubblici ogni 1.000 abitanti.
+
+## Cosa va strappato allo Stato
+
+- Legge-voto per abolire i ticket e uscire dal piano di rientro.
 
 ## Come ci arriviamo
 

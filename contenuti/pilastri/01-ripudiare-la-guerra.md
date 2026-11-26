@@ -7,10 +7,13 @@ sintesi: Chiusura progressiva delle basi USA e NATO, revoca delle autorizzazioni
 foto_attesa: presidio davanti alla base di Niscemi
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Revoca delle autorizzazioni agli impianti militari nelle aree protette, a partire dal MUOS di Niscemi.
 - Nessuna nuova concessione di demanio civile per usi bellici; niente convenzioni fra università pubbliche e industria militare.
+
+## Cosa va strappato allo Stato
+
 - Legge-voto al Parlamento per la chiusura delle basi, sostenuta da un referendum consultivo regionale.
 
 ## Come ci arriviamo

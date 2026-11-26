@@ -140,3 +140,17 @@ input[type=text], input[type=email], select, textarea { width: 100%; min-height:
 .js .riv { opacity: 0; transform: translateY(22px); transition: opacity .5s, transform .5s cubic-bezier(.2, .8, .2, 1); } .js .riv.vis { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .js .riv { opacity: 1; transform: none; } }
 @media print { .testata, .piede, .bozza, .btn { display: none !important; } }
+
+/* ---------- due binari, programma completo, ricerca ---------- */
+.sintesi { font-size: clamp(19px, 2.2vw, 23px); font-weight: 700; max-width: 40em; }
+.binari { display: grid; gap: 18px; } @media (min-width: 900px) { .binari { grid-template-columns: 1fr 1fr; align-items: stretch; } }
+.binario { display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 2px solid var(--linea); border-top: 10px solid var(--rosso); background: #fff; }
+.binario h2 { font-size: clamp(21px, 2.4vw, 27px); } .binario .testo { font-size: 17px; }
+.binario.b2 { color: #fff; background: var(--nero); border-color: var(--nero); border-top-color: var(--cremisi); } .binario.b2 .k { color: var(--rosso); }
+.vai-a { font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+.es.bz { background: var(--cremisi); }
+.legami { margin-top: 4px; } .legami a { text-decoration: none; font-weight: 800; } .legami li { border-color: var(--nero); }
+.blocco-p { display: flex; flex-direction: column; gap: 12px; padding: 26px 0; border-top: 4px solid var(--nero); } .blocco-p h3 { margin-top: 6px; color: var(--cremisi); }
+form.cerca { padding: 0; border: 0; background: none; max-width: 620px; } form.cerca input { min-height: 64px; font-size: 20px; border-color: var(--nero); border-width: 3px; }
+#esiti .evento { align-items: flex-start; } #esiti .evento span.et { display: block; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cremisi); } #esiti mark { background: var(--tinta); color: inherit; }
+@media print { .blocco-p { break-inside: avoid; } .briciole, .azioni, .salta { display: none !important; } .intesta { padding: 0 0 12px; } body { font-size: 12pt; } .sez { padding: 0; } }

@@ -7,11 +7,15 @@ sintesi: Chiusura dei CPR, accoglienza pubblica e diffusa, case popolari da immo
 foto_attesa: accoglienza in un porto siciliano
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Revoca delle concessioni dei terreni regionali ai CPR di Caltanissetta, Trapani e Lampedusa.
 - Accoglienza pubblica in piccoli nuclei abitativi, con iscrizione anagrafica garantita.
 - Immobili sfitti e beni confiscati destinati a case popolari; stop agli sfratti per morosità incolpevole.
+
+## Cosa va strappato allo Stato
+
+- Legge-voto per abrogare la Bossi-Fini e la legislazione securitaria, chiudere tutti i CPR, introdurre ius soli e ius scholae.
 
 ## Come ci arriviamo
 

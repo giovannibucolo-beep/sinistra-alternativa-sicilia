@@ -23,16 +23,6 @@ sintesi: Sette organizzazioni, un programma nato dalle lotte: fuori dal centrode
 
 Osservatore: Schierarsi Palermo.
 
-## Come lavoriamo: piazza e palazzo, insieme
+## Come lavoriamo
 
-### Doppio binario
-
-Su ogni tema due mosse coordinate: una legge regionale, dove la Regione può decidere da sé, e una legge-voto dell’ARS al Parlamento, sostenuta da un referendum consultivo, dove decide lo Stato.
-
-### Tavoli aperti
-
-Un tavolo permanente per ciascun pilastro, aperto a comitati, collettivi, sindacati di base, operatori della sanità, studenti. Programma e liste passano dal voto vincolante di un’assemblea regionale.
-
-### Codice etico
-
-Chi si candida firma tre impegni: mandato revocabile dall’assemblea, una quota dell’indennità a una cassa di resistenza per le lotte, nessuna alleanza con il centrodestra né con il centrosinistra neoliberista.
+Piazza e palazzo, insieme: il metodo è spiegato nella pagina [Come lavoriamo](metodo.html).

@@ -34,6 +34,30 @@
     var im = new Image(); im.onload = function () { f.style.backgroundImage = 'url("' + im.src + '")'; f.classList.remove('vuota'); }; im.src = f.dataset.file;
   });
 
+  // Ricerca nel sito: scarica l'indice una volta e filtra mentre si scrive
+  var q = doc.getElementById('q'), esiti = doc.getElementById('esiti');
+  if (q && esiti) {
+    var pulisci = function (s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+    fetch('risorse/indice.json').then(function (r) { return r.json(); }).then(function (indice) {
+      indice.forEach(function (v) { v.z = pulisci(v.t + ' ' + v.d + ' ' + v.x); v.zt = pulisci(v.t); });
+      var cerca = function () {
+        var parole = pulisci(q.value).split(/\s+/).filter(function (w) { return w.length > 1; }), conta = doc.getElementById('conta');
+        esiti.innerHTML = '';
+        if (!parole.length) { conta.textContent = ''; return; }
+        var trovati = indice.filter(function (v) { return parole.every(function (w) { return v.z.indexOf(w) > -1; }); })
+          .sort(function (a, b) { return (parole.some(function (w) { return b.zt.indexOf(w) > -1; }) ? 1 : 0) - (parole.some(function (w) { return a.zt.indexOf(w) > -1; }) ? 1 : 0); });
+        conta.textContent = trovati.length ? trovati.length + (trovati.length === 1 ? ' risultato' : ' risultati') : 'Nessun risultato. Prova con una parola sola.';
+        trovati.slice(0, 30).forEach(function (v) {
+          var li = doc.createElement('li'), a = doc.createElement('a'), s = doc.createElement('span'), et = doc.createElement('span'), t = doc.createElement('strong'), d = doc.createElement('span');
+          a.className = 'evento'; a.href = v.u; et.className = 'et'; et.textContent = v.k; t.textContent = v.t; d.textContent = v.d;
+          s.appendChild(et); s.appendChild(t); s.appendChild(d); a.appendChild(s); li.appendChild(a); esiti.appendChild(li);
+        });
+      };
+      q.addEventListener('input', cerca);
+      var iniziale = new URLSearchParams(location.search).get('q'); if (iniziale) { q.value = iniziale; cerca(); }
+    });
+  }
+
   // Modulo di adesione
   var f = doc.getElementById('adesione');
   if (f) {

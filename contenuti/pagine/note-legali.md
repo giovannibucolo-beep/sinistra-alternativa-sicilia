@@ -2,7 +2,6 @@
 titolo: Note legali
 occhiello: Da redigere
 sintesi: Pagina da completare.
-bozza: sì
 ---
 
 **Da completare** con i dati di chi pubblica il sito e del committente responsabile dei materiali di propaganda.

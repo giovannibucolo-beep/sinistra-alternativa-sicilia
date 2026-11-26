@@ -7,11 +7,15 @@ sintesi: Clausola sociale in ogni appalto regionale, 12 euro netti l’ora, stop
 foto_attesa: braccianti e operai in assemblea
 ---
 
-## Le tre proposte
+## Cosa può fare la Regione, subito
 
 - Clausola sociale in tutti gli appalti di Regione, ASP e società partecipate.
 - Contratti nazionali rispettati, salvaguardia dei posti nei cambi di gestione, precari storici stabilizzati.
-- Più ispettori contro morti sul lavoro e caporalato; legge-voto per il salario minimo nazionale.
+- Più ispettori contro morti sul lavoro e caporalato.
+
+## Cosa va strappato allo Stato
+
+- Legge-voto per il salario minimo nazionale.
 
 ## Come ci arriviamo
 

@@ -2,7 +2,6 @@
 titolo: Informativa privacy
 occhiello: Da redigere
 sintesi: Pagina da completare prima di raccogliere adesioni.
-bozza: sì
 ---
 
 **Questa pagina è vuota di proposito.** L’informativa va scritta da chi segue la protezione dei dati per il coordinamento, prima di collegare il modulo di adesione.
