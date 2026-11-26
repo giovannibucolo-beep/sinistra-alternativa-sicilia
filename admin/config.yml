@@ -1,0 +1,123 @@
+# Configurazione del pannello di scrittura (Sveltia CMS / Decap CMS).
+# Descrive i contenuti del sito così come sono già fatti: il pannello non cambia il sito,
+# ci scrive dentro. Chi salva fa un commit nel repository e la pubblicazione parte da sola.
+backend:
+  name: github
+  repo: giovannibucolo-beep/sinistra-alternativa-sicilia
+  branch: main
+# Bozza → In revisione → Pubblicato: serve per lavorare in due.
+publish_mode: editorial_workflow
+media_folder: risorse/img
+public_folder: /risorse/img
+locale: it
+site_url: https://giovannibucolo-beep.github.io/sinistra-alternativa-sicilia/
+
+collections:
+  - name: notizie
+    label: Notizie
+    label_singular: Notizia
+    folder: contenuti/notizie
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{data}} · {{titolo}}'
+    sortable_fields: [data, titolo]
+    fields:
+      - { name: titolo, label: Titolo, widget: string }
+      - { name: data, label: Data, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: sintesi, label: Sintesi, widget: text, hint: 'Due righe. Compaiono nell’elenco e su Google.' }
+      - { name: luogo, label: Luogo, widget: string, required: false }
+      - { name: provincia, label: Provincia, widget: select, required: false, options: [Agrigento, Caltanissetta, Catania, Enna, Messina, Palermo, Ragusa, Siracusa, Trapani] }
+      - name: pilastro
+        label: Pilastro del programma
+        widget: select
+        required: false
+        options:
+          - { label: '01 · Ripudiare la guerra', value: '01' }
+          - { label: '02 · Difendere il lavoro', value: '02' }
+          - { label: '03 · Difendere la salute', value: '03' }
+          - { label: '04 · Tenere pubblica l’acqua', value: '04' }
+          - { label: '05 · Decidere sul proprio corpo', value: '05' }
+          - { label: '06 · Unire il Mediterraneo', value: '06' }
+          - { label: '07 · Proteggere il territorio', value: '07' }
+      - { name: esempio, label: 'Solo un esempio (non è una notizia vera)', widget: boolean, required: false, default: false }
+      - { name: bozza, label: 'Tieni fuori dal sito', widget: boolean, required: false, default: false }
+      - { name: body, label: Testo, widget: markdown, hint: 'In fondo la riga delle fonti: **Fonti:** testata, data.' }
+
+  - name: agenda
+    label: Agenda
+    label_singular: Incontro
+    folder: contenuti/agenda
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{data}} {{ora}} · {{titolo}}'
+    fields:
+      - { name: titolo, label: Titolo, widget: string }
+      - { name: data, label: Data, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: ora, label: Ora, widget: string, hint: 'Per esempio 18:30' }
+      - { name: luogo, label: Luogo, widget: string }
+      - { name: provincia, label: Provincia, widget: select, options: [Agrigento, Caltanissetta, Catania, Enna, Messina, Palermo, Ragusa, Siracusa, Trapani] }
+      - { name: pilastro, label: Tavolo, widget: string, required: false }
+      - { name: esempio, label: 'Solo un esempio', widget: boolean, required: false, default: false }
+      - { name: body, label: Descrizione, widget: markdown, required: false }
+
+  - name: territori
+    label: Province
+    folder: contenuti/territori
+    create: false
+    fields:
+      - { name: titolo, label: Provincia, widget: string }
+      - { name: referente, label: Referente, widget: string, required: false }
+      - { name: contatto, label: Contatto, widget: string, required: false }
+      - { name: lotte, label: Lotte aperte, widget: text, required: false }
+      - { name: esempio, label: 'Dati ancora di esempio', widget: boolean, required: false }
+      - { name: body, label: Testo, widget: markdown, required: false }
+
+  - name: pilastri
+    label: Programma
+    folder: contenuti/pilastri
+    create: false
+    summary: '{{numero}} · {{titolo}}'
+    fields:
+      - { name: numero, label: Numero, widget: string }
+      - { name: titolo, label: Titolo, widget: string }
+      - { name: verbo, label: Verbo, widget: string }
+      - { name: slogan, label: Slogan, widget: string }
+      - { name: titolo_ricerca, label: 'Titolo per Google', widget: string, required: false }
+      - { name: descrizione_ricerca, label: 'Descrizione per Google', widget: text, required: false }
+      - { name: body, label: Testo, widget: markdown }
+
+  - name: impostazioni
+    label: Impostazioni
+    files:
+      - name: sito
+        label: 'Dati del sito'
+        file: contenuti/sito.json
+        fields:
+          - { name: versione, label: Versione, widget: string }
+          - { name: bozza, label: 'Il sito è una bozza', widget: boolean }
+          - { name: indicizzabile, label: 'Visibile ai motori di ricerca', widget: boolean }
+          - { name: committente, label: 'Committente responsabile', widget: string }
+          - name: contatti
+            label: Contatti
+            widget: object
+            fields:
+              - { name: email, label: Email, widget: string }
+              - { name: telefono, label: Telefono, widget: string }
+              - { name: reali, label: 'Sono contatti veri', widget: boolean }
+          - name: modulo
+            label: 'Modulo di adesione'
+            widget: object
+            fields:
+              - { name: invia_a, label: 'Indirizzo che riceve le adesioni', widget: string, required: false }
+      - name: materiali
+        label: 'Materiali da scaricare'
+        file: contenuti/materiali.json
+        fields:
+          - name: materiali
+            label: Materiali
+            widget: list
+            fields:
+              - { name: titolo, label: Titolo, widget: string }
+              - { name: file, label: 'Nome del file', widget: string }
+              - { name: descrizione, label: Descrizione, widget: text }
+              - { name: gruppo, label: Gruppo, widget: string }
