@@ -252,9 +252,3 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 @media (min-width: 1360px) and (min-height: 600px) { .striscia.alta a { font-size: min(15px, 2svh); padding-inline: 12px; } }
 @media (min-width: 1000px) and (min-height: 600px) { .schermo .consenso input { flex-basis: 44px; width: 44px; height: 44px; } }
 @media (min-width: 1000px) { .crediti { grid-template-columns: 1fr 1fr; gap: 8px 32px; max-width: none; } .crediti li { padding-bottom: 8px; font-size: 15px; } .crediti span { font-size: 13px; } }
-/* Galleria fotografica in fondo a una notizia */
-.galleria { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.galleria figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
-.galleria img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--nero); }
-.galleria figcaption, .credito { font-size: 14px; }
-@media (max-width: 640px) { .galleria { grid-template-columns: 1fr; } }

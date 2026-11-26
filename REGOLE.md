@@ -36,6 +36,6 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Ogni pilastro ha una fotografia **mirata al suo tema** (MUOS, ospedale di un’area interna, Stretto…), non un’immagine generica.
 - Solo fotografie con licenza libera (Wikimedia Commons: dominio pubblico, CC0, CC BY, CC BY-SA) o nostre. Elenco in `contenuti/foto.json`.
 - Sotto ogni foto: soggetto, autore, licenza. Tutti i dettagli nella pagina «Crediti fotografici».
-- **Foto degli incontri del coordinamento**: si possono usare quelle pubblicate dalle forze aderenti sulle loro pagine, con la firma della pagina in `foto_credito:` e l’assenso di chi le ha pubblicate. Quelle dell’assemblea di Palermo del 15 novembre 2026 (PCI Sicilia, Luca Cangemi) sono inserite in bozza con l’assenso **ancora da chiedere**: senza assenso si tolgono i file da `risorse/img/` prima della versione 1.0.
 - Niente volti riconoscibili di persone estranee al coordinamento; niente opere d’arte di autori viventi.
 - **Sempre ottimizzate per il web, qualunque formato abbiano**: si mette il file in `risorse/img/` (JPEG, PNG, HEIC, WebP, TIFF…) e il sito lo trasforma da solo in JPEG progressivo largo al massimo 1400 px, sotto i 350 KB, senza dati incorporati (posizione, apparecchio). Il controllo blocca la pubblicazione se una foto pesa di più.
+- L’elenco dei crediti fotografici cresce con le foto: come il testo di una notizia, è un’eccezione alla regola 4 e scorre libero.
