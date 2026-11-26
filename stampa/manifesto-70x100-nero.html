@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>manifesto-70x100-nero.html</title>
+<style>
+@font-face { font-family: Montserrat; font-weight: 500; src: url(../risorse/font/montserrat-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: Montserrat; font-weight: 700; src: url(../risorse/font/montserrat-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: Montserrat; font-weight: 800; src: url(../risorse/font/montserrat-latin-800-normal.woff2) format("woff2"); }
+@font-face { font-family: Montserrat; font-weight: 900; src: url(../risorse/font/montserrat-latin-900-normal.woff2) format("woff2"); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Montserrat, sans-serif; font-weight: 500; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+ul { list-style: none; }
+.faccia { position: relative; overflow: hidden; page-break-after: always; break-after: page; }
+.faccia:last-child { page-break-after: auto; break-after: auto; }
+.committente { font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+
+@page { size: 700mm 1000mm; margin: 0; }
+.faccia { display: flex; flex-direction: column; align-items: center; width: 700mm; height: 1000mm; padding: 42mm 45mm 34mm; text-align: center; color: #ffffff; background: #000000; }
+.contr { width: 262mm; height: 262mm; }
+h1 { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2mm 14mm; margin-top: 26mm; font-size: 64mm; font-weight: 900; line-height: .95; text-transform: uppercase; letter-spacing: -.015em; }
+h1 img { width: 175mm; }
+.verbi { margin-top: 20mm; font-size: 30mm; font-weight: 800; line-height: 1.34; text-transform: uppercase; }
+.claim { margin-top: 18mm; font-size: 21mm; font-weight: 700; color: #EC3657; }
+.fondo { display: flex; align-items: center; gap: 16mm; width: 100%; margin-top: auto; padding-top: 12mm; border-top: 4mm solid #EC3657; text-align: left; }
+.fondo .qr { width: 85mm; height: 85mm; padding: 4mm; background: #fff; }
+.inquadra { font-size: 15mm; font-weight: 800; text-transform: uppercase; color: #EC3657; }
+.sito { font-size: 13mm; font-weight: 900; line-height: 1.25; overflow-wrap: anywhere; }
+.committente { margin-top: 12mm; font-size: 6mm; color: rgba(255,255,255,.75); }
+</style>
+</head>
+<body>
+<section class="faccia">
+  <img class="contr" src="../risorse/loghi/sa-contrassegno.svg" alt="">
+  <h1>La Sicilia che <img src="../risorse/loghi/sa-monogramma-bianco.svg" alt="SA"></h1>
+  <ul class="verbi"><li>ripudiare la guerra</li><li>difendere il lavoro</li><li>difendere la salute</li><li>tenere pubblica l’acqua</li></ul>
+  <p class="claim">Un programma nato dalle lotte</p>
+  <div class="fondo"><img class="qr" src="qr-aderisci.svg" alt="Codice QR verso la pagina di adesione"><div><p class="inquadra">Inquadra e aderisci</p><p class="sito">giovannibucolo-beep.github.io/sinistra-alternativa-sicilia</p></div></div>
+  <p class="committente">COMMITTENTE RESPONSABILE DA INDICARE</p>
+</section>
+</body>
+</html>

@@ -19,15 +19,43 @@
   "anche": "programma/tutto.html"
  },
  {
-  "file": "SA-volantino-A5.pdf",
+  "file": "SA-volantino-A5-nero.pdf",
   "titolo": "Volantino A5",
   "descrizione": "Fronte e retro: il richiamo della campagna e i sette punti del programma, con codice QR per aderire. Pronto per la tipografia a 148×210 mm.",
-  "gruppo": "Propaganda"
+  "gruppo": "Propaganda",
+  "varianti": [
+   [
+    "Nero",
+    "SA-volantino-A5-nero.pdf"
+   ],
+   [
+    "Bianco",
+    "SA-volantino-A5-bianco.pdf"
+   ],
+   [
+    "Rosso",
+    "SA-volantino-A5-rosso.pdf"
+   ]
+  ]
  },
  {
-  "file": "SA-manifesto-70x100.pdf",
+  "file": "SA-manifesto-70x100-nero.pdf",
   "titolo": "Manifesto 70×100",
   "descrizione": "Manifesto per affissione, 700×1000 mm, con codice QR per aderire. Leggibile da lontano.",
-  "gruppo": "Propaganda"
+  "gruppo": "Propaganda",
+  "varianti": [
+   [
+    "Nero",
+    "SA-manifesto-70x100-nero.pdf"
+   ],
+   [
+    "Bianco",
+    "SA-manifesto-70x100-bianco.pdf"
+   ],
+   [
+    "Rosso",
+    "SA-manifesto-70x100-rosso.pdf"
+   ]
+  ]
  }
 ]

@@ -301,3 +301,12 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 .scheda.mat .vai { align-self: flex-start; }
 .scheda.mat.attesa { opacity: .62; border-style: dashed; }
 @media print { .condividi { display: none !important; } }
+.varianti { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-top: auto; padding-top: 10px; font-size: 14px; }
+.varianti span { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.varianti a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 10px; font-weight: 800; border: 2px solid var(--nero); text-decoration: none; }
+.varianti a:hover { color: #fff; background: var(--nero); }
+.scheda.mat .varianti + .btn { margin-top: 10px; }
+
+@media (min-width: 1000px) and (min-height: 600px) { .schermo .scheda.mat p { -webkit-line-clamp: unset; display: block; overflow: visible; } }
+.varianti a { color: #fff; background: var(--rosso); border-color: var(--rosso); }
+.varianti a:hover { color: #fff; background: var(--nero); border-color: var(--nero); }

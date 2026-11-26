@@ -480,11 +480,15 @@ for m in MATERIALI:
         mancanti_mat += 1
     tipo = m['file'].rsplit('.', 1)[-1].upper()
     extra = f'<a class="vai" href="{{r}}{m["anche"]}">Leggilo sul sito →</a>' if m.get('anche') else ''
-    voce = (f'<li><span class="scheda mat"><span class="tx"><span class="k">{tipo} · {_peso(f_.stat().st_size)}</span>'
-            f'<strong>{e(m["titolo"])}</strong><p>{e(m["descrizione"])}</p>'
-            f'<a class="btn" href="{{r}}risorse/materiali/{m["file"]}" download>Scarica</a>{extra}</span></span></li>') if pronto else (
-            f'<li><span class="scheda mat attesa"><span class="tx"><span class="k">{tipo} · in preparazione</span>'
-            f'<strong>{e(m["titolo"])}</strong><p>{e(m["descrizione"])}</p>{extra}</span></span></li>')
+    if m.get('varianti'):
+        extra = '<p class="varianti"><span>Scarica la versione:</span>' + ''.join(f'<a href="{{r}}risorse/materiali/{v}" download>{e(n)}</a>' for n, v in m['varianti'] if (RIS / 'materiali' / v).exists()) + '</p>' + extra
+    bottone = f'<a class="btn" href="{{r}}risorse/materiali/{m["file"]}" download>Scarica</a>'
+    testa_s = f'<strong>{e(m["titolo"])}</strong><p>{e(m["descrizione"])}</p>'
+    if pronto:
+        corpo_s = extra if m.get('varianti') else (bottone + extra)
+        voce = f'<li><span class="scheda mat"><span class="tx"><span class="k">{tipo} · {_peso(f_.stat().st_size)}</span>{testa_s}{corpo_s}</span></span></li>'
+    else:
+        voce = f'<li><span class="scheda mat attesa"><span class="tx"><span class="k">{tipo} · in preparazione</span>{testa_s}{extra}</span></span></li>'
     gruppi_mat.setdefault(m['gruppo'], []).append(voce)
 nota_mat = '<p class="avviso">Qualche materiale è ancora in preparazione: lo trovi qui appena pronto.</p>' if mancanti_mat else ''
 gruppi_lista = list(gruppi_mat.items())
