@@ -334,18 +334,19 @@ def LIBERO(dentro):
 # Pittogrammi nostri, disegnati qui: dicono l'azione, non il marchio. I loghi di WhatsApp, Telegram e
 # Facebook sono marchi registrati e non si riproducono, nemmeno ridisegnati.
 ICONE = {
-    'bolla': '<path d="M3 5h18v12H9l-5 4v-4H3z"/>',
-    'invio': '<path d="M4 20 20 4"/><path d="M11 4h9v9"/>',
-    'globo': '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>',
-    'busta': '<path d="M3 5h18v14H3z"/><path d="m3 6 9 7 9-7"/>',
-    'catena': '<path d="M10 14a4 4 0 0 0 6 .5l2.5-2.5a4 4 0 0 0-5.7-5.7L11.5 7.5"/><path d="M14 10a4 4 0 0 0-6-.5L5.5 12a4 4 0 0 0 5.7 5.7l1.3-1.3"/>',
+    'bolla': '<path d="M2 3h20v13h-9l-7 5v-5H2Z"/>',
+    'invio': '<path d="m12 1 7 8h-5v7h-4V9H5Z"/><path d="M3 13h4v5h10v-5h4v9H3Z"/>',
+    'megafono': '<path d="M2 9h5l12-6v18L7 15H2Z"/><path d="M7 15h3.4l1.2 7H8.2Z"/>',
+    'busta': '<path fill-rule="evenodd" d="M2 4h20v16H2Zm2 3v10h16V7l-8 6Z"/>',
+    'catena': '<path fill-rule="evenodd" d="M1 7h22v10H1Zm3 3v4h5v-4Zm11 0v4h5v-4ZM10.5 7h3v3h-3Zm0 7h3v3h-3Z"/>',
 }
 
 
 def icona(nome):
-    return (f'<svg class="ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" '
-            f'stroke-width="2.1" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" '
-            f'focusable="false">{ICONE[nome]}</svg>')
+    """Pieno, non filettato: il segno deve avere la stessa massa dei caratteri del sito e gli stessi angoli vivi.
+    Il colore lo eredita dal pulsante, così sul fondo nero diventa bianco da sé."""
+    return (f'<svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" '
+            f'aria-hidden="true" focusable="false">{ICONE[nome]}</svg>')
 
 
 def condividi(titolo, percorso):
@@ -356,7 +357,7 @@ def condividi(titolo, percorso):
     t = urllib.parse.quote(titolo + ' — ' + SITO['nome'], safe='')
     vie = [('WhatsApp', 'bolla', f'https://wa.me/?text={t}%20{u}'),
            ('Telegram', 'invio', f'https://t.me/share/url?url={u}&text={t}'),
-           ('Facebook', 'globo', f'https://www.facebook.com/sharer/sharer.php?u={u}'),
+           ('Facebook', 'megafono', f'https://www.facebook.com/sharer/sharer.php?u={u}'),
            ('Email', 'busta', f'mailto:?subject={t}&body={u}')]
     link = ''.join(f'<a href="{v}" target="_blank" rel="noopener">{icona(ic)}<span>{n}</span></a>' for n, ic, v in vie)
     copia = f'<button type="button" data-copia="{e(BASE + percorso)}">{icona("catena")}<span>Copia il link</span></button>'
