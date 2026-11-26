@@ -35,7 +35,9 @@
   });
 
   // Misure delle visite. Senza cookie: partono subito. Con cookie: solo dopo il sì, categoria per categoria; rifiuto e × valgono uguale.
-  var M = window.SA_MISURE;
+  var _m = doc.getElementById('sa-misure');
+  var M = null;
+  try { M = _m ? JSON.parse(_m.textContent) : null; } catch (e) { M = null; }
   if (M) {
     var metti = function (src, attr) { var s = doc.createElement('script'); s.async = true; s.src = src; for (var k in (attr || {})) s.setAttribute(k, attr[k]); doc.head.appendChild(s); };
     if (M.gc) metti('https://gc.zgo.at/count.js', { 'data-goatcounter': 'https://' + M.gc + '.goatcounter.com/count' });
@@ -95,6 +97,13 @@
       var iniziale = new URLSearchParams(location.search).get('q'); if (iniziale) { q.value = iniziale; cerca(); }
     });
   }
+
+  // Fotografia che non c'è ancora: al suo posto il segnaposto, senza lasciare un riquadro vuoto
+  doc.querySelectorAll('img[data-se-manca]').forEach(function (im) {
+    var manca = function () { var f = im.parentNode; if (!f) return; f.classList.add('vuota'); f.dataset.et = im.dataset.seManca; im.remove(); };
+    im.addEventListener('error', manca);
+    if (im.complete && im.naturalWidth === 0) manca();
+  });
 
   // Copia il link della pagina (accanto ai pulsanti di condivisione)
   doc.querySelectorAll('[data-copia]').forEach(function (b2) {

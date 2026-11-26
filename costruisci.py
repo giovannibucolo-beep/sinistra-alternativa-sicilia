@@ -115,7 +115,7 @@ FUTURI = [v for v in EVENTI if not v['passato']]
 def sa(t, variante=''):
     """REGOLA DEL SITO: «la Sicilia (che) SA …» si scrive con il monogramma al posto della parola. `variante`: '' su chiaro, 'nero' su fondo nero, 'rosso' su fondo rosso."""
     file = {'': 'sa-monogramma.svg', 'nero': 'sa-monogramma-negativo-su-nero.svg', 'rosso': 'sa-monogramma-bianco.svg'}[variante]
-    return re.sub(r'(?i)(sicilia)(\s+che)?\s+sa\b', lambda m: (f'{m.group(1)} <span class="nsa">che ' if m.group(2) else f'<span class="nsa">{m.group(1)} ') + f'<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42" style="display:inline-block;height:1.06em;width:auto;vertical-align:baseline"></span>', t)
+    return re.sub(r'(?i)(sicilia)(\s+che)?\s+sa\b', lambda m: (f'{m.group(1)} <span class="nsa">che ' if m.group(2) else f'<span class="nsa">{m.group(1)} ') + f'<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42"></span>', t)
 
 
 ES = ' <em class="es">esempio</em>'
@@ -138,7 +138,7 @@ def misure(r):
     """Strumenti di misura: nulla se non sono configurati. Quelli con cookie partono solo dopo il consenso (sito.js)."""
     if not (ST.get('goatcounter') or COOKIE_ATTIVI):
         return ''
-    return '<script>window.SA_MISURE=' + json.dumps({'gc': ST.get('goatcounter', ''), 'ga': ST.get('google_analytics', ''), 'fb': ST.get('meta_pixel', ''), 'r': r}) + ';</script>\n'
+    return '<script type="application/json" id="sa-misure">' + json.dumps({'gc': ST.get('goatcounter', ''), 'ga': ST.get('google_analytics', ''), 'fb': ST.get('meta_pixel', ''), 'r': r}) + '</script>\n'
 
 
 def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='generale', tipo='website', dati=None, ricerca=None, immagine=None):
@@ -157,6 +157,8 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
         grafo.append({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': BASE}] + [{'@type': 'ListItem', 'position': i + 2, 'name': t, 'item': BASE + (h or percorso)} for i, (h, t) in enumerate(briciole)]})
     if immagine:
         grafo.append({'@context': 'https://schema.org', '@type': 'ImageObject', 'contentUrl': BASE + 'risorse/img/' + immagine['file'] + '.jpg', 'name': immagine['soggetto'], 'creditText': immagine['autore'], 'creator': {'@type': 'Person' if immagine['autore'] != 'Commissione europea' else 'Organization', 'name': immagine['autore']}, 'license': immagine['licenza_url'], 'acquireLicensePage': BASE + 'crediti.html'})
+    invia = SITO['modulo'].get('invia_a', '') or ''
+    invia = invia.split('/')[0] + '//' + invia.split('/')[2] if invia.startswith('http') else ''
     verifica = f'<meta name="google-site-verification" content="{e(SITO["google_verifica"])}">\n' if SITO.get('google_verifica') else ''
     robot = '' if SITO['indicizzabile'] else '<meta name="robots" content="noindex, nofollow">\n'
     ld = ''.join(f'<script type="application/ld+json">{json.dumps(g, ensure_ascii=False)}</script>\n' for g in grafo)
@@ -166,6 +168,8 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <meta charset="utf-8">
 <script>document.documentElement.className = "js";</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; form-action 'self' {invia}; base-uri 'none'; connect-src 'self' {invia}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 {robot}{verifica}<title>{e(titolo_pieno)}</title>
 <meta name="description" content="{e(descrizione_r)}">
 <link rel="canonical" href="{BASE}{'' if percorso == 'index.html' else percorso}">
@@ -201,7 +205,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 </main>
 <footer class="piede schermo">
 <div class="in">
-<div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p style="margin-top:14px;font-size:15px">{e(SITO['descrizione'])}</p></div>
+<div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p class="piede-desc">{e(SITO['descrizione'])}</p></div>
 <div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}materiali.html">Materiali</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
 <div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
 <div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
@@ -248,7 +252,7 @@ def foto(file, attesa, extra=''):
     c = FOTO.get(file)
     if c:
         primo = ' fetchpriority="high"' if 'grande' in extra else ' loading="lazy"'
-        return f'<figure class="foto{extra}"><img src="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} onerror="this.parentNode.classList.add(\'vuota\');this.parentNode.dataset.et=\'FOTO DA INSERIRE · risorse/img/{file}.jpg\';this.remove()"><figcaption class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</figcaption></figure>'
+        return f'<figure class="foto{extra}"><img src="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} data-se-manca="FOTO DA INSERIRE · risorse/img/{file}.jpg"><figcaption class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</figcaption></figure>'
     return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(attesa)}"></div>'
 
 
@@ -266,7 +270,7 @@ def striscia():
 
 
 def banda_aderisci(titolo='Il programma si scrive ai tavoli', testo_='Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.', q=''):
-    return f'<section class="sez su-rosso"><div class="in" style="align-items:flex-start"><h2>{sa(titolo, "rosso")}</h2><p style="max-width:36em;font-size:19px;font-weight:700">{testo_}</p><a class="btn bw" href="{{r}}aderisci.html{q}">Aderisci ora</a></div></section>'
+    return f'<section class="sez su-rosso"><div class="in alto"><h2>{sa(titolo, "rosso")}</h2><p class="largo36">{testo_}</p><a class="btn bw" href="{{r}}aderisci.html{q}">Aderisci ora</a></div></section>'
 
 
 def mappa(corrente=''):
@@ -538,6 +542,13 @@ pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stat
 # la pagina 404 è servita da qualunque indirizzo: i suoi collegamenti devono essere assoluti
 f404 = OUT / '404.html'
 f404.write_text(re.sub(r'(href|src)="(?!https?:|#|mailto:)([^"]+)"', lambda m: f'{m.group(1)}="{BASE}{m.group(2)}"', f404.read_text(encoding='utf-8')), encoding='utf-8')
+
+(OUT / '.well-known').mkdir(exist_ok=True)
+(OUT / '.well-known' / 'security.txt').write_text(
+    '# Come segnalare un problema di sicurezza di questo sito.\n'
+    f"Contact: mailto:{SITO['contatti']['email'] if SITO['contatti'].get('reali') else 'indirizzo da indicare'}\n"
+    'Preferred-Languages: it, en\n'
+    f'Expires: {datetime.date.today().year + 1}-12-31T23:59:59.000Z\n', encoding='utf-8')
 
 (OUT / 'sito.webmanifest').write_text(json.dumps({
     'name': SITO['nome'] + ' — Sicilia', 'short_name': 'SA Sicilia', 'description': SITO['descrizione'], 'lang': 'it',

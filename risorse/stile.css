@@ -310,3 +310,10 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 @media (min-width: 1000px) and (min-height: 600px) { .schermo .scheda.mat p { -webkit-line-clamp: unset; display: block; overflow: visible; } }
 .varianti a { color: #fff; background: var(--rosso); border-color: var(--rosso); }
 .varianti a:hover { color: #fff; background: var(--nero); border-color: var(--nero); }
+
+/* Stili che prima stavano dentro le pagine: fuori di lì, così il sito può vietare tutto ciò che non arriva da qui */
+.nsa .sa { display: inline-block; height: 1.06em; width: auto; vertical-align: baseline; }
+.piede-desc { margin-top: 14px; font-size: 15px; }
+.piede-nota { margin-top: 14px; font-size: 13px; opacity: .75; }
+.in.alto { align-items: flex-start; }
+.largo36 { max-width: 36em; font-size: 19px; font-weight: 700; }

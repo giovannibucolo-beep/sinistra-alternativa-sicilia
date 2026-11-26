@@ -6,11 +6,17 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: pubblicazione
+  cancel-in-progress: false
 jobs:
   pubblica:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Bloccato a una versione precisa: un'azione aggiornata da altri non entra senza che lo decidiamo noi
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - name: Prepara lo strumento che ottimizza le fotografie
         run: python3 -m pip install --quiet --break-system-packages pillow pillow-heif || python3 -m pip install --quiet pillow pillow-heif
       - name: Scarica le fotografie da Wikimedia Commons

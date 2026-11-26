@@ -4,13 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Pannello di scrittura — Sinistra per l’Alternativa</title>
 <link rel="icon" href="../risorse/loghi/sa-icona.svg" type="image/svg+xml">
 </head>
 <body>
 <!-- Pannello di scrittura (Sveltia CMS). I contenuti sono descritti in config.yml.
-     Chi entra scrive nel repository: il sito si ricostruisce e si pubblica da solo.
-     Questa pagina non è indicizzata e non compare nel menù del sito. -->
-<script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+     Il programma è bloccato a una versione precisa e verificato con l'impronta (integrity):
+     se il file sul CDN cambia di un solo byte, il browser si rifiuta di eseguirlo.
+     Per aggiornare: si cambia la versione, si ricalcola l'impronta, si prova e si pubblica. -->
+<script src="https://unpkg.com/@sveltia/cms@0.273.1/dist/sveltia-cms.js"
+        integrity="sha384-GnFsclhF3iSzkeCNslxUI0s069ES1710IkicWiKZpJCPiVJ8RH8frS1OmXGXSrFV"
+        crossorigin="anonymous"></script>
 </body>
 </html>
