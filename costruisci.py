@@ -265,6 +265,10 @@ if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir()
 shutil.copytree(RIS, OUT / 'risorse')
+# Il pannello di scrittura viene copiato così com'è: non è una pagina del sito, non entra
+# nel menù, non va nella mappa del sito e non è indicizzabile.
+if (QUI / 'admin').exists():
+    shutil.copytree(QUI / 'admin', OUT / 'admin')
 (OUT / '.nojekyll').write_text('')
 
 # ====================================================================================================

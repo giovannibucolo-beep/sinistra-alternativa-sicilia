@@ -13,6 +13,7 @@ with sync_playwright() as p:
     for w, h in [(1440, 900), (1280, 720), (1920, 1080), (1366, 768)]:
         pg = b.new_page(viewport={'width': w, 'height': h})
         for f in sorted(OUT.rglob('*.html')):
+            if f.relative_to(OUT).as_posix().startswith('admin/'): continue  # pannello di scrittura
             nome = str(f.relative_to(OUT))
             if nome == '404.html': continue
             pg.goto('http://127.0.0.1:8811/' + nome); pg.wait_for_timeout(120)

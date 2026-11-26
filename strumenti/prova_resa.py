@@ -9,6 +9,7 @@ guai = 0
 with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome', args=['--no-sandbox'])
     for f in sorted(OUT.rglob('*.html')):
+        if f.relative_to(OUT).as_posix().startswith('admin/'): continue  # pannello di scrittura, non è una pagina del sito
         nome = str(f.relative_to(OUT))
         if nome == '404.html': continue   # usa indirizzi assoluti: si prova solo in linea
         for et, w, h in [('tel stretto', 320, 640), ('tel', 390, 844), ('tablet', 760, 1000), ('pc piccolo', 1180, 800), ('pc', 1440, 900)]:

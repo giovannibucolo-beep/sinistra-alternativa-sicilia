@@ -29,7 +29,8 @@ class Lettore(HTMLParser):
         if self._in_t: self.titolo += d
 
 
-pagine = sorted(OUT.rglob('*.html'))
+# Il pannello di scrittura non è una pagina del sito: niente titoli, anteprime social o briciole da controllare.
+pagine = sorted(f for f in OUT.rglob('*.html') if not f.relative_to(OUT).as_posix().startswith('admin/'))
 if not pagine: sys.exit('ERRORE: nessuna pagina in pubblico/. Lancia prima costruisci.py')
 titoli = {}
 for f in pagine:
