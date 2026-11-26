@@ -12,7 +12,8 @@ Titolare del trattamento: **{titolare}**, {sede_titolare}. Per ogni richiesta: {
 
 ## Quali dati raccogliamo
 
-- **Con il modulo di adesione:** nome e cognome, email, comune e provincia. Nient’altro.
+- **Con il modulo di adesione:** nome e cognome, email, comune e provincia. Solo se li scrivi tu: telefono, tavolo che ti interessa e come vuoi dare una mano. Per le organizzazioni: nome e tipo dell’organizzazione e i contatti di chi fa da riferimento.
+- **Contributi in denaro:** dal sito non si raccolgono pagamenti. Chi indica di voler contribuire viene solo ricontattato.
 - **Visitando il sito:** nessun dato raccolto da noi. Il servizio che ospita le pagine ({ospite}) riceve, come ogni server, l’indirizzo di rete di chi le apre.
 - **Cookie e statistiche:** sono descritti nella pagina [Cookie e statistiche](cookie.html), che dice sempre che cosa è acceso.
 

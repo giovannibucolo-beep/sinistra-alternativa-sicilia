@@ -393,13 +393,27 @@ for nome, t in TERRITORI.items():
 
 # Aderisci
 opz = ''.join(f'<option>{p}</option>' for p in PROVINCE)
-pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.', S(f'''<div class="col2"><div class="colonna">{testa('Partecipa', 'Aderisci al coordinamento', 'Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per i tavoli e gli incontri nel tuo territorio.')}<ul class="testo passi"><li>Ricevi una conferma.</li><li>Ti scriviamo quando c’è un incontro nella tua provincia.</li><li>Puoi partecipare a uno dei sette tavoli del programma.</li></ul>{'<p class="avviso">Il modulo non è ancora collegato: in questa bozza non invia e non conserva nulla.</p>' if not SITO['modulo']['invia_a'] else ''}</div>
+opz_tavoli = ''.join(f'<option value="{p["numero"]}">{p["numero"]} · {e(p["titolo"])}</option>' for p in PILASTRI)
+MANO = ['Volantinaggio e banchetti', 'Social e comunicazione', 'Competenze professionali', 'Ospitare un incontro', 'Contributo in denaro']
+opz_mano = ''.join(f'<label><input type="checkbox" name="mano" value="{e(m)}"><span>{e(m)}</span></label>' for m in MANO)
+pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.', S(f'''<div class="col2"><div class="colonna">{testa('Partecipa', 'Aderisci al coordinamento', 'Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per i tavoli e gli incontri nel tuo territorio.')}<ul class="testo passi"><li>Scegli se aderisci tu o la tua organizzazione.</li><li>Ti scriviamo quando c’è un incontro nella tua provincia.</li><li>Puoi partecipare a uno dei sette tavoli del programma.</li></ul>{'<p class="avviso">Il modulo non è ancora collegato: in questa bozza non invia e non conserva nulla.</p>' if not SITO['modulo']['invia_a'] else ''}</div>
 <form id="adesione" novalidate data-invia-a="{e(SITO['modulo']['invia_a'])}">
-<label>Nome e cognome<input type="text" name="nome" autocomplete="name"></label>
-<label>Email<input type="email" name="email" autocomplete="email" inputmode="email"></label>
+<p class="passo-n" aria-live="polite">Passo <b>1</b> di 2</p>
+<div class="passo" data-passo="1">
+<div class="chi" role="radiogroup" aria-label="Chi aderisce"><label class="scelta"><input type="radio" name="chi" value="persona" checked><span>Aderisco io</span></label><label class="scelta"><input type="radio" name="chi" value="organizzazione"><span>Aderisce la mia organizzazione</span></label></div>
+<div class="riga2 solo-org" hidden><label>Nome dell’organizzazione<input type="text" name="organizzazione" autocomplete="organization"></label><label>Che cos’è<select name="tipo_organizzazione"><option value="">Scegli…</option><option>Comitato</option><option>Collettivo</option><option>Sindacato</option><option>Associazione</option><option>Circolo o sezione</option><option>Altro</option></select></label></div>
+<label><span class="et-nome">Nome e cognome</span><input type="text" name="nome" autocomplete="name"></label>
+<div class="riga2"><label>Email<input type="email" name="email" autocomplete="email" inputmode="email"></label><label>Telefono (facoltativo)<input type="tel" name="telefono" autocomplete="tel" inputmode="tel"></label></div>
 <div class="riga2"><label>Comune<input type="text" name="comune" autocomplete="address-level2"></label><label>Provincia<select name="provincia"><option value="">Scegli…</option>{opz}</select></label></div>
+<button class="btn" type="button" data-avanti>Avanti</button>
+</div>
+<div class="passo" data-passo="2">
+<label>Tavolo che ti interessa<select name="tavolo"><option value="">Non so ancora</option>{opz_tavoli}</select></label>
+<fieldset class="mano"><legend>Come vuoi dare una mano (facoltativo)</legend>{opz_mano}</fieldset>
 <label class="consenso"><input type="checkbox" name="consenso"><span>Ho letto l’<a href="{{r}}privacy.html">informativa privacy</a> e acconsento all’uso dei miei dati, che rivelano un’adesione politica, per essere ricontattato dal coordinamento.</span></label>
-<button class="btn" type="submit">Invia adesione</button>
+<div class="riga2 fine"><button class="btn b2" type="button" data-indietro>Indietro</button><button class="btn" type="submit">Invia adesione</button></div>
+</div>
+<input class="trappola" type="text" name="sito_web" tabindex="-1" autocomplete="off" aria-hidden="true">
 <p class="esito" role="status" aria-live="polite"></p>
 </form></div>''', 'carta'), 'aderisci', [('', 'Aderisci')])
 

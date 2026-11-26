@@ -96,28 +96,44 @@
     });
   }
 
-  // Modulo di adesione
+  // Modulo di adesione: due passi, persona oppure organizzazione
   var f = doc.getElementById('adesione');
   if (f) {
-    var p = new URLSearchParams(location.search).get('provincia'), sel = f.querySelector('[name=provincia]');
-    if (p && sel) Array.prototype.forEach.call(sel.options, function (op) { if (op.value.toLowerCase() === p.toLowerCase()) sel.value = op.value; });
+    var g = function (k) { return f.querySelector('[name=' + k + ']'); }, out = f.querySelector('.esito'), org = f.querySelector('.solo-org'), etn = f.querySelector('.et-nome'), num = f.querySelector('.passo-n b');
+    var qs = new URLSearchParams(location.search), pv = qs.get('provincia'), tv = qs.get('tavolo');
+    if (pv) Array.prototype.forEach.call(g('provincia').options, function (op) { if (op.value.toLowerCase() === pv.toLowerCase()) g('provincia').value = op.value; });
+    if (tv) g('tavolo').value = tv;
+    var eOrg = function () { return f.querySelector('[name=chi]:checked').value === 'organizzazione'; };
+    var chi = function () { org.hidden = !eOrg(); etn.textContent = eOrg() ? 'Chi fa da riferimento' : 'Nome e cognome'; };
+    Array.prototype.forEach.call(f.querySelectorAll('[name=chi]'), function (r) { r.addEventListener('change', chi); }); chi();
+    var errore = function (t2, campo) { out.textContent = t2; campo.focus(); return false; };
+    var passo = function (n) { f.classList.toggle('p2', n === 2); num.textContent = n; out.textContent = ''; var primo = f.querySelector('[data-passo="' + n + '"] input, [data-passo="' + n + '"] select'); if (primo) primo.focus(); };
+    var primoPasso = function () {
+      if (eOrg() && !g('organizzazione').value.trim()) return errore('Scrivi il nome dell’organizzazione.', g('organizzazione'));
+      if (!g('nome').value.trim()) return errore('Scrivi nome e cognome.', g('nome'));
+      if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(g('email').value.trim())) return errore('Controlla l’indirizzo email.', g('email'));
+      if (!g('provincia').value) return errore('Scegli la provincia.', g('provincia'));
+      return true;
+    };
+    f.querySelector('[data-avanti]').addEventListener('click', function () { if (primoPasso()) passo(2); });
+    f.querySelector('[data-indietro]').addEventListener('click', function () { passo(1); });
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var g = function (k) { return f.querySelector('[name=' + k + ']'); }, out = f.querySelector('.esito');
-      var nome = g('nome').value.trim(), email = g('email').value.trim();
-      var errore = function (t, campo) { out.textContent = t; campo.focus(); };
-      if (!nome) return errore('Scrivi nome e cognome.', g('nome'));
-      if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) return errore('Controlla l’indirizzo email.', g('email'));
-      if (!g('provincia').value) return errore('Scegli la provincia.', g('provincia'));
+      if (!primoPasso()) return passo(1), primoPasso();
+      if (!f.classList.contains('p2')) return passo(2);
       if (!g('consenso').checked) return errore('Serve il consenso per essere ricontattati.', g('consenso'));
-      var dati = { nome: nome, email: email, comune: g('comune').value.trim(), provincia: g('provincia').value, quando: new Date().toISOString() };
+      var nome = g('nome').value.trim(), o = eOrg();
+      var dati = { chi: o ? 'organizzazione' : 'persona', organizzazione: o ? g('organizzazione').value.trim() : '', tipo_organizzazione: o ? g('tipo_organizzazione').value : '', nome: nome, email: g('email').value.trim(), telefono: g('telefono').value.trim(), comune: g('comune').value.trim(), provincia: g('provincia').value, tavolo: g('tavolo').value, mano: Array.prototype.map.call(f.querySelectorAll('[name=mano]:checked'), function (c) { return c.value; }), consenso: true, quando: new Date().toISOString() };
       var grazie = function (nota) {
         var d = doc.createElement('div'); d.className = 'fatto'; d.setAttribute('role', 'status');
-        var t = doc.createElement('b'); t.textContent = 'Grazie, ' + nome.split(' ')[0] + '.';
+        var t3 = doc.createElement('b'); t3.textContent = 'Grazie, ' + (o ? dati.organizzazione : nome.split(' ')[0]) + '.';
         var r = doc.createElement('p'); r.textContent = 'Adesione registrata per la provincia di ' + dati.provincia + '. Ti scriveremo per il prossimo incontro nel tuo territorio.';
-        var n = doc.createElement('p'); n.style.fontSize = '14px'; n.textContent = nota;
-        d.appendChild(t); d.appendChild(r); if (nota) d.appendChild(n); f.innerHTML = ''; f.appendChild(d);
+        d.appendChild(t3); d.appendChild(r);
+        if (dati.mano.indexOf('Contributo in denaro') > -1) { var c2 = doc.createElement('p'); c2.textContent = 'Per il contributo in denaro ti ricontatteremo noi: dal sito non si raccolgono pagamenti.'; d.appendChild(c2); }
+        if (nota) { var n = doc.createElement('p'); n.style.fontSize = '14px'; n.textContent = nota; d.appendChild(n); }
+        f.innerHTML = ''; f.appendChild(d);
       };
+      if (g('sito_web').value) return grazie('');
       var dove = f.dataset.inviaA;
       if (!dove) return grazie('Dimostrazione: il modulo non è ancora collegato, nessun dato è stato inviato o conservato.');
       out.textContent = 'Invio in corso…';
