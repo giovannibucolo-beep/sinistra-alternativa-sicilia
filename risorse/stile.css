@@ -252,3 +252,21 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 @media (min-width: 1360px) and (min-height: 600px) { .striscia.alta a { font-size: min(15px, 2svh); padding-inline: 12px; } }
 @media (min-width: 1000px) and (min-height: 600px) { .schermo .consenso input { flex-basis: 44px; width: 44px; height: 44px; } }
 @media (min-width: 1000px) { .crediti { grid-template-columns: 1fr 1fr; gap: 8px 32px; max-width: none; } .crediti li { padding-bottom: 8px; font-size: 15px; } .crediti span { font-size: 13px; } }
+
+/* Avviso sui cookie: compare solo se sono configurati strumenti con cookie. Rifiuta e Accetta hanno lo stesso peso. */
+#avviso-cookie { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 9999; max-width: 640px; margin: 0 auto; padding: 18px 52px 16px 18px; color: #fff; background: #000; border: 2px solid #fff; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
+#avviso-cookie p { margin: 0 0 12px; font-size: 15px; line-height: 1.45; }
+#avviso-cookie a { color: #fff; text-decoration: underline; }
+#avviso-cookie .scelte { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-right: -34px; }
+#avviso-cookie .scelte .sec { grid-column: 1 / -1; color: #fff; background: #000; }
+#avviso-cookie .pers { display: grid; gap: 6px; margin: 0 -34px 12px 0; }
+#avviso-cookie .pers[hidden] { display: none; }
+#avviso-cookie .pers label { display: flex; flex-direction: row; align-items: center; gap: 10px; min-height: 44px; margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0; text-transform: none; color: #fff; }
+#avviso-cookie .pers input { width: 22px; height: 22px; min-height: 0; margin: 0; flex: none; accent-color: #EC3657; }
+#avviso-cookie .pers button { min-height: 48px; font: 800 14px/1 Montserrat, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #000; background: #fff; border: 2px solid #fff; cursor: pointer; }
+.tab-cookie { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tab-cookie th, .tab-cookie td { padding: 8px 10px 8px 0; text-align: left; vertical-align: top; border-bottom: 1px solid currentColor; overflow-wrap: anywhere; }
+.tab-cookie th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+#avviso-cookie .scelte button { min-height: 48px; padding: 0 14px; font: 800 14px/1 Montserrat, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #000; background: #fff; border: 2px solid #fff; cursor: pointer; }
+#avviso-cookie .x { position: absolute; top: 4px; right: 4px; width: 44px; height: 44px; font-size: 26px; line-height: 1; color: #fff; background: none; border: 0; cursor: pointer; }
+@media (max-width: 760px) { .tab-cookie thead { display: none; } .tab-cookie tr { display: block; padding: 10px 0; border-bottom: 1px solid currentColor; } .tab-cookie td { display: block; padding: 2px 0; border: 0; overflow-wrap: normal; } .tab-cookie td:first-child { font-weight: 800; } .tab-cookie td:nth-child(2)::before { content: "Servizio: "; font-weight: 700; } .tab-cookie td:nth-child(3)::before { content: "Categoria: "; font-weight: 700; } .tab-cookie td:nth-child(4)::before { content: "Durata: "; font-weight: 700; } }

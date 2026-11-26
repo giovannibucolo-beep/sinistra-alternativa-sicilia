@@ -126,6 +126,17 @@ MENU = [('chi-siamo.html', 'Chi siamo'), ('programma/index.html', 'Programma'), 
 PAGINE_FATTE = []
 
 
+ST = SITO.get('statistiche', {})
+COOKIE_ATTIVI = bool(ST.get('google_analytics') or ST.get('meta_pixel'))
+
+
+def misure(r):
+    """Strumenti di misura: nulla se non sono configurati. Quelli con cookie partono solo dopo il consenso (sito.js)."""
+    if not (ST.get('goatcounter') or COOKIE_ATTIVI):
+        return ''
+    return '<script>window.SA_MISURE=' + json.dumps({'gc': ST.get('goatcounter', ''), 'ga': ST.get('google_analytics', ''), 'fb': ST.get('meta_pixel', ''), 'r': r}) + ';</script>\n'
+
+
 def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='generale', tipo='website', dati=None, ricerca=None, immagine=None):
     """Scrive una pagina completa: testata, briciole, contenuto, piede. `percorso` è relativo alla radice del sito."""
     r = '../' * percorso.count('/')
@@ -187,13 +198,13 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
 <div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
 <div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
-<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}crediti.html">Crediti fotografici</a></span>
+<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a></span>
 {'<span>Bozza dimostrativa: contatti, account e voci segnate «esempio» non sono reali.</span>' if SITO['bozza'] else ''}
 <span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
 </div>
 </footer>
 {'<div class="bozza" aria-hidden="true">' + ('ANTEPRIMA PRIVATA · CON BOZZE' if ANTEPRIMA else 'BOZZA DIMOSTRATIVA') + '</div>' if SITO['bozza'] or ANTEPRIMA else ''}
-<script src="{r}risorse/sito.js?v={SITO['versione']}" defer></script>
+{misure(r)}<script src="{r}risorse/sito.js?v={SITO['versione']}" defer></script>
 </body>
 </html>
 '''
@@ -414,6 +425,20 @@ for chiave in ('privacy', 'note-legali'):
 # Crediti delle fotografie (le licenze Creative Commons chiedono autore, licenza e fonte)
 righe_crediti = ''.join(f'''<li><strong>{e(c["soggetto"])}</strong><span>Foto di {e(c["autore"])}{" (" + c["anno"] + ")" if c["anno"] else ""}, licenza <a href="{c["licenza_url"]}" rel="license noopener">{e(c["licenza"])}</a>. Originale: <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(c["commons"].replace(" ", "_"))}" rel="noopener">Wikimedia Commons</a>. Ridimensionata e ritagliata.</span></li>''' for c in FOTO.values())
 pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori: qui autore, licenza e originale di ciascuna.') + '<a class="vai-a" href="#elenco">Vedi l’elenco ↓</a>') + LIBERO(f'<ul class="crediti" id="elenco">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])
+# Cookie e statistiche: la pagina dice sempre e solo ciò che il sito fa davvero (si aggiorna da contenuti/sito.json)
+righe_ck = []
+if COOKIE_ATTIVI: righe_ck.append(('sa-consenso', 'Questo sito', 'Tecnico', '6 mesi', 'Ricorda la scelta fatta sui cookie (memoria del dispositivo, non è un cookie)'))
+if ST.get('goatcounter'): righe_ck.append(('nessuno', 'GoatCounter', 'Statistiche senza cookie', '—', 'Conta le pagine viste senza salvare nulla sul dispositivo e senza riconoscere le persone'))
+if ST.get('google_analytics'): righe_ck.append(('_ga, _ga_*', 'Google Analytics', 'Statistiche', 'Fino a 2 anni', 'Statistiche di visita. Solo dopo il consenso'))
+if ST.get('meta_pixel'): righe_ck.append(('_fbp, _fbc', 'Meta (Facebook, Instagram)', 'Campagne social', 'Fino a 3 mesi', 'Misura delle campagne sui social. Solo dopo il consenso'))
+tab_ck = ('<table class="tab-cookie"><thead><tr><th>Nome</th><th>Servizio</th><th>Categoria</th><th>Durata</th><th>A che cosa serve</th></tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<td>{e(x)}</td>' for x in rg) + '</tr>' for rg in righe_ck) + '</tbody></table>') if righe_ck else '<p><strong>Oggi il sito non usa cookie e non misura le visite.</strong> Non c’è nulla da accettare o rifiutare. Caratteri e immagini sono ospitati sul sito: nessuna chiamata a servizi esterni.</p>'
+gest_ck = ('<p>Alla prima visita un avviso chiede la scelta: «Accetta tutto», «Rifiuta» o «Personalizza». Rifiutare, o chiudere con la ×, non cambia nulla: il sito funziona allo stesso modo e nessuno strumento con cookie viene caricato. La scelta vale sei mesi e si può cambiare quando si vuole.</p><div class="azioni"><button class="btn" type="button" data-cookie-scelta>Cambia la tua scelta</button></div>') if COOKIE_ATTIVI else '<p>Non essendoci cookie, non c’è nessun consenso da dare.</p>'
+corpo_ck = f'''<div class="testo"><h2>1. Che cosa sono i cookie</h2><p>Piccoli file che un sito salva sul dispositivo di chi lo visita. Quelli tecnici servono a far funzionare il sito; quelli di terze parti servono a statistiche o pubblicità e richiedono il consenso.</p>
+<h2>2. Che cosa usa questo sito</h2>{tab_ck}
+<h2>3. Consenso e come cambiarlo</h2>{gest_ck}
+<h2>4. Bloccarli dal browser</h2><p>Ogni browser permette di bloccare o cancellare i cookie dalle proprie impostazioni: <a href="https://support.google.com/chrome/answer/95647" rel="noopener">Chrome</a>, <a href="https://support.mozilla.org/it/kb/protezione-antitracciamento-avanzata-firefox-desktop" rel="noopener">Firefox</a>, <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" rel="noopener">Safari</a>, <a href="https://support.microsoft.com/it-it/microsoft-edge" rel="noopener">Edge</a>.</p>
+<h2>5. I tuoi diritti</h2><p>Per sapere quali dati ti riguardano, correggerli o farli cancellare scrivi a {e(SITO["contatti"]["email"])}. Il resto è nell’<a href="{{r}}privacy.html">informativa privacy</a>.</p></div>'''
+pagina('cookie.html', 'Cookie e statistiche', 'Che cosa usa il sito per misurare le visite e come cambiare la propria scelta.', S(testa('Cookie', 'Cookie e statistiche', 'Che cosa usa questo sito, detto in chiaro.') + '<a class="vai-a" href="#cookie">Leggi ↓</a>') + LIBERO(f'<div id="cookie">{corpo_ck}</div>'), '', [('', 'Cookie e statistiche')])
 pagina('404.html', 'Pagina non trovata', 'La pagina cercata non esiste o è stata spostata.', S(testa('Errore 404', 'Questa pagina non c’è', 'Forse è stata spostata. Riparti da qui:') + f'<div class="azioni"><a class="btn" href="{BASE}index.html">Pagina iniziale</a><a class="btn b2" href="{BASE}programma/index.html">Il programma</a></div>'))
 # la pagina 404 è servita da qualunque indirizzo: i suoi collegamenti devono essere assoluti
 f404 = OUT / '404.html'

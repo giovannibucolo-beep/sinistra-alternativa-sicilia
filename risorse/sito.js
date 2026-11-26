@@ -34,6 +34,44 @@
     var im = new Image(); im.onload = function () { f.style.backgroundImage = 'url("' + im.src + '")'; f.classList.remove('vuota'); }; im.src = f.dataset.file;
   });
 
+  // Misure delle visite. Senza cookie: partono subito. Con cookie: solo dopo il sì, categoria per categoria; rifiuto e × valgono uguale.
+  var M = window.SA_MISURE;
+  if (M) {
+    var metti = function (src, attr) { var s = doc.createElement('script'); s.async = true; s.src = src; for (var k in (attr || {})) s.setAttribute(k, attr[k]); doc.head.appendChild(s); };
+    if (M.gc) metti('https://gc.zgo.at/count.js', { 'data-goatcounter': 'https://' + M.gc + '.goatcounter.com/count' });
+    if (M.ga || M.fb) {
+      var CH = 'sa-consenso', SEI_MESI = 180 * 864e5, scelta = null, partiti = {};
+      try { var o = JSON.parse(localStorage.getItem(CH)); if (o && o.v && Date.now() - o.t < SEI_MESI) scelta = o.v; } catch (e) {}
+      var carica = function (v) {
+        if (M.ga && v.ga && !partiti.ga) { partiti.ga = 1; window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); }; gtag('js', new Date()); gtag('config', M.ga, { anonymize_ip: true }); metti('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(M.ga)); }
+        if (M.fb && v.fb && !partiti.fb) { partiti.fb = 1; var f = window.fbq = function () { f.callMethod ? f.callMethod.apply(f, arguments) : f.queue.push(arguments); }; f.push = f; f.loaded = true; f.version = '2.0'; f.queue = []; metti('https://connect.facebook.net/it_IT/fbevents.js'); fbq('init', M.fb); fbq('track', 'PageView'); }
+      };
+      var decidi = function (v) {
+        var tolto = (partiti.ga && !v.ga) || (partiti.fb && !v.fb); scelta = v;
+        try { localStorage.setItem(CH, JSON.stringify({ v: v, t: Date.now() })); } catch (e) {}
+        var a = doc.getElementById('avviso-cookie'); if (a) a.remove();
+        if (tolto) { doc.cookie.split(';').forEach(function (c) { var n = c.split('=')[0].trim(); if (/^(_ga|_gid|_gat|_fb)/.test(n)) { doc.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'; doc.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.' + location.hostname; } }); location.reload(); }
+        else carica(v);
+      };
+      var mostra = function () {
+        if (doc.getElementById('avviso-cookie')) return;
+        var s = scelta || {}, a = doc.createElement('div'); a.id = 'avviso-cookie'; a.setAttribute('role', 'dialog'); a.setAttribute('aria-label', 'Scelta sui cookie');
+        a.innerHTML = '<button type="button" class="x" data-v="no" aria-label="Chiudi senza accettare">×</button><p><strong>Cookie.</strong> Il sito funziona senza. Con il tuo consenso usiamo cookie di terze parti per le statistiche e per misurare le campagne sui social. Se rifiuti o chiudi, non cambia nulla. <a href="' + (M.r || '') + 'cookie.html">Dettagli</a></p>'
+          + '<div class="pers" hidden>' + (M.ga ? '<label><input type="checkbox" name="ga"' + (s.ga ? ' checked' : '') + '> Statistiche di visita (Google Analytics)</label>' : '') + (M.fb ? '<label><input type="checkbox" name="fb"' + (s.fb ? ' checked' : '') + '> Campagne sui social (pixel di Meta)</label>' : '') + '<button type="button" data-v="salva">Salva la scelta</button></div>'
+          + '<div class="scelte"><button type="button" data-v="no">Rifiuta</button><button type="button" data-v="si">Accetta tutto</button><button type="button" class="sec" data-v="pers">Personalizza</button></div>';
+        a.addEventListener('click', function (e) {
+          var b2 = e.target.closest('[data-v]'); if (!b2) return; var v = b2.dataset.v;
+          if (v === 'pers') { a.querySelector('.pers').hidden = false; b2.hidden = true; return; }
+          if (v === 'salva') return decidi({ ga: !!(a.querySelector('[name=ga]') || {}).checked, fb: !!(a.querySelector('[name=fb]') || {}).checked });
+          decidi({ ga: v === 'si', fb: v === 'si' });
+        });
+        doc.body.appendChild(a);
+      };
+      if (scelta) carica(scelta); else mostra();
+      doc.querySelectorAll('[data-cookie-scelta]').forEach(function (b3) { b3.addEventListener('click', function (e) { e.preventDefault(); mostra(); }); });
+    }
+  }
+
   // Ricerca nel sito: scarica l'indice una volta e filtra mentre si scrive
   var q = doc.getElementById('q'), esiti = doc.getElementById('esiti');
   if (q && esiti) {

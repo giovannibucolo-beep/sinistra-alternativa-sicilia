@@ -39,3 +39,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Niente volti riconoscibili di persone estranee al coordinamento; niente opere d’arte di autori viventi.
 - **Sempre ottimizzate per il web, qualunque formato abbiano**: si mette il file in `risorse/img/` (JPEG, PNG, HEIC, WebP, TIFF…) e il sito lo trasforma da solo in JPEG progressivo largo al massimo 1400 px, sotto i 350 KB, senza dati incorporati (posizione, apparecchio). Il controllo blocca la pubblicazione se una foto pesa di più.
 - L’elenco dei crediti fotografici cresce con le foto: come il testo di una notizia, è un’eccezione alla regola 4 e scorre libero.
+
+## 9. Cookie e statistiche
+- Il sito nasce senza cookie. Gli strumenti di misura si accendono scrivendo il loro codice in `contenuti/sito.json`, voce `statistiche`.
+- Quelli con cookie (Google Analytics, pixel di Meta) partono solo dopo il consenso; «Rifiuta» e «Accetta tutto» hanno lo stesso peso, la × vale rifiuto, la scelta dura sei mesi e si cambia dalla pagina «Cookie».
+- La pagina «Cookie» si scrive da sola in base a ciò che è acceso: non va mai modificata a mano. Come il testo di una notizia, scorre libera.
