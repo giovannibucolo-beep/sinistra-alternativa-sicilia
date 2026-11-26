@@ -58,7 +58,8 @@ for f in pagine:
 for t, dove in titoli.items():
     if len(dove) > 1: errori.append(f'titolo ripetuto «{t}» in: {", ".join(dove)}')
 for f in OUT.rglob('*'):
-    if f.is_file() and f.stat().st_size > 600_000: avvisi.append(f'{f.relative_to(OUT)}: file pesante ({f.stat().st_size // 1024} KB)')
+    # i materiali da scaricare sono pesanti per natura: si scaricano apposta, non si caricano con la pagina
+    if f.is_file() and f.stat().st_size > 600_000 and 'risorse/materiali/' not in f.as_posix(): avvisi.append(f'{f.relative_to(OUT)}: file pesante ({f.stat().st_size // 1024} KB)')
 for a in avvisi: print('AVVISO  ', a)
 for x in errori: print('ERRORE  ', x)
 # Regola 8: fotografie sempre ottimizzate per il web

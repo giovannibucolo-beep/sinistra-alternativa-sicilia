@@ -1,33 +1,33 @@
 [
-  {
-    "file": "SA-logo-e-simbolo.zip",
-    "titolo": "Logo e simbolo",
-    "descrizione": "Contrassegno, logo orizzontale e monogramma in SVG e PNG, con le versioni per fondo scuro. I file non vanno modificati né ricolorati.",
-    "gruppo": "Identità"
-  },
-  {
-    "file": "SA-identita-visiva.pdf",
-    "titolo": "Identità visiva",
-    "descrizione": "La tavola con simbolo, colori, carattere e usi corretti. Da dare a chi prepara manifesti, volantini o grafiche social.",
-    "gruppo": "Identità"
-  },
-  {
-    "file": "SA-programma-in-una-pagina.pdf",
-    "titolo": "Il programma in una pagina",
-    "descrizione": "I sette pilastri con i due binari, pronti da stampare per banchetti e assemblee.",
-    "gruppo": "Programma",
-    "anche": "programma/tutto.html"
-  },
-  {
-    "file": "SA-volantino-A5.pdf",
-    "titolo": "Volantino A5",
-    "descrizione": "Volantino da distribuire ai banchetti.",
-    "gruppo": "Propaganda"
-  },
-  {
-    "file": "SA-manifesto-70x100.pdf",
-    "titolo": "Manifesto 70×100",
-    "descrizione": "Manifesto per affissione.",
-    "gruppo": "Propaganda"
-  }
+ {
+  "file": "SA-logo-e-simbolo.zip",
+  "titolo": "Logo e simbolo",
+  "descrizione": "Contrassegno, logo orizzontale e monogramma in SVG, PDF, PNG (tre misure) e JPG, con le versioni per fondo scuro e senza movimenti. Dentro c’è una guida che dice quale file usare per la tipografia, per il sito e per i social.",
+  "gruppo": "Identità"
+ },
+ {
+  "file": "SA-identita-visiva.pdf",
+  "titolo": "Identità visiva",
+  "descrizione": "La tavola con simbolo, colori, carattere e usi corretti. Da dare a chi prepara manifesti, volantini o grafiche social.",
+  "gruppo": "Identità"
+ },
+ {
+  "file": "SA-programma-in-una-pagina.pdf",
+  "titolo": "Il programma in una pagina",
+  "descrizione": "I sette pilastri con i due binari, pronti da stampare per banchetti e assemblee.",
+  "gruppo": "Programma",
+  "anche": "programma/tutto.html"
+ },
+ {
+  "file": "SA-volantino-A5.pdf",
+  "titolo": "Volantino A5",
+  "descrizione": "Fronte e retro: il richiamo della campagna e i sette punti del programma, con codice QR per aderire. Pronto per la tipografia a 148×210 mm.",
+  "gruppo": "Propaganda"
+ },
+ {
+  "file": "SA-manifesto-70x100.pdf",
+  "titolo": "Manifesto 70×100",
+  "descrizione": "Manifesto per affissione, 700×1000 mm, con codice QR per aderire. Leggibile da lontano.",
+  "gruppo": "Propaganda"
+ }
 ]
