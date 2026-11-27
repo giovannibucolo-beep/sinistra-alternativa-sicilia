@@ -2,7 +2,7 @@
 titolo: "Partono i sette tavoli tematici: come partecipare"
 data: 2026-11-24
 sintesi: Un tavolo per ogni pilastro, in presenza e in collegamento. Ci si iscrive dal modulo di adesione indicando il proprio territorio.
-esempio: sì
+bozza: sì
 ---
 
 Notizia di esempio, per mostrare come appare una pagina.

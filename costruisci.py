@@ -136,6 +136,49 @@ def sa(t, variante=''):
     return re.sub(r'(?i)(sicilia)(\s+che)?\s+sa\b', lambda m: (f'{m.group(1)} <span class="nsa">che ' if m.group(2) else f'<span class="nsa">{m.group(1)} ') + f'<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42"></span>', t)
 
 
+CONTATTI = SITO['contatti']
+
+
+def pronto_per_il_definitivo():
+    """Quando qualcuno mette «bozza: false» il sito smette di dire che è una bozza, toglie l'etichetta
+    e si fa indicizzare. Se in quel momento mancano i dati veri, la costruzione si ferma: è l'unico modo
+    perché nessuno pubblichi come definitivo un sito con i contatti vuoti o il committente non indicato."""
+    if SITO.get('bozza'):
+        return
+    g = SITO.get('legale', {})
+    manca = []
+    if not CONTATTI.get('email'):
+        manca.append('contatti.email')
+    if not SITO.get('committente') or 'da indicare' in SITO['committente']:
+        manca.append('committente')
+    for k in ('titolare', 'sede_titolare', 'incaricati', 'servizio_modulo', 'conservazione'):
+        if not g.get(k):
+            manca.append('legale.' + k)
+    if not SITO.get('modulo', {}).get('invia_a'):
+        manca.append('modulo.invia_a')
+    esempi = [x.get('titolo', '?') for x in list(NOTIZIE) + list(TERRITORI.values()) + list(EVENTI) if x.get('esempio')]
+    if esempi:
+        manca.append('contenuti ancora segnati «esempio»: ' + ', '.join(esempi))
+    if manca:
+        raise SystemExit('ERRORE: «bozza» è stata messa a false ma mancano ancora:\n  - '
+                         + '\n  - '.join(manca)
+                         + '\nRimetti «bozza»: true oppure completa queste voci in contenuti/sito.json.')
+
+
+def voci_contatto(coppie, titolo):
+    """Colonna del piede: salta le voci vuote e sparisce del tutto se non ne resta nessuna."""
+    righe = ''.join(f'<li>{p}{e(v)}</li>' for p, v in coppie if v)
+    return f'<div><h2>{titolo}</h2><ul>{righe}</ul></div>' if righe else ''
+
+
+def elenco_contatti():
+    """Pagina Contatti: mostra solo quello che esiste davvero."""
+    etichette = [('Email', 'email'), ('Telefono', 'telefono'), ('Sede', 'sede'),
+                 ('Facebook', 'facebook'), ('Instagram', 'instagram')]
+    righe = ''.join(f'<dt>{n}</dt><dd>{e(CONTATTI[k])}</dd>' for n, k in etichette if CONTATTI.get(k))
+    return f'<dl class="elenco">{righe}</dl>' if righe else ''
+
+
 ES = ' <em class="es">esempio</em>'
 BZ = ' <em class="es bz">bozza non pubblica</em>'
 
@@ -225,10 +268,10 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <div class="in">
 <div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p class="piede-desc">{e(SITO['descrizione'])}</p></div>
 <div><h2>Altre pagine</h2><ul><li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}materiali.html">Materiali da scaricare</a></li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
-<div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
-<div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li></ul></div>
+{voci_contatto([('', c.get('email')), ('', c.get('telefono')), ('', c.get('sede'))], 'Contatti')}
+{voci_contatto([('Facebook — ', c.get('facebook')), ('Instagram — ', c.get('instagram'))], 'Seguici')}
 <div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a>{icone_da_terzi()}</span>
-{'<span>Bozza dimostrativa: contatti, account e voci segnate «esempio» non sono reali.</span>' if SITO['bozza'] else ''}
+{'<span>Bozza: i contatti del coordinamento non sono ancora pubblicati e il programma attende il voto dell’assemblea.</span>' if SITO['bozza'] else ''}
 <span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
 </div>
 </footer>
@@ -628,8 +671,8 @@ pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi co
 
 # Contatti
 c = SITO['contatti']
-pagina('contatti.html', 'Contatti e stampa', 'Come contattare il coordinamento. Materiali per la stampa.', S(f'''<div class="col2"><div class="colonna">{testa('Contatti', 'Scrivici, chiamaci, vieni')}{'<p class="avviso">Contatti e account qui sotto sono segnaposto: vanno sostituiti con quelli veri del coordinamento.</p>' if not c['reali'] else ''}
-<dl class="elenco"><dt>Email</dt><dd>{e(c['email'])}</dd><dt>Telefono</dt><dd>{e(c['telefono'])}</dd><dt>Sede</dt><dd>{e(c['sede'])}</dd><dt>Facebook</dt><dd>{e(c['facebook'])}</dd><dt>Instagram</dt><dd>{e(c['instagram'])}</dd></dl></div>
+pagina('contatti.html', 'Contatti e stampa', 'Come contattare il coordinamento. Materiali per la stampa.', S(f'''<div class="col2"><div class="colonna">{testa('Contatti', 'Scrivici, chiamaci, vieni')}{'<p class="avviso">I contatti del coordinamento non sono ancora pubblicati. Per ora si scrive dal modulo di adesione.</p>' if not any(c.get(k) for k in ('email', 'telefono', 'sede', 'facebook', 'instagram')) else ''}
+{elenco_contatti()}</div>
 <aside class="lato"><h3>Per la stampa</h3><p>Simbolo, identità visiva, programma e propaganda sono raccolti in una pagina sola, pronti da scaricare.</p><a class="btn b2" href="{{r}}materiali.html">Tutti i materiali</a><a class="btn b2" href="{{r}}territori/index.html">Trova la tua provincia</a><a class="btn" href="{{r}}aderisci.html">Aderisci</a></aside></div>'''), 'contatti', [('', 'Contatti')])
 
 # Ricerca nel sito: un indice leggero letto dal browser, nessun servizio esterno
@@ -653,7 +696,7 @@ VOCI_LEGALI = {
     'conservazione': LG.get('conservazione') or 'Durata ' + MANCA + ' dal coordinamento. In ogni caso i dati si cancellano appena lo chiedi.',
     'ospite': 'oggi GitHub Pages, della società statunitense GitHub' if 'github.io' in BASE else 'il fornitore dello spazio web',
     'stato_modulo': 'Oggi il modulo di adesione **non invia e non conserva nulla**: questa informativa descrive come funzionerà quando verrà collegato. Le voci «da indicare» vanno decise dal coordinamento prima di quel momento.' if not SITO['modulo'].get('invia_a') else 'Il modulo di adesione è attivo.',
-    'stato_sito': 'Questa è una bozza dimostrativa: contatti, date e voci segnate «esempio» non sono reali, e le voci «da indicare» attendono le decisioni del coordinamento.' if SITO['bozza'] else f"Versione {SITO['versione']}.",
+    'stato_sito': 'Questa è una bozza. I contatti del coordinamento non sono ancora pubblicati, il programma è in discussione nei tavoli e attende il voto dell’assemblea, e il modulo di adesione non è ancora collegato a nessun servizio: non invia e non conserva nulla.' if SITO['bozza'] else f"Versione {SITO['versione']}.",
     'oggi': data_estesa(OGGI),
 }
 for chiave in ('privacy', 'note-legali'):
@@ -776,3 +819,5 @@ def _voce(pg):
 (OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' + ''.join(_voce(pg) for pg in indicizzabili if pg not in ('cerca.html',)) + '</urlset>\n', encoding='utf-8')
 (OUT / 'robots.txt').write_text((f'User-agent: *\nAllow: /\nSitemap: {BASE}sitemap.xml\n' if SITO['indicizzabile'] else 'User-agent: *\nDisallow: /\n'), encoding='utf-8')
 print(f'Sito costruito: {len(PAGINE_FATTE)} pagine in {OUT.name}/ · versione {SITO["versione"]}' + (' · ANTEPRIMA con bozze' if ANTEPRIMA else '') + (f' · bozze lasciate fuori: {len(ESCLUSE)} ({", ".join(ESCLUSE)})' if ESCLUSE else ''))
+
+pronto_per_il_definitivo()

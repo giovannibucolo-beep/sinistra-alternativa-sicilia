@@ -95,3 +95,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Se qualcuno scrive una sezione in un contenuto, quella sezione va mostrata. Il modello di «Chi siamo» ne mostrava solo tre e buttava via il resto senza dire niente: chi scriveva dal pannello non se ne accorgeva.
 - Ora ogni sezione diventa una schermata nell'ordine in cui è scritta, e la costruzione si ferma con un errore se una sezione non finisce in pagina. Lo stesso vale per qualunque modello si aggiunga in futuro: o mostra tutto, o si ferma.
 - Una sezione lunga (oltre 700 caratteri) non entra in una schermata intera: va a scorrimento libero. Se no il testo si taglia, e la prova delle schermate lo segnala.
+
+## 20. Niente contenuti di esempio sul sito pubblicato
+- Un contenuto inventato per far vedere come sarà la pagina si marca `bozza: sì`: resta nel pannello come modello e non esce sul sito. L'etichetta «esempio» non si usa più per i contenuti pubblicati.
+- Un dato che non c'è si lascia **vuoto**, non si riempie con un segnaposto. Contatti, referenti e recapiti vuoti non vengono mostrati da nessuna parte: meglio niente che un'email finta scambiata per vera.
+- Il passaggio alla versione definitiva è una riga sola, `bozza: false` in `contenuti/sito.json`, e la costruzione si ferma se mancano i dati veri: email di contatto, committente responsabile, i cinque campi dell'informativa, l'indirizzo del servizio che riceve le adesioni. Non si pubblica come definitivo un sito con i contatti vuoti.

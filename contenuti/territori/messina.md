@@ -1,9 +1,8 @@
 ---
 titolo: Messina
 lotte: Ponte sullo Stretto, acqua
-referente: da indicare
-contatto: da indicare
-esempio: sì
+referente: ""
+contatto: ""
 ---
 
-**Da completare:** due righe sulle lotte aperte in provincia di Messina e su come partecipare al tavolo locale.
+Il tavolo della provincia di Messina è in formazione. Comitati, collettivi, sindacati e singole persone possono entrarci adesso: lascia i tuoi contatti e ti scriviamo per il primo incontro.
