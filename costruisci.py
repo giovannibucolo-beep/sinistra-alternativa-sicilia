@@ -137,6 +137,7 @@ def sa(t, variante=''):
 
 
 CONTATTI = SITO['contatti']
+AVVISO_BOZZA = bool(SITO.get('avviso_bozza', SITO.get('bozza')))
 
 
 def pronto_per_il_definitivo():
@@ -287,11 +288,11 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 {voci_contatto([('', c.get('email')), ('', c.get('telefono')), ('', c.get('sede'))], 'Contatti')}
 {voci_contatto([('Facebook — ', c.get('facebook')), ('Instagram — ', c.get('instagram'))], 'Seguici')}
 <div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a>{icone_da_terzi()}</span>
-{'<span>Bozza: i contatti del coordinamento non sono ancora pubblicati e il programma attende il voto dell’assemblea.</span>' if SITO['bozza'] else ''}
+{'<span>Bozza: i contatti del coordinamento non sono ancora pubblicati e il programma attende il voto dell’assemblea.</span>' if AVVISO_BOZZA else ''}
 <span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
 </div>
 </footer>
-{'<div class="bozza" aria-hidden="true">' + ('ANTEPRIMA PRIVATA · CON BOZZE' if ANTEPRIMA else 'BOZZA DIMOSTRATIVA') + '</div>' if SITO['bozza'] or ANTEPRIMA else ''}
+{'<div class="bozza" aria-hidden="true">' + ('ANTEPRIMA PRIVATA · CON BOZZE' if ANTEPRIMA else 'BOZZA DIMOSTRATIVA') + '</div>' if AVVISO_BOZZA or ANTEPRIMA else ''}
 {misure(r)}<script src="{r}risorse/sito.js?v={SITO['versione']}" defer></script>
 </body>
 </html>
@@ -746,7 +747,16 @@ for chiave in ('privacy', 'note-legali'):
     corpo_l = p['corpo']
     for k_, v_ in VOCI_LEGALI.items():
         corpo_l = corpo_l.replace('{' + k_ + '}', v_)
-    pagina(f'{chiave}.html', p['titolo'], p['sintesi'], S(testa(p['occhiello'], e(p['titolo']), e(p['sintesi'])) + '<a class="vai-a" href="#testo">Leggi ↓</a>') + LIBERO(f'<div class="testo" id="testo">{testo(corpo_l)}</div>'), '', [('', p['titolo'])])
+    # Un'informativa con voci ancora da decidere non deve passare per quella definitiva: l'avviso
+    # compare da sé finché restano «da indicare», e sparisce da sé quando il coordinamento le riempie.
+    quante = corpo_l.count('da indicare')
+    avviso = (f'<p class="avviso">Questo testo non è ancora approvato dal coordinamento: '
+              f'{quante} voci sono indicate come «da indicare» e vanno decise prima che il sito '
+              f'raccolga dati. Per qualunque questione sui tuoi dati scrivici dal modulo di adesione.</p>'
+              if quante else '')
+    pagina(f'{chiave}.html', p['titolo'], p['sintesi'],
+           S(testa(p['occhiello'], e(p['titolo']), e(p['sintesi'])) + avviso + '<a class="vai-a" href="#testo">Leggi ↓</a>')
+           + LIBERO(f'<div class="testo" id="testo">{testo(corpo_l)}</div>'), '', [('', p['titolo'])])
 # Materiali scaricabili
 def _peso(b):
     return f'{b / 1048576:.1f} MB'.replace('.', ',') if b >= 1048576 else f'{max(1, round(b / 1024))} KB'

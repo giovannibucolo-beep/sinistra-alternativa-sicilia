@@ -105,3 +105,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Ogni incontro futuro produce da sé il suo file per il calendario (`agenda/<file>.ics`), con l'avviso il giorno prima. Non si scrive a mano.
 - Il segnaposto compare in due posti: l'icona del calendario accanto alla riga dell'agenda, e sulla pagina dell'incontro il pulsante «Salva nel calendario» più il collegamento a Google Calendar.
 - Il collegamento a Google è solo un collegamento: non carica niente di Google dentro il sito e non lascia cookie finché qualcuno non lo clicca. Per chi non usa Google basta il file, che vale su telefono, Mac, Windows e Outlook.
+
+## 22. Etichetta «bozza» e avvisi veri sono due cose diverse
+- L'etichetta grande nell'angolo (`avviso_bozza`) è un interruttore a sé: si spegne quando sul sito non c'è più nulla di finto. `bozza` invece resta vero finché il coordinamento non approva la versione 1.0, e tiene in piedi la guardia che blocca un definitivo incompleto.
+- Gli avvisi precisi non dipendono da quell'interruttore e compaiono da soli finché sono veri: il modulo che non è collegato, l'informativa con voci ancora «da indicare», il programma in attesa del voto. Spariscono da soli quando la cosa è stata fatta.
+- Non si toglie un avviso perché è antipatico: si toglie risolvendo quello che l'avviso dice.
