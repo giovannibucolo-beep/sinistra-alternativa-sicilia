@@ -33,7 +33,15 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
   .menu-b { display: none; }
   .menu { position: static; display: flex; flex-direction: row; align-items: center; gap: clamp(12px, 1.8vw, 26px); padding: 0; overflow: visible; background: none; }
   .menu a { min-height: 44px; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; border-bottom: 3px solid transparent; }
-  .menu a[aria-current] { color: var(--nero); border-bottom-color: var(--rosso); }
+  .menu a { position: relative; border-bottom-color: transparent; }
+  /* La barra rossa scatta sotto la voce: 140 ms, partenza da sinistra, nessun dissolvere.
+     Chi ha chiesto meno animazioni la vede comparire e basta (la regola in fondo al foglio). */
+  .menu a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px; background: var(--rosso); transform: scaleX(0); transform-origin: left; transition: transform .14s cubic-bezier(.2,.9,.2,1); }
+  .menu a:hover::after, .menu a:focus-visible::after, .menu a[aria-current]::after { transform: scaleX(1); }
+  .menu a[aria-current] { color: var(--nero); }
+  .menu a.btn::after { display: none; }
+  .menu a.btn { transition: transform .14s, background .14s; }
+  .menu a.btn:hover, .menu a.btn:focus-visible { transform: translateY(-2px); background: var(--nero); border-color: var(--nero); }
   .menu a.btn { margin: 0; min-height: 46px; padding: 0 18px; font-size: 13px; border: 3px solid var(--rosso); }
   .menu a.lente { width: 44px; justify-content: center; border-bottom-color: transparent; }
   .menu a.lente span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
