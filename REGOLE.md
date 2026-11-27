@@ -81,3 +81,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Sopra un titolo non va la micro-etichetta maiuscola a lettere spaziate quando ripete quello che il titolo, la briciola o il menù dicono già. È la cosa che fa sembrare tutte le pagine uguali e fatte a stampo.
 - Il sopratitolo resta solo dove porta un dato che non c'è altrove: «Prossimo incontro», «In provincia di ‹nome›», il tipo e il peso di un materiale, i due binari.
 - Dove il numero conta — i pilastri — il numero è grande, rosso, da manifesto (`.ordinale`), non un sopratitolo.
+
+## 17. Crediti fotografici
+- Sulla fotografia non va più la banda nera con l'autore. L'attribuzione che le licenze chiedono sta tutta in `crediti.html`, raggiungibile dal piede di ogni pagina.
+- Ogni voce dei crediti deve avere quattro cose: il soggetto, che è un collegamento alla fotografia stessa; l'autore con l'anno; la licenza, con collegamento al testo della licenza; l'originale su Wikimedia Commons. E la pagina in cui la foto compare, così dal credito si risale alla foto e viceversa.
+- Se una fotografia è registrata in `foto.json` ma non compare in nessuna pagina, la costruzione lo stampa e i crediti lo scrivono: «Non usata in nessuna pagina». Non si lascia così.

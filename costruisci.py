@@ -280,7 +280,7 @@ def foto(file, attesa, extra=''):
             larga = '1180px' if 'grande' in extra else '390px'
             misure = (f' srcset="{{r}}risorse/img/{file}-700.jpg?v={v} 700w, {{r}}risorse/img/{file}.jpg?v={v} 1400w"'
                       f' sizes="(min-width: 1000px) {larga}, 100vw"')
-        return f'<figure class="foto{extra}{" riv" if "grande" in extra else ""}"><img src="{{r}}risorse/img/{file}.jpg?v={v}"{misure} alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} data-se-manca="FOTO DA INSERIRE · risorse/img/{file}.jpg"><figcaption class="cred">{e(c["soggetto"])} · foto {e(c["autore"])}, {e(c["licenza"])}</figcaption></figure>'
+        return f'<figure class="foto{extra}{" riv" if "grande" in extra else ""}"><img src="{{r}}risorse/img/{file}.jpg?v={v}"{misure} alt="{e(c["soggetto"])}" width="1400" height="933" decoding="async"{primo} data-se-manca="FOTO DA INSERIRE · risorse/img/{file}.jpg"></figure>'
     return f'<div class="foto vuota{extra}" data-file="{{r}}risorse/img/{file}.jpg?v={SITO["versione"]}" data-et="FOTO DA INSERIRE · {e(attesa)} · risorse/img/{file}.jpg" role="img" aria-label="{e(attesa)}"></div>'
 
 
@@ -620,8 +620,40 @@ pagina('materiali.html', 'Materiali', 'Logo, identità visiva, programma da stam
        blocchi_mat + ADERISCI, '', [('', 'Materiali')])
 
 # Crediti delle fotografie (le licenze Creative Commons chiedono autore, licenza e fonte)
-righe_crediti = ''.join(f'''<li><strong>{e(c["soggetto"])}</strong><span>Foto di {e(c["autore"])}{" (" + c["anno"] + ")" if c["anno"] else ""}, licenza <a href="{c["licenza_url"]}" rel="license noopener">{e(c["licenza"])}</a>. Originale: <a href="https://commons.wikimedia.org/wiki/File:{urllib.parse.quote(c["commons"].replace(" ", "_"))}" rel="noopener">Wikimedia Commons</a>. Ridimensionata e ritagliata.</span></li>''' for c in FOTO.values())
-pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori: qui autore, licenza e originale di ciascuna.') + '<a class="vai-a" href="#elenco">Vedi l’elenco ↓</a>') + LIBERO(f'<ul class="crediti" id="elenco">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])
+def dove_usata(file):
+    """In quale pagina compare la fotografia. Serve perché, tolta la banda dall'immagine, il credito deve
+    essere ritrovabile: chi legge la pagina dei crediti deve poter risalire alla foto, e viceversa."""
+    if file.startswith('pilastro-'):
+        v = next((x for x in PILASTRI if x['numero'] == file[9:]), None)
+        return (v['indirizzo'], f'Pilastro {v["numero"]} · {v["titolo"]}') if v else None
+    if file.startswith('provincia-'):
+        v = next((x for n, x in TERRITORI.items() if slug(n) == file[10:]), None)
+        nome = next((n for n in TERRITORI if slug(n) == file[10:]), '')
+        return (v['indirizzo'], f'Provincia di {nome}') if v else None
+    v = next((x for x in NOTIZIE if x['file'] == file), None)
+    return (f'notizie/{file}.html', v['titolo']) if v else None
+
+
+voci_crediti = []
+for c in FOTO.values():
+    dove = dove_usata(c['file'])
+    usata = (f'<span class="dove">Nella pagina <a href="{{r}}{dove[0]}">{e(dove[1])}</a></span>'
+             if dove else '<span class="dove">Non usata in nessuna pagina</span>')
+    anno = f' ({c["anno"]})' if c.get('anno') else ''
+    originale = (f'. Originale: <a href="https://commons.wikimedia.org/wiki/File:'
+                 f'{urllib.parse.quote(c["commons"].replace(" ", "_"))}" rel="noopener">Wikimedia Commons</a>'
+                 if c.get('commons') else '')
+    voci_crediti.append(
+        f'<li><strong><a href="{{r}}risorse/img/{c["file"]}.jpg?v={SITO["versione"]}">{e(c["soggetto"])}</a></strong>'
+        f'<span>Foto di {e(c["autore"])}{anno}, licenza '
+        f'<a href="{c["licenza_url"]}" rel="license noopener">{e(c["licenza"])}</a>{originale}. '
+        f'Ridimensionata e ritagliata.</span>{usata}</li>')
+righe_crediti = ''.join(voci_crediti)
+senza_pagina = [c['file'] for c in FOTO.values() if not dove_usata(c['file'])]
+if senza_pagina:
+    print('Fotografie registrate ma non usate in nessuna pagina: ' + ', '.join(senza_pagina))
+
+pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori. Qui, per ognuna, l’autore, la licenza, l’originale e la pagina in cui compare: è questa la nostra attribuzione, come le licenze consentono.') + '<a class="vai-a" href="#elenco">Vedi l’elenco ↓</a>') + LIBERO(f'<ul class="crediti" id="elenco">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])
 # Cookie e statistiche: la pagina dice sempre e solo ciò che il sito fa davvero (si aggiorna da contenuti/sito.json)
 righe_ck = []
 if COOKIE_ATTIVI: righe_ck.append(('sa-consenso', 'Questo sito', 'Tecnico', '6 mesi', 'Ricorda la scelta fatta sui cookie (memoria del dispositivo, non è un cookie)'))
