@@ -66,6 +66,33 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
 .cal:hover, .cal:focus-visible { color: #fff; background: var(--nero); }
 .su-nero .cal, .riquadro-nero .cal { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); }
 .su-nero .cal:hover, .riquadro-nero .cal:hover { color: var(--nero); background: #fff; }
+.calendario { display: flex; flex-direction: column; gap: 14px; }
+.cal-testa { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cal-testa strong { font-size: clamp(19px, 2.4vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -.01em; }
+.cal-f { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; font: 900 22px/1 Montserrat, Arial, sans-serif; color: var(--nero); background: #fff; border: 2px solid var(--nero); cursor: pointer; transition: background .14s, color .14s; }
+.cal-f:hover, .cal-f:focus-visible { color: #fff; background: var(--nero); }
+.cal-griglia { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-gg { padding: 4px 2px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--campo); text-align: center; }
+.cal-d, .cal-v { display: block; min-height: 54px; padding: 5px 6px; border: 2px solid var(--linea); background: #fff; }
+.cal-v { border-color: transparent; background: none; }
+.cal-d b { font-size: 14px; font-weight: 800; color: var(--campo); }
+.cal-d.oggi { border-color: var(--nero); }
+.cal-d.pieno { color: #fff; background: var(--rosso); border-color: var(--rosso); text-decoration: none; }
+.cal-d.pieno b { color: #fff; } .cal-d.pieno:hover, .cal-d.pieno:focus-visible { background: var(--nero); border-color: var(--nero); }
+.cal-d.pieno span { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; line-height: 1.2; overflow: hidden; }
+.cal-d.pieno.fatto { background: var(--campo); border-color: var(--campo); }
+.cal-vuoto { font-size: 15px; font-weight: 700; color: var(--campo); }
+/* Sui telefoni stretti il titolo nella casella non ci sta: resta il giorno acceso, il titolo è nell'elenco. */
+@media (max-width: 560px) {
+  .cal-griglia { gap: 2px; }
+  .cal-d, .cal-v { min-height: 42px; padding: 3px; }
+  .cal-d b { font-size: 12px; }
+  .cal-d.pieno span { display: none; }
+  .cal-gg { font-size: 9px; letter-spacing: .02em; padding: 2px 0; }
+}
+.cal-griglia > * { min-width: 0; overflow-wrap: anywhere; }
+@media (min-width: 900px) { .cal-d, .cal-v { min-height: 88px; } .cal-d.pieno span { font-size: 12px; } }
+@media print { .calendario { display: none; } }
 .k { display: block; font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--cremisi); }
 .su-nero .k, .su-rosso .k { color: #fff; }
 .es { display: inline-block; padding: 1px 7px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-style: normal; color: #fff; background: var(--nero); vertical-align: middle; }

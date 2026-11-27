@@ -121,3 +121,9 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Il foglio stampato porta il contrassegno, il nome del coordinamento, «Elezioni regionali 2027», il titolo del documento e la data del giorno, con una riga rossa sotto. In fondo a ogni pagina il nome e l'indirizzo del sito. Tutto questo **si vede solo in stampa**: a schermo è nascosto.
 - Il simbolo nella carta intestata è il contrassegno (`sa-contrassegno.svg`), non il logo orizzontale: su un documento ufficiale conta il contrassegno.
 - La data è quella del giorno in cui il foglio viene costruito: un programma in discussione stampato tre mesi fa non deve sembrare quello di oggi.
+
+## 25. Il calendario dell'agenda
+- Il calendario si costruisce nel browser leggendo l'elenco degli incontri scritto nella pagina: il sito resta fatto di soli file, senza programmi che girano su un server. Senza JavaScript il calendario non compare e resta l'elenco, che basta da solo.
+- Compare solo se c'è almeno un incontro. Un calendario di caselle vuote fa sembrare il sito abbandonato più di quanto farebbe la sua assenza.
+- Il giorno con un incontro futuro è rosso, quello già svolto è grigio, oggi ha il bordo nero. Si clicca e si apre l'incontro.
+- Sui telefoni stretti nella casella resta solo il giorno: il titolo sta nell'elenco sotto. Non si aggiungono mesi vuoti navigabili all'infinito senza motivo.

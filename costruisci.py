@@ -650,6 +650,18 @@ for k, g in enumerate(a_gruppi(FUTURI, 4) or [[]]):
     corpo += S((testa('Agenda', 'Dove ci vediamo') if k == 0 else f'<div class="capo"><div><h2>Prossimi incontri · {k + 1}</h2></div></div>') + ('<ul class="eventi">' + ''.join(riga_evento(v) for v in g) + '</ul>' if g else '<p class="sott">Nessun incontro in calendario per ora.</p>'))
 for k, g in enumerate(a_gruppi(passati_l, 4)):
     corpo += S(f'<div class="capo"><div><h2>Già svolti{" · " + str(k + 1) if k else ""}</h2></div></div><ul class="eventi">{"".join(riga_evento(v) for v in g)}</ul>', 'carta')
+# Calendario: i mesi con incontri, costruito dal browser a partire dall'elenco qui sotto.
+# Senza JavaScript non compare e resta l'elenco, che basta da solo.
+if EVENTI:
+    dati = [{'g': f"{v['giorno']:%Y-%m-%d}", 'o': v.get('ora', ''), 't': v['titolo'],
+             'l': v.get('luogo', ''), 'u': '{r}' + v['indirizzo'], 'p': bool(v['passato'])} for v in EVENTI]
+    # Un mese intero non entra in una schermata su un portatile: il calendario scorre.
+    corpo = LIBERO('<div class="capo"><div><h2>Il calendario</h2></div>'
+              '<a class="vai-a" href="#elenco">Vai all’elenco ↓</a></div>'
+              '<div id="calendario" class="calendario" data-vuoto="Nessun incontro in questo mese."></div>'
+              '<script type="application/json" id="sa-eventi">' + json.dumps(dati, ensure_ascii=False) + '</script>'
+              ) + corpo.replace('<div class="capo">', '<div class="capo" id="elenco">', 1)
+
 pagina('agenda/index.html', 'Agenda', 'Assemblee, tavoli e presìdi del coordinamento in Sicilia.', corpo + aderisci_con('Vuoi sapere quando siamo vicino a te?', 'Lascia i tuoi contatti e la provincia: ti scriviamo noi.'), 'agenda', [('', 'Agenda')])
 (OUT / 'agenda').mkdir(exist_ok=True)
 for v in EVENTI:

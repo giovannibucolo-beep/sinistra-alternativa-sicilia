@@ -56,6 +56,63 @@
     b.addEventListener('click', function () { window.print(); });
   });
 
+  // Calendario dell'agenda. Si costruisce qui dal browser: il sito resta un sito di file, senza programmi
+  // che girano su un server. Senza JavaScript non compare e l'elenco sotto basta da solo.
+  var cal = doc.getElementById('calendario'), datiCal = doc.getElementById('sa-eventi');
+  if (cal && datiCal) {
+    var ev = [];
+    try { ev = JSON.parse(datiCal.textContent) || []; } catch (e) { ev = []; }
+    if (ev.length) {
+      var MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto',
+                  'settembre', 'ottobre', 'novembre', 'dicembre'];
+      var GG = ['lun', 'mar', 'mer', 'gio', 'ven', 'sab', 'dom'];
+      var perGiorno = {};
+      ev.forEach(function (x) { (perGiorno[x.g] = perGiorno[x.g] || []).push(x); });
+      var futuri = ev.filter(function (x) { return !x.p; }).map(function (x) { return x.g; }).sort();
+      var primo = (futuri[0] || ev.map(function (x) { return x.g; }).sort().pop()).split('-');
+      var anno = +primo[0], mese = +primo[1] - 1;
+      var oggi = new Date(); var oggiS = oggi.getFullYear() + '-' + ('0' + (oggi.getMonth() + 1)).slice(-2) + '-' + ('0' + oggi.getDate()).slice(-2);
+
+      var disegna = function () {
+        var primoDelMese = new Date(anno, mese, 1);
+        var salta = (primoDelMese.getDay() + 6) % 7;           // la settimana comincia di lunedì
+        var giorni = new Date(anno, mese + 1, 0).getDate();
+        var h = '<div class="cal-testa"><button type="button" class="cal-f" data-vai="-1" aria-label="Mese precedente">‹</button>'
+              + '<strong aria-live="polite">' + MESI[mese] + ' ' + anno + '</strong>'
+              + '<button type="button" class="cal-f" data-vai="1" aria-label="Mese successivo">›</button></div>'
+              + '<div class="cal-griglia" role="grid">';
+        GG.forEach(function (g) { h += '<span class="cal-gg">' + g + '</span>'; });
+        for (var i = 0; i < salta; i++) { h += '<span class="cal-v"></span>'; }
+        var quanti = 0;
+        for (var d = 1; d <= giorni; d++) {
+          var iso = anno + '-' + ('0' + (mese + 1)).slice(-2) + '-' + ('0' + d).slice(-2);
+          var qui = perGiorno[iso];
+          var classi = 'cal-d' + (iso === oggiS ? ' oggi' : '');
+          if (qui) {
+            quanti += qui.length;
+            var passato = qui.every(function (x) { return x.p; });
+            h += '<a class="' + classi + ' pieno' + (passato ? ' fatto' : '') + '" href="' + qui[0].u + '">'
+               + '<b>' + d + '</b><span>' + qui.map(function (x) { return (x.o ? x.o + ' · ' : '') + x.t; }).join(' / ') + '</span></a>';
+          } else {
+            h += '<span class="' + classi + '"><b>' + d + '</b></span>';
+          }
+        }
+        h += '</div>';
+        if (!quanti) { h += '<p class="cal-vuoto">' + (cal.dataset.vuoto || '') + '</p>'; }
+        cal.innerHTML = h;
+        cal.querySelectorAll('[data-vai]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            mese += +b.dataset.vai;
+            if (mese < 0) { mese = 11; anno--; }
+            if (mese > 11) { mese = 0; anno++; }
+            disegna();
+          });
+        });
+      };
+      disegna();
+    }
+  }
+
   // Numeri che salgono, una volta sola. Il numero per intero è già nella pagina: questo è solo un ornamento.
   var cc = doc.querySelectorAll('.cifre strong[data-conta]');
   if (cc.length && 'IntersectionObserver' in window && !fermo) {
