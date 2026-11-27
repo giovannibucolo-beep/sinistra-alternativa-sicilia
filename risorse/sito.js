@@ -283,7 +283,7 @@
       if (!f.classList.contains('p2')) return passo(2);
       if (!g('consenso').checked) return errore('Serve il consenso per essere ricontattati.', g('consenso'));
       var nome = g('nome').value.trim(), o = eOrg();
-      var dati = { chi: o ? 'organizzazione' : 'persona', organizzazione: o ? g('organizzazione').value.trim() : '', tipo_organizzazione: o ? g('tipo_organizzazione').value : '', nome: nome, email: g('email').value.trim(), telefono: g('telefono').value.trim(), comune: g('comune').value.trim(), provincia: g('provincia').value, tavolo: g('tavolo').value, mano: Array.prototype.map.call(f.querySelectorAll('[name=mano]:checked'), function (c) { return c.value; }), consenso: true, quando: new Date().toISOString() };
+      var dati = { chi: o ? 'organizzazione' : 'persona', organizzazione: o ? g('organizzazione').value.trim() : '', tipo_organizzazione: o ? g('tipo_organizzazione').value : '', nome: nome, email: g('email').value.trim(), telefono: g('telefono').value.trim(), comune: g('comune').value.trim(), provincia: g('provincia').value, tavolo: g('tavolo').value, mano: Array.prototype.map.call(f.querySelectorAll('[name=mano]:checked'), function (c) { return c.value; }), consenso: true, notizie: !!(g('notizie') && g('notizie').checked), quando: new Date().toISOString() };
       var grazie = function (nota) {
         var d = doc.createElement('div'); d.className = 'fatto'; d.setAttribute('role', 'status');
         var t3 = doc.createElement('b'); t3.textContent = 'Grazie, ' + (o ? dati.organizzazione : nome.split(' ')[0]) + '.';

@@ -727,6 +727,7 @@ pagina('aderisci.html', 'Aderisci', 'Aderisci al coordinamento: lascia i tuoi co
 <label>Tavolo che ti interessa<select name="tavolo"><option value="">Non so ancora</option>{opz_tavoli}</select></label>
 <fieldset class="mano"><legend>Come vuoi dare una mano (facoltativo)</legend>{opz_mano}</fieldset>
 <label class="consenso"><input type="checkbox" name="consenso"><span>Ho letto l’<a href="{{r}}privacy.html">informativa privacy</a> e acconsento all’uso dei miei dati, che rivelano un’adesione politica, per essere ricontattato dal coordinamento.</span></label>
+<label class="consenso"><input type="checkbox" name="notizie"><span>Voglio ricevere gli aggiornamenti per email: notizie, incontri e appelli. Facoltativo, e puoi cancellarti con un clic da ogni messaggio.</span></label>
 <div class="riga2 fine"><button class="btn b2" type="button" data-indietro>Indietro</button><button class="btn" type="submit">Invia adesione</button></div>
 </div>
 <input class="trappola" type="text" name="sito_web" tabindex="-1" autocomplete="off" aria-hidden="true">
