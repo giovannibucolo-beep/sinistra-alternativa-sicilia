@@ -110,3 +110,9 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - L'etichetta grande nell'angolo (`avviso_bozza`) è un interruttore a sé: si spegne quando sul sito non c'è più nulla di finto. `bozza` invece resta vero finché il coordinamento non approva la versione 1.0, e tiene in piedi la guardia che blocca un definitivo incompleto.
 - Gli avvisi precisi non dipendono da quell'interruttore e compaiono da soli finché sono veri: il modulo che non è collegato, l'informativa con voci ancora «da indicare», il programma in attesa del voto. Spariscono da soli quando la cosa è stata fatta.
 - Non si toglie un avviso perché è antipatico: si toglie risolvendo quello che l'avviso dice.
+
+## 23. Stampa e PDF
+- Niente comandi scritti dentro i tag (`onclick` e simili): le regole di sicurezza della pagina li bloccano e il pulsante non fa niente. Il comando va in `risorse/sito.js`, agganciato a un attributo come `data-stampa`.
+- La pagina `programma/tutto.html` contiene **tutte** le sezioni di ogni pilastro. Era tagliata alle prime due e il PDF usciva senza i binari dello Stato né le obiezioni.
+- In stampa ogni pilastro comincia su una pagina nuova, i titoli non restano soli in fondo al foglio, elenchi e capoversi non si spezzano. Barra, piede, briciole, punti di scorrimento e pulsanti spariscono.
+- Dopo ogni modifica al programma la stampa va riprovata davvero generando il PDF, non guardando la pagina a schermo.

@@ -50,6 +50,12 @@
     });
   }
 
+  // Stampa. Il comando stava scritto dentro il tag del pulsante e le regole di sicurezza della pagina
+  // lo bloccavano: ora sta qui, dove è permesso.
+  doc.querySelectorAll('[data-stampa]').forEach(function (b) {
+    b.addEventListener('click', function () { window.print(); });
+  });
+
   // Numeri che salgono, una volta sola. Il numero per intero è già nella pagina: questo è solo un ornamento.
   var cc = doc.querySelectorAll('.cifre strong[data-conta]');
   if (cc.length && 'IntersectionObserver' in window && !fermo) {

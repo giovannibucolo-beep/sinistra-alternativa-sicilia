@@ -204,7 +204,17 @@ input[type=text], input[type=email], input[type=tel], select, textarea { width: 
 .blocco-p { display: flex; flex-direction: column; gap: 12px; padding: 26px 0; border-top: 4px solid var(--nero); } .blocco-p h3 { margin-top: 6px; color: var(--cremisi); }
 form.cerca { padding: 0; border: 0; background: none; max-width: 620px; } form.cerca input { min-height: 64px; font-size: 20px; border-color: var(--nero); border-width: 3px; }
 #esiti .evento { align-items: flex-start; } #esiti .evento span.et { display: block; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cremisi); } #esiti mark { background: var(--tinta); color: inherit; }
-@media print { .blocco-p { break-inside: avoid; } .briciole, .azioni, .salta { display: none !important; } .intesta { padding: 0 0 12px; } body { font-size: 12pt; } .sez { padding: 0; } }
+@media print {
+  /* Un pilastro per pagina, e mai un titolo solo in fondo al foglio. «break-inside: avoid» sul pilastro
+     intero non si poteva rispettare — un pilastro è più lungo di una pagina — e lasciava fogli mezzi vuoti. */
+  .briciole, .azioni, .salta, .punti, .cal { display: none !important; }
+  .intesta { padding: 0 0 12px; } body { font-size: 11.5pt; } .sez { padding: 0; }
+  .blocco-p { break-before: page; border-top: 0; padding: 0 0 6px; }
+  .blocco-p:first-of-type { break-before: auto; }
+  .blocco-p h2, .blocco-p h3, .testo h3 { break-after: avoid; }
+  .testo li, .testo p, .cifre li, figure { break-inside: avoid; }
+  a[href]::after { content: ""; }
+}
 
 /* ---------- REGOLA: blocchi affiancati = stessa dimensione, stesso bordo inferiore ---------- */
 .griglia, .striscia, .binari, .mappa { grid-auto-rows: 1fr; align-items: stretch; }
