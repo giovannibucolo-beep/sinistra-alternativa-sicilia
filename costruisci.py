@@ -523,7 +523,8 @@ for i, p in enumerate(PILASTRI):
     corpo += (LIBERO(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>')
               if _lungo else
               S(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta'))
-    corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div>{condividi(p['titolo'], p['indirizzo'])}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
+    # Con «L'obiezione» e «Come ci arriviamo» il blocco non entra in una schermata: allora scorre.
+    corpo += (LIBERO if sum(len(c) for _, c in dopo_binari) > 900 else S)(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div>{condividi(p['titolo'], p['indirizzo'])}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
     corpo += S(f'<div class="capo"><div><h2>Gli altri pilastri</h2></div>'
                f'<a href="{{r}}programma/index.html">Tutto il programma →</a></div>'
                + striscia_pilastri(p['numero']))
