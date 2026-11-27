@@ -34,24 +34,33 @@ SITO_RIGA_ADERISCI = f'<span class="sito">{INDIRIZZO}/aderisci.html</span>' if M
 
 MISURE = {'quadrato': (1080, 1080), 'storia': (1080, 1920)}
 
+TEMI = {
+    'nero':   {'fondo': '#000000', 'testo': '#ffffff', 'acc': '#EC3657', 'riga': 'rgba(255,255,255,.14)',
+               'nota': 'rgba(255,255,255,.72)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
+    'bianco': {'fondo': '#ffffff', 'testo': '#000000', 'acc': '#B01030', 'riga': 'rgba(0,0,0,.14)',
+               'nota': 'rgba(0,0,0,.6)', 'mono': 'sa-monogramma.svg', 'contr': 'sa-contrassegno.svg'},
+    'rosso':  {'fondo': '#B01030', 'testo': '#ffffff', 'acc': '#ffffff', 'riga': 'rgba(255,255,255,.26)',
+               'nota': 'rgba(255,255,255,.8)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
+}
+
 STILE = '''
 @font-face { font-family: Montserrat; font-weight: 500; src: url(../risorse/font/montserrat-latin-500-normal.woff2) format("woff2"); }
 @font-face { font-family: Montserrat; font-weight: 800; src: url(../risorse/font/montserrat-latin-800-normal.woff2) format("woff2"); }
 @font-face { font-family: Montserrat; font-weight: 900; src: url(../risorse/font/montserrat-latin-900-normal.woff2) format("woff2"); }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Montserrat, sans-serif; background: #000; color: #fff; }
+body { font-family: Montserrat, sans-serif; }
 .tela { position: relative; display: flex; flex-direction: column; justify-content: space-between;
-        padding: 72px 72px 64px; overflow: hidden; background: #000; }
-.tela::after { content: ""; position: absolute; inset: 28px; border: 2px solid rgba(255,255,255,.14); pointer-events: none; }
+        padding: 72px 72px 64px; overflow: hidden; background: var(--fondo); color: var(--testo); }
+.tela::after { content: ""; position: absolute; inset: 28px; border: 2px solid var(--riga); pointer-events: none; }
 .alto { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; }
-.num { font-weight: 900; font-size: 190px; line-height: .78; color: #EC3657; letter-spacing: -.04em; }
+.num { font-weight: 900; font-size: 190px; line-height: .78; color: var(--acc); letter-spacing: -.04em; }
 .mono { width: 118px; height: auto; }
 .centro { margin-top: auto; padding: 0 0 56px; }
 h1 { font-weight: 900; font-size: 92px; line-height: .98; letter-spacing: -.02em; text-wrap: balance; }
-.slogan { margin-top: 34px; font-weight: 800; font-size: 44px; line-height: 1.16; color: #fff; text-wrap: balance; }
-.riga { width: 160px; height: 8px; margin-top: 40px; background: #EC3657; }
+.slogan { margin-top: 34px; font-weight: 800; font-size: 44px; line-height: 1.16; text-wrap: balance; }
+.riga { width: 160px; height: 8px; margin-top: 40px; background: var(--acc); }
 .basso { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
-.campagna { font-weight: 800; font-size: 28px; line-height: 1.24; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.72); white-space: nowrap; }
+.campagna { font-weight: 800; font-size: 28px; line-height: 1.24; letter-spacing: .1em; text-transform: uppercase; color: var(--nota); white-space: nowrap; }
 .sito { font-weight: 900; font-size: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 620px; text-align: right; }
 .storia .num { font-size: 260px; }
 .storia h1 { font-size: 118px; }
@@ -64,17 +73,20 @@ h1 { font-weight: 900; font-size: 92px; line-height: .98; letter-spacing: -.02em
 '''
 
 
-def tela(forma, dentro, extra=''):
+def tela(forma, tema, dentro, extra=''):
     w, h = MISURE[forma]
+    c = TEMI[tema]
+    var = (f'--fondo: {c["fondo"]}; --testo: {c["testo"]}; --acc: {c["acc"]}; '
+           f'--riga: {c["riga"]}; --nota: {c["nota"]};')
     return (f'<!DOCTYPE html>\n<html lang="it">\n<head>\n<meta charset="utf-8">\n<title>social</title>\n'
-            f'<style>{STILE}.tela {{ width: {w}px; height: {h}px; }}</style>\n</head>\n<body>\n'
+            f'<style>{STILE}.tela {{ width: {w}px; height: {h}px; {var} }}</style>\n</head>\n<body>\n'
             f'<div class="tela {forma} {extra}">{dentro}</div>\n</body>\n</html>\n')
 
 
-def pilastro(p, forma):
-    return tela(forma, f'''
+def pilastro(p, forma, tema):
+    return tela(forma, tema, f'''
   <div class="alto"><span class="num">{p["numero"]}</span>
-    <img class="mono" src="../risorse/loghi/sa-monogramma-bianco.svg" alt="SA"></div>
+    <img class="mono" src="../risorse/loghi/{TEMI[tema]["mono"]}" alt="SA"></div>
   <div class="centro">
     <h1>{p["titolo"]}</h1>
     <p class="slogan">{p["slogan"]}</p>
@@ -83,10 +95,10 @@ def pilastro(p, forma):
   <div class="basso"><span class="campagna">La Sicilia<br>che SA</span>{SITO_RIGA}</div>''')
 
 
-def adesione(forma):
-    return tela(forma, f'''
-  <div class="alto"><img class="contr" src="../risorse/loghi/sa-contrassegno-negativo-su-nero.svg" alt="">
-    <img class="mono" src="../risorse/loghi/sa-monogramma-bianco.svg" alt="SA"></div>
+def adesione(forma, tema):
+    return tela(forma, tema, f'''
+  <div class="alto"><img class="contr" src="../risorse/loghi/{TEMI[tema]["contr"]}" alt="">
+    <img class="mono" src="../risorse/loghi/{TEMI[tema]["mono"]}" alt="SA"></div>
   <div class="centro">
     <h1>Un programma nato dalle lotte.</h1>
     <p class="slogan">Fuori dal centrodestra, fuori dal «campo largo». Aderisci: ti scriviamo per gli incontri nella tua provincia.</p>
@@ -116,13 +128,14 @@ except ImportError:
     raise SystemExit('Serve Playwright: pip install playwright --break-system-packages && playwright install chromium')
 
 lavori = []
-for p in P:
+for tema in TEMI:
+    for p in P:
+        for forma in MISURE:
+            lavori.append((f'SA-social-{tema}-{p["numero"]}-{forma}.png', pilastro(p, forma, tema), forma, tema))
     for forma in MISURE:
-        lavori.append((f'SA-social-{p["numero"]}-{forma}.png', pilastro(p, forma), forma))
-for forma in MISURE:
-    lavori.append((f'SA-social-aderisci-{forma}.png', adesione(forma), forma))
+        lavori.append((f'SA-social-{tema}-aderisci-{forma}.png', adesione(forma, tema), forma, tema))
 
-for nome, html, _ in lavori:
+for nome, html, _, _t in lavori:
     (QUI / f'_{nome}.html').write_text(html, encoding='utf-8')
 
 gestore = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(RADICE))
@@ -131,7 +144,7 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 try:
     with sync_playwright() as pw:
         b = pw.chromium.launch()
-        for nome, _, forma in lavori:
+        for nome, _, forma, _t in lavori:
             w, h = MISURE[forma]
             pg = b.new_page(viewport={'width': w, 'height': h})
             pg.goto(f'http://127.0.0.1:8932/stampa/_{nome}.html')
@@ -142,13 +155,13 @@ try:
 finally:
     server.shutdown()
 
-for nome, _, _ in lavori:
+for nome, _, _, _t in lavori:
     (QUI / f'_{nome}.html').unlink()
 
 zip_ = RADICE / 'risorse' / 'materiali' / 'SA-social-kit.zip'
 with zipfile.ZipFile(zip_, 'w', zipfile.ZIP_DEFLATED) as z:
-    for nome, _, _ in lavori:
-        z.write(USCITA / nome, f'immagini/{nome}')
+    for nome, _, _, tema in lavori:
+        z.write(USCITA / nome, f'immagini/{tema}/{nome}')
     z.write(QUI / 'social-testi.txt', 'testi-pronti.txt')
     z.write(RADICE / 'risorse' / 'materiali' / 'SA-volantino-A5-nero.pdf', 'volantino-A5-nero.pdf')
 print(f'{len(lavori)} immagini · {zip_.name}: {zip_.stat().st_size // 1024} KB')
