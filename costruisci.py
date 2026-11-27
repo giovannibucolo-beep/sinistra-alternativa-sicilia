@@ -609,7 +609,16 @@ for i, p in enumerate(PILASTRI):
 
 # Tutto il programma in una pagina sola, da stampare o salvare in PDF (eccezione dichiarata alla regola delle schermate)
 tutto = ''.join(f'''<article class="blocco-p"><span class="k">Pilastro {p['numero']}</span><h2>{e(p['titolo'])}</h2><p class="sintesi">{e(p['sintesi'])}</p>{''.join(f'<h3>{e(t)}</h3><div class="testo">{testo(c)}</div>' for t, c in sezioni(p['corpo']))}</article>''' for p in PILASTRI)
-pagina('programma/tutto.html', 'Il programma completo', 'I sette pilastri in una pagina sola, da leggere di seguito o da stampare.', LIBERO(testa('Il programma', 'Tutto in una pagina', 'I sette pilastri di seguito. Bozza in attesa di approvazione del coordinamento.') + f'<div class="azioni"><button class="btn bn" type="button" data-stampa>Stampa o salva in PDF</button><a class="btn b2" href="{{r}}programma/index.html">Torna ai pilastri</a></div>{tutto}'), 'programma', [('programma/index.html', 'Programma'), ('', 'Tutto in una pagina')])
+# Carta intestata e riga in fondo: si vedono solo sul foglio stampato, non a schermo.
+carta_intestata = ('<div class="intestata">'
+                   '<img src="{r}risorse/loghi/sa-contrassegno.svg" alt="" width="150" height="150">'
+                   f'<div class="chi"><strong>{e(SITO["nome"])}</strong>'
+                   f'<span>Coordinamento regionale siciliano · Elezioni regionali 2027</span></div>'
+                   f'<div class="dt">Programma<br><small>Bozza in discussione nei tavoli<br>{data_estesa(OGGI)}</small></div>'
+                   '</div>')
+pie_stampa = (f'<div class="pie-stampa"><span>{e(SITO["nome"])} · Coordinamento regionale siciliano</span>'
+              f'<span>{BASE.replace("https://", "").rstrip("/")}</span></div>')
+pagina('programma/tutto.html', 'Il programma completo', 'I sette pilastri in una pagina sola, da leggere di seguito o da stampare.', LIBERO(carta_intestata + testa('Il programma', 'Il programma completo', 'I sette pilastri di seguito. Bozza in attesa di approvazione del coordinamento.') + f'<div class="azioni"><button class="btn bn" type="button" data-stampa>Stampa o salva in PDF</button><a class="btn b2" href="{{r}}programma/index.html">Torna ai pilastri</a></div>{tutto}' + pie_stampa), 'programma', [('programma/index.html', 'Programma'), ('', 'Il programma completo')])
 
 # Il metodo
 p = PAGINE['metodo']; sz = sezioni(p['corpo']); d = {t: c for t, c in sz}; nomi = [t for t, _ in sz if t]

@@ -204,7 +204,19 @@ input[type=text], input[type=email], input[type=tel], select, textarea { width: 
 .blocco-p { display: flex; flex-direction: column; gap: 12px; padding: 26px 0; border-top: 4px solid var(--nero); } .blocco-p h3 { margin-top: 6px; color: var(--cremisi); }
 form.cerca { padding: 0; border: 0; background: none; max-width: 620px; } form.cerca input { min-height: 64px; font-size: 20px; border-color: var(--nero); border-width: 3px; }
 #esiti .evento { align-items: flex-start; } #esiti .evento span.et { display: block; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cremisi); } #esiti mark { background: var(--tinta); color: inherit; }
+.intestata, .pie-stampa { display: none; }
 @media print {
+  /* Carta intestata: simbolo, intestazione e data in cima al foglio, e una riga fissa in basso
+     che si ripete su tutte le pagine. A schermo non si vedono. */
+  .intestata { display: flex; align-items: center; gap: 9mm; padding: 0 0 5mm; margin: 0 0 7mm; border-bottom: 3px solid var(--rosso); }
+  .intestata img { width: 30mm; height: auto; }
+  .intestata .chi { flex: 1 1 auto; display: flex; flex-direction: column; gap: 2mm; }
+  .intestata .chi strong { font-size: 15.5pt; font-weight: 900; line-height: 1.05; letter-spacing: -.01em; white-space: nowrap; }
+  .intestata .chi span { font-size: 9pt; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--campo); }
+  .intestata .dt { flex: none; min-width: 46mm; text-align: right; font-size: 11pt; font-weight: 800; line-height: 1.35; }
+  .intestata .dt small { display: block; margin-top: 1.5mm; font-size: 8.5pt; font-weight: 700; line-height: 1.4; color: var(--campo); }
+  .pie-stampa { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; gap: 10mm; padding-top: 2mm; border-top: 1px solid var(--linea); font-size: 8pt; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--campo); }
+  .capo-p h1 { font-size: 22pt; }
   /* Un pilastro per pagina, e mai un titolo solo in fondo al foglio. «break-inside: avoid» sul pilastro
      intero non si poteva rispettare — un pilastro è più lungo di una pagina — e lasciava fogli mezzi vuoti. */
   .briciole, .azioni, .salta, .punti, .cal { display: none !important; }

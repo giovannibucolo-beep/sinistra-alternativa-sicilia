@@ -116,3 +116,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - La pagina `programma/tutto.html` contiene **tutte** le sezioni di ogni pilastro. Era tagliata alle prime due e il PDF usciva senza i binari dello Stato né le obiezioni.
 - In stampa ogni pilastro comincia su una pagina nuova, i titoli non restano soli in fondo al foglio, elenchi e capoversi non si spezzano. Barra, piede, briciole, punti di scorrimento e pulsanti spariscono.
 - Dopo ogni modifica al programma la stampa va riprovata davvero generando il PDF, non guardando la pagina a schermo.
+
+## 24. Carta intestata della stampa
+- Il foglio stampato porta il contrassegno, il nome del coordinamento, «Elezioni regionali 2027», il titolo del documento e la data del giorno, con una riga rossa sotto. In fondo a ogni pagina il nome e l'indirizzo del sito. Tutto questo **si vede solo in stampa**: a schermo è nascosto.
+- Il simbolo nella carta intestata è il contrassegno (`sa-contrassegno.svg`), non il logo orizzontale: su un documento ufficiale conta il contrassegno.
+- La data è quella del giorno in cui il foglio viene costruito: un programma in discussione stampato tre mesi fa non deve sembrare quello di oggi.
