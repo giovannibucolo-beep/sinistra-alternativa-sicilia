@@ -165,6 +165,22 @@ def pronto_per_il_definitivo():
                          + '\nRimetti «bozza»: true oppure completa queste voci in contenuti/sito.json.')
 
 
+def ics_testo(s):
+    """Nel formato dei calendari la virgola, il punto e virgola e la barra rovesciata vanno protetti,
+    altrimenti l'appuntamento arriva troncato."""
+    return str(s).replace('\\', '\\\\').replace(',', '\\,').replace(';', '\\;').replace('\n', '\\n')
+
+
+def google_calendario(v, inizio, fine, con_ora):
+    """Collegamento che apre Google Calendar con l'appuntamento già compilato. È solo un collegamento:
+    non carica niente di Google nel sito e non lascia cookie finché non lo si clicca."""
+    q = {'action': 'TEMPLATE', 'text': v['titolo'], 'dates': inizio + '/' + fine,
+         'details': f"{SITO['nome']} · {BASE}{v['indirizzo']}", 'location': v.get('luogo', '')}
+    if con_ora:
+        q['ctz'] = 'Europe/Rome'
+    return 'https://calendar.google.com/calendar/render?' + urllib.parse.urlencode(q)
+
+
 def voci_contatto(coppie, titolo):
     """Colonna del piede: salta le voci vuote e sparisce del tutto se non ne resta nessuna."""
     righe = ''.join(f'<li>{p}{e(v)}</li>' for p, v in coppie if v)
@@ -331,9 +347,20 @@ def scheda_notizia(n):
     return f'''<li><a class="scheda riv" href="{{r}}{n['indirizzo']}">{foto(n['file'], n['titolo'])}<span class="tx"><span class="quando">{n['quando']}{segni(n)}</span><strong>{e(n['titolo'])}</strong><p>{e(n.get('sintesi', ''))}</p><span class="vai">Leggi →</span></span></a></li>'''
 
 
-def riga_evento(v):
+def riga_evento(v, calendario=True):
+    """Riga dell'agenda. Accanto agli incontri futuri c'è il segnaposto per il calendario: il file si
+    scarica e l'appuntamento entra nel calendario del telefono o del computer, con l'avviso il giorno prima."""
     d = v['giorno']
-    return f'''<li><a class="evento{' passato' if v['passato'] else ''}" href="{{r}}{v['indirizzo']}"><span class="d"><b>{d.day:02d}</b><small>{MESI3[d.month - 1]} {d.year}</small></span><span><strong>{e(v['titolo'])}</strong><span>{e(v.get('luogo', ''))}{' · ore ' + v['ora'] if v.get('ora') else ''}{' · già svolto' if v['passato'] else ''}{segni(v)}</span></span></a></li>'''
+    cal = ''
+    if calendario and not v['passato']:
+        cal = (f'<a class="cal" href="{{r}}agenda/{v["file"]}.ics" download '
+               f'aria-label="Salva nel calendario: {e(v["titolo"])}" title="Salva nel calendario">'
+               f'{icona("calendario")}</a>')
+    return (f'''<li class="ev"><a class="evento{' passato' if v['passato'] else ''}" href="{{r}}{v['indirizzo']}">'''
+            f'''<span class="d"><b>{d.day:02d}</b><small>{MESI3[d.month - 1]} {d.year}</small></span>'''
+            f'''<span><strong>{e(v['titolo'])}</strong><span>{e(v.get('luogo', ''))}'''
+            f'''{' · ore ' + v['ora'] if v.get('ora') else ''}{' · già svolto' if v['passato'] else ''}'''
+            f'''{segni(v)}</span></span></a>{cal}</li>''')
 
 
 def striscia():
@@ -383,6 +410,7 @@ ICONE = {
     'busta': '<path fill-rule="evenodd" d="M2 4h20v16H2Zm2 3v10h16V7l-8 6Z"/>',
     'catena': '<path fill-rule="evenodd" d="M1 7h22v10H1Zm3 3v4h5v-4Zm11 0v4h5v-4ZM10.5 7h3v3h-3Zm0 7h3v3h-3Z"/>',
     'lente': '<path fill-rule="evenodd" d="M10.5 1a9.5 9.5 0 1 0 5.6 17.2l5.1 5.1 2.1-2.1-5.1-5.1A9.5 9.5 0 0 0 10.5 1Zm0 3a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Z"/>',
+    'calendario': '<path fill-rule="evenodd" d="M6 1h3v2h6V1h3v2h4v20H2V3h4Zm14 7H4v13h16Zm-13 3h4v4H7Z"/>',
 }
 
 
@@ -623,8 +651,22 @@ for v in EVENTI:
         fine = f"{d:%Y%m%d}T{int(ora[:2]) + 2:02d}{ora[2:]}00" if ora else f'{d + datetime.timedelta(days=1):%Y%m%d}'
         tz = ';TZID=Europe/Rome' if ora else ';VALUE=DATE'
         nome_ics = v['file'] + '.ics'
-        (OUT / 'agenda' / nome_ics).write_text('\r\n'.join(['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Sinistra per l\'Alternativa//Agenda//IT', 'BEGIN:VEVENT', f"UID:{v['file']}@sinistra-alternativa-sicilia", f'DTSTAMP:{OGGI:%Y%m%d}T000000Z', f'DTSTART{tz}:{inizio}', f'DTEND{tz}:{fine}', 'SUMMARY:' + v['titolo'].replace(',', '\\,'), 'LOCATION:' + v.get('luogo', '').replace(',', '\\,'), f"URL:{BASE}{v['indirizzo']}", 'END:VEVENT', 'END:VCALENDAR', '']), encoding='utf-8')
-        ics = f'<a class="btn bn" href="{nome_ics}" download>Salva nel calendario</a>'
+        # Promemoria il giorno prima: un segnaposto senza avviso si perde fra gli altri impegni.
+        (OUT / 'agenda' / nome_ics).write_text('\r\n'.join([
+            'BEGIN:VCALENDAR', 'VERSION:2.0', "PRODID:-//Sinistra per l'Alternativa//Agenda//IT",
+            'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+            'BEGIN:VEVENT', f"UID:{v['file']}@sinistra-alternativa-sicilia",
+            f'DTSTAMP:{OGGI:%Y%m%d}T000000Z', f'DTSTART{tz}:{inizio}', f'DTEND{tz}:{fine}',
+            'SUMMARY:' + ics_testo(v['titolo']),
+            'LOCATION:' + ics_testo(v.get('luogo', '')),
+            'DESCRIPTION:' + ics_testo(f"{SITO['nome']} · {BASE}{v['indirizzo']}"),
+            f"URL:{BASE}{v['indirizzo']}",
+            'BEGIN:VALARM', 'ACTION:DISPLAY',
+            'DESCRIPTION:' + ics_testo('Domani: ' + v['titolo']), 'TRIGGER:-P1D', 'END:VALARM',
+            'END:VEVENT', 'END:VCALENDAR', '']), encoding='utf-8')
+        ics = (f'<a class="btn bn" href="{nome_ics}" download>Salva nel calendario</a>'
+               f'<a class="vai-a" href="{google_calendario(v, inizio, fine, bool(ora))}" target="_blank"'
+               f' rel="noopener">Aggiungi a Google Calendar →</a>')
     pil = next((p for p in PILASTRI if p['numero'] == v.get('pilastro')), None)
     terr = TERRITORI.get(v.get('provincia', ''))
     scheda = f'''<aside class="lato"><dl><dt>Quando</dt><dd>{data_estesa(d)}{' · ore ' + v['ora'] if v.get('ora') else ''}</dd><dt>Dove</dt><dd>{e(v.get('luogo', 'da indicare'))}</dd>{f'<dt>Provincia</dt><dd><a href="{{r}}{terr["indirizzo"]}">{e(v["provincia"])}</a></dd>' if terr else ''}{f'<dt>Pilastro</dt><dd><a href="{{r}}{pil["indirizzo"]}">{pil["numero"]} · {e(pil["titolo"])}</a></dd>' if pil else ''}</dl>{ics}<a class="btn" href="{{r}}aderisci.html{'?provincia=' + v['provincia'] if v.get('provincia') else ''}">{'Aderisci' if v['passato'] else 'Ci sarò: aderisci'}</a></aside>'''

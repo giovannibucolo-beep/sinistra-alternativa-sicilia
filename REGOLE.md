@@ -100,3 +100,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Un contenuto inventato per far vedere come sarà la pagina si marca `bozza: sì`: resta nel pannello come modello e non esce sul sito. L'etichetta «esempio» non si usa più per i contenuti pubblicati.
 - Un dato che non c'è si lascia **vuoto**, non si riempie con un segnaposto. Contatti, referenti e recapiti vuoti non vengono mostrati da nessuna parte: meglio niente che un'email finta scambiata per vera.
 - Il passaggio alla versione definitiva è una riga sola, `bozza: false` in `contenuti/sito.json`, e la costruzione si ferma se mancano i dati veri: email di contatto, committente responsabile, i cinque campi dell'informativa, l'indirizzo del servizio che riceve le adesioni. Non si pubblica come definitivo un sito con i contatti vuoti.
+
+## 21. Segnaposto nel calendario
+- Ogni incontro futuro produce da sé il suo file per il calendario (`agenda/<file>.ics`), con l'avviso il giorno prima. Non si scrive a mano.
+- Il segnaposto compare in due posti: l'icona del calendario accanto alla riga dell'agenda, e sulla pagina dell'incontro il pulsante «Salva nel calendario» più il collegamento a Google Calendar.
+- Il collegamento a Google è solo un collegamento: non carica niente di Google dentro il sito e non lascia cookie finché qualcuno non lo clicca. Per chi non usa Google basta il file, che vale su telefono, Mac, Windows e Outlook.

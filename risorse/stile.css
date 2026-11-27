@@ -60,6 +60,12 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
 .striscia a[aria-current] { color: #fff; background: var(--nero); }
 .striscia a[aria-current] i { color: var(--rosso); }
 .striscia a[aria-current] small { color: rgba(255,255,255,.75); }
+.ev { display: flex; align-items: stretch; gap: 0; }
+.ev > .evento { flex: 1 1 auto; min-width: 0; }
+.cal { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 54px; color: var(--nero); background: #fff; border: 2px solid var(--nero); transition: background .14s, color .14s; }
+.cal:hover, .cal:focus-visible { color: #fff; background: var(--nero); }
+.su-nero .cal, .riquadro-nero .cal { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); }
+.su-nero .cal:hover, .riquadro-nero .cal:hover { color: var(--nero); background: #fff; }
 .k { display: block; font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--cremisi); }
 .su-nero .k, .su-rosso .k { color: #fff; }
 .es { display: inline-block; padding: 1px 7px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-style: normal; color: #fff; background: var(--nero); vertical-align: middle; }
