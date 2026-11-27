@@ -484,12 +484,38 @@ for i, p in enumerate(PILASTRI):
     incontri = [v for v in FUTURI if v.get('pilastro') == p['numero']][:2]
     collegate = [n for n in NOTIZIE if n.get('pilastro') == p['numero']][:3]
     sz = sezioni(p['corpo'])
-    binari = ''.join(f'<div class="binario b{k}"><span class="k">{"Primo" if k == 1 else "Secondo"} binario</span><h2>{e(t)}</h2><div class="testo">{testo(c)}</div></div>' for k, (t, c) in enumerate(sz[:2], 1))
-    resto = ''.join(f'<h2>{e(t)}</h2>{testo(c)}' for t, c in sz[2:])
+    # I due binari si riconoscono dal titolo, non dalla posizione: così davanti si può mettere il «Perché»
+    # senza che il problema finisca al posto della proposta.
+    def _quale(titolo):
+        b = titolo.lower()
+        if b.startswith('cosa può fare') or b.startswith('che cosa può fare'):
+            return 1
+        if b.startswith('cosa va strappato') or b.startswith('che cosa va strappato'):
+            return 2
+        return 0
+    coppia = [(t, c) for t, c in sz if _quale(t)]
+    coppia.sort(key=lambda x: _quale(x[0]))
+    if len(coppia) != 2:
+        raise SystemExit(f'ERRORE in {p["titolo"]}: servono le due sezioni dei binari '
+                         f'(«Cosa può fare la Regione…» e «Cosa va strappato allo Stato»), trovate {len(coppia)}')
+    primo = [x for x in sz if not _quale(x[0])][:max(0, [i for i, x in enumerate(sz) if _quale(x[0])][0])]
+    dopo_binari = [x for x in sz if not _quale(x[0])][len(primo):]
+    binari = ''.join(f'<div class="binario b{k}"><span class="k">{"Primo" if k == 1 else "Secondo"} binario</span><h2>{e(t)}</h2><div class="testo">{testo(c)}</div></div>' for k, (t, c) in enumerate(coppia, 1))
+    resto = ''.join(f'<h2>{e(t)}</h2>{testo(c)}' for t, c in dopo_binari)
     lato = f'''<aside class="lato"><h3>Il tavolo di questo pilastro</h3><p>Aperto a comitati, collettivi, sindacati e singole persone.</p>{'<ul class="eventi">' + ''.join(riga_evento(v) for v in incontri) + '</ul>' if incontri else '<p><strong>Nessun incontro in calendario per ora.</strong></p>'}<a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a><a class="vai-a" href="{{r}}metodo.html">Che cosa sono i due binari →</a></aside>'''
     corpo = S(f'''<div class="col2"><div class="colonna">{testa_numerata(p['numero'], len(PILASTRI), 'pilastro', e(p['titolo']), e(p['slogan']))}<p class="sintesi">{e(p['sintesi'])}</p><div class="azioni"><a class="btn" href="{{r}}aderisci.html">Partecipa al tavolo</a></div></div>{foto('pilastro-' + p['numero'], p['foto_attesa'], ' grande')}</div>''')
-    corpo += S(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta')
+    for _t, _c in primo:
+        corpo += (LIBERO if len(_c) > 700 else S)(
+            f'<header class="capo-p riv"><h2>{sa(_t)}</h2></header><div class="testo lungo">{testo(_c)}</div>')
+    # Con elenchi lunghi i due binari non entrano in una schermata: allora scorre.
+    _lungo = sum(len(c) for _, c in coppia) > 1100
+    corpo += (LIBERO(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>')
+              if _lungo else
+              S(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta'))
     corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div>{condividi(p['titolo'], p['indirizzo'])}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
+    _persi = [x for x, _ in sz if sa(x) not in corpo and e(x) not in corpo]
+    if _persi:
+        raise SystemExit(f'ERRORE in {p["titolo"]}: sezioni non mostrate in pagina: ' + ', '.join(_persi))
     if collegate:
         corpo += S(f'<div class="capo"><div><h2>Su questo pilastro</h2></div><a href="{{r}}notizie/index.html">Tutte le notizie →</a></div><ul class="griglia tre">{"".join(scheda_notizia(n) for n in collegate)}</ul>', 'carta')
     pagina(p['indirizzo'], p['titolo'], p['sintesi'], corpo + aderisci_con(f"La Sicilia che sa {e(p['verbo'])}", 'Dai forza a questa proposta: aderisci e partecipa al tavolo.'), 'programma', [('programma/index.html', 'Programma'), ('', p['titolo'])], og='pilastro-' + p['numero'], ricerca=(p.get('titolo_ricerca'), p.get('descrizione_ricerca')) if p.get('titolo_ricerca') else None, immagine=FOTO.get('pilastro-' + p['numero']))
