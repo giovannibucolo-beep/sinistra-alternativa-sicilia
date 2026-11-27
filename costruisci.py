@@ -433,7 +433,18 @@ prossimo = ''
 if FUTURI:
     v = FUTURI[0]
     prossimo = f'''<div class="prossimo riquadro-nero"><div><span class="k">Prossimo incontro</span><h2>{e(v['titolo'])}{segni(v)}</h2><p class="quando">{data_estesa(v['giorno'])}{' · ore ' + v['ora'] if v.get('ora') else ''} · {e(v.get('luogo', ''))}</p></div><a class="btn" href="{{r}}{v['indirizzo']}">Tutti i dettagli</a></div>'''
-striscia_p = '<ol class="striscia alta riv">' + ''.join(f'''<li><a href="{{r}}{p['indirizzo']}"><i>{p['numero']}</i>{e(p['titolo'])}<small>{e(p['slogan'])}</small></a></li>''' for p in PILASTRI) + '</ol>'
+def striscia_pilastri(corrente=None):
+    """I sette pilastri in fila: dalla home e da dentro ogni pilastro, per saltare dove si vuole
+    senza tornare all'indice. Quello in cui sei è segnato."""
+    voci = ''
+    for x in PILASTRI:
+        qui = ' aria-current="page"' if x['numero'] == corrente else ''
+        voci += (f'<li><a href="{{r}}{x["indirizzo"]}"{qui}><i>{x["numero"]}</i>{e(x["titolo"])}'
+                 f'<small>{e(x["slogan"])}</small></a></li>')
+    return f'<ol class="striscia alta riv">{voci}</ol>'
+
+
+striscia_p = striscia_pilastri()
 pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="apertura schermo-a">
 <div class="sx"><h1>La Sicilia che <img src="{{r}}risorse/loghi/sa-monogramma.svg" alt="SA" width="649" height="418"></h1>
 <ul class="verbi">{verbi}</ul>
@@ -513,6 +524,9 @@ for i, p in enumerate(PILASTRI):
               if _lungo else
               S(f'<div class="capo"><div><h2>Due binari</h2></div><a href="{{r}}metodo.html">Che cosa sono →</a></div><div class="binari">{binari}</div>', 'carta'))
     corpo += S(f'''<div class="due"><div class="testo">{resto}</div>{lato}</div>{condividi(p['titolo'], p['indirizzo'])}<nav class="vicini" aria-label="Altri pilastri"><a href="{{r}}{prima['indirizzo']}">← {prima['numero']} {e(prima['titolo'])}</a><a href="{{r}}{dopo['indirizzo']}">{dopo['numero']} {e(dopo['titolo'])} →</a></nav>''')
+    corpo += S(f'<div class="capo"><div><h2>Gli altri pilastri</h2></div>'
+               f'<a href="{{r}}programma/index.html">Tutto il programma →</a></div>'
+               + striscia_pilastri(p['numero']))
     _persi = [x for x, _ in sz if sa(x) not in corpo and e(x) not in corpo]
     if _persi:
         raise SystemExit(f'ERRORE in {p["titolo"]}: sezioni non mostrate in pagina: ' + ', '.join(_persi))

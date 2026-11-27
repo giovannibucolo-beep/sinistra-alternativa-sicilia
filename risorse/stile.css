@@ -57,6 +57,9 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
 .ordinale i { padding-bottom: 7px; font-size: 13px; font-style: normal; font-weight: 800; line-height: 1.18; color: var(--grigio); }
 .su-nero .ordinale i, .su-rosso .ordinale i { color: rgba(255,255,255,.8); }
 .testo.lungo { max-width: 46em; }
+.striscia a[aria-current] { color: #fff; background: var(--nero); }
+.striscia a[aria-current] i { color: var(--rosso); }
+.striscia a[aria-current] small { color: rgba(255,255,255,.75); }
 .k { display: block; font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--cremisi); }
 .su-nero .k, .su-rosso .k { color: #fff; }
 .es { display: inline-block; padding: 1px 7px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-style: normal; color: #fff; background: var(--nero); vertical-align: middle; }
