@@ -2,7 +2,7 @@
 titolo: "Ponte, i cantieri slittano al 2027: 13,5 miliardi stanziati mentre l’isola viaggia a binario unico"
 data: 2026-11-26
 sintesi: Prima pietra rinviata a fine estate 2027. Intanto oltre l’80 per cento della rete ferroviaria siciliana è a binario unico. Che cosa può fare la Regione e dove si ferma.
-pilastro: "04"
+pilastro: "07"
 provincia: Messina
 ---
 
