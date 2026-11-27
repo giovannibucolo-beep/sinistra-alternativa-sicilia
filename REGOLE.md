@@ -86,3 +86,7 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Sulla fotografia non va più la banda nera con l'autore. L'attribuzione che le licenze chiedono sta tutta in `crediti.html`, raggiungibile dal piede di ogni pagina.
 - Ogni voce dei crediti deve avere quattro cose: il soggetto, che è un collegamento alla fotografia stessa; l'autore con l'anno; la licenza, con collegamento al testo della licenza; l'originale su Wikimedia Commons. E la pagina in cui la foto compare, così dal credito si risale alla foto e viceversa.
 - Se una fotografia è registrata in `foto.json` ma non compare in nessuna pagina, la costruzione lo stampa e i crediti lo scrivono: «Non usata in nessuna pagina». Non si lascia così.
+
+## 18. Niente doppioni fra barra e piede
+- Nel piede non si ripete quello che sta già nella barra in cima, che è sempre visibile. Il piede porta solo quello che la barra non ha: le pagine di servizio, i contatti per esteso, i canali, le note legali.
+- Chi aggiunge una voce alla barra la toglie dal piede, e viceversa. La prova è meccanica: l'elenco dei collegamenti della barra e quello del piede non devono avere nessun indirizzo in comune.

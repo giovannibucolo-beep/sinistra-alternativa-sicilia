@@ -224,9 +224,9 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <footer class="piede schermo">
 <div class="in">
 <div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p class="piede-desc">{e(SITO['descrizione'])}</p></div>
-<div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}materiali.html">Materiali</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
+<div><h2>Altre pagine</h2><ul><li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}materiali.html">Materiali da scaricare</a></li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
 <div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
-<div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
+<div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li></ul></div>
 <div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a>{icone_da_terzi()}</span>
 {'<span>Bozza dimostrativa: contatti, account e voci segnate «esempio» non sono reali.</span>' if SITO['bozza'] else ''}
 <span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
