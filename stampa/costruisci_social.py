@@ -34,14 +34,25 @@ SITO_RIGA_ADERISCI = f'<span class="sito">{INDIRIZZO}/aderisci.html</span>' if M
 
 MISURE = {'quadrato': (1080, 1080), 'storia': (1080, 1920)}
 
+# I cinque fondi della tavolozza approvata (SA-identita-visiva.pdf): nero, bianco sporco,
+# rosa chiarissimo, rosso cupo, rosso acceso. Nessun colore fuori da questi.
 TEMI = {
-    'nero':   {'fondo': '#000000', 'testo': '#ffffff', 'acc': '#EC3657', 'riga': 'rgba(255,255,255,.14)',
-               'nota': 'rgba(255,255,255,.72)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
-    'bianco': {'fondo': '#ffffff', 'testo': '#000000', 'acc': '#B01030', 'riga': 'rgba(0,0,0,.14)',
-               'nota': 'rgba(0,0,0,.6)', 'mono': 'sa-monogramma.svg', 'contr': 'sa-contrassegno.svg'},
-    'rosso':  {'fondo': '#B01030', 'testo': '#ffffff', 'acc': '#ffffff', 'riga': 'rgba(255,255,255,.26)',
-               'nota': 'rgba(255,255,255,.8)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
+    'nero':    {'fondo': '#000000', 'testo': '#ffffff', 'acc': '#EC3657', 'riga': 'rgba(255,255,255,.14)',
+                'nota': 'rgba(255,255,255,.72)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
+    'bianco':  {'fondo': '#FBF9FA', 'testo': '#000000', 'acc': '#B01030', 'riga': 'rgba(0,0,0,.14)',
+                'nota': 'rgba(0,0,0,.6)', 'mono': 'sa-monogramma.svg', 'contr': 'sa-contrassegno.svg'},
+    'rosa':    {'fondo': '#FDE7EB', 'testo': '#000000', 'acc': '#B01030', 'riga': 'rgba(176,16,48,.22)',
+                'nota': 'rgba(0,0,0,.62)', 'mono': 'sa-monogramma.svg', 'contr': 'sa-contrassegno.svg'},
+    'rosso':   {'fondo': '#B01030', 'testo': '#ffffff', 'acc': '#ffffff', 'riga': 'rgba(255,255,255,.26)',
+                'nota': 'rgba(255,255,255,.8)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
+    'acceso':  {'fondo': '#EC3657', 'testo': '#ffffff', 'acc': '#000000', 'riga': 'rgba(0,0,0,.2)',
+                'nota': 'rgba(255,255,255,.86)', 'mono': 'sa-monogramma-bianco.svg', 'contr': 'sa-contrassegno-negativo-su-nero.svg'},
 }
+
+# Sequenza consigliata: il feed non deve essere monocromo. Nessun colore due volte di fila,
+# i due punti più duri (guerra, mediterraneo) sul nero, l'adesione sul rosso.
+SEQUENZA = {'01': 'nero', '02': 'bianco', '03': 'rosa', '04': 'rosso', '05': 'bianco',
+            '06': 'nero', '07': 'rosa', 'aderisci': 'rosso'}
 
 STILE = '''
 @font-face { font-family: Montserrat; font-weight: 500; src: url(../risorse/font/montserrat-latin-500-normal.woff2) format("woff2"); }
@@ -162,6 +173,11 @@ zip_ = RADICE / 'risorse' / 'materiali' / 'SA-social-kit.zip'
 with zipfile.ZipFile(zip_, 'w', zipfile.ZIP_DEFLATED) as z:
     for nome, _, _, tema in lavori:
         z.write(USCITA / nome, f'immagini/{tema}/{nome}')
+    # La sequenza già pronta: si pubblica in ordine e il feed esce articolato da solo.
+    for chiave, tema in SEQUENZA.items():
+        for forma in MISURE:
+            nome = f'SA-social-{tema}-{chiave}-{forma}.png'
+            z.write(USCITA / nome, f'sequenza-consigliata/{chiave}-{forma}-{tema}.png')
     z.write(QUI / 'social-testi.txt', 'testi-pronti.txt')
     z.write(RADICE / 'risorse' / 'materiali' / 'SA-volantino-A5-nero.pdf', 'volantino-A5-nero.pdf')
 print(f'{len(lavori)} immagini · {zip_.name}: {zip_.stat().st_size // 1024} KB')
