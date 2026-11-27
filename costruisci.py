@@ -544,9 +544,12 @@ p = PAGINE['metodo']; sz = sezioni(p['corpo']); d = {t: c for t, c in sz}; nomi 
 binari_m = ''.join(f'<div class="binario b{k}"><span class="k">{"Primo" if k == 1 else "Secondo"} binario</span><h2>{e(t.split(": ", 1)[-1][0].upper() + t.split(": ", 1)[-1][1:])}</h2><div class="testo">{testo(d[t])}</div></div>' for k, t in enumerate(nomi[:2], 1))
 pagina('metodo.html', p['titolo'], p['sintesi'], S(f'<div class="col2"><div class="colonna">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(d.get("", ""))}</div></div><aside class="lato"><h3>{e(nomi[2]) if len(nomi) > 2 else ""}</h3><div class="testo">{testo(d[nomi[2]]) if len(nomi) > 2 else ""}</div><a class="btn" href="{{r}}programma/index.html">Vai al programma</a></aside></div>') + S(f'<div class="capo"><div><span class="k">Ogni proposta dice su quale sta</span><h2>I due binari</h2></div></div><div class="binari">{binari_m}</div>', 'carta') + ADERISCI, 'programma', [('programma/index.html', 'Programma'), ('', 'Come lavoriamo')])
 
-# Notizie: tre per schermata
-gruppi = a_gruppi(NOTIZIE, 3) or [[]]
-corpo = ''.join(S((testa('Notizie', 'Che cosa succede') if k == 0 else f'<div class="capo"><div><h2>Meno recenti · {k + 1}</h2></div></div>') + f'<ul class="griglia tre">{"".join(scheda_notizia(n) for n in g)}</ul>' + ('<a class="vai-a" href="{r}cerca.html">Cerca nel sito →</a>' if k == 0 else ''), 'carta') for k, g in enumerate(gruppi))
+# Notizie: un flusso solo, dalla più recente alla meno recente.
+# Niente «meno recenti» e niente gruppi: spezzare l'elenco faceva sembrare le notizie vecchie
+# una sezione a parte, mentre è lo stesso elenco che continua.
+corpo = LIBERO(testa('Notizie', 'Che cosa succede')
+               + f'<ul class="griglia tre">{"".join(scheda_notizia(n) for n in NOTIZIE)}</ul>'
+               + '<a class="vai-a" href="{r}cerca.html">Cerca nel sito →</a>')
 pagina('notizie/index.html', 'Notizie', 'Le notizie del coordinamento: incontri, presìdi, tavoli.', corpo + ADERISCI, 'notizie', [('', 'Notizie')])
 for n in NOTIZIE:
     pil = next((p for p in PILASTRI if p['numero'] == n.get('pilastro')), None); terr = TERRITORI.get(n.get('provincia', ''))
