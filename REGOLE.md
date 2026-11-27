@@ -127,3 +127,12 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 - Compare solo se c'è almeno un incontro. Un calendario di caselle vuote fa sembrare il sito abbandonato più di quanto farebbe la sua assenza.
 - Il giorno con un incontro futuro è rosso, quello già svolto è grigio, oggi ha il bordo nero. Si clicca e si apre l'incontro.
 - Sui telefoni stretti nella casella resta solo il giorno: il titolo sta nell'elenco sotto. Non si aggiungono mesi vuoti navigabili all'infinito senza motivo.
+
+26. **Kit social.** Le immagini per i social si generano da `stampa/costruisci_social.py`,
+    non si disegnano a mano: nascono dagli stessi titoli e slogan dei pilastri, così non
+    possono dire una cosa diversa dal programma. Vanno rigenerate quando cambia un pilastro
+    o quando arriva il dominio definitivo (finché l'indirizzo è più lungo di 34 caratteri
+    resta fuori dall'immagine, perché troncato sarebbe illeggibile).
+
+27. **PDF del programma.** `risorse/materiali/SA-programma-in-una-pagina.pdf` non si aggiorna
+    da solo: dopo ogni modifica ai pilastri si rilancia `strumenti/programma_pdf.py`.

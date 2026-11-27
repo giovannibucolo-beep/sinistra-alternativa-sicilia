@@ -303,3 +303,18 @@
     });
   }
 })();
+
+// Testi già scritti: copiare con un tocco. Senza appunti disponibili (contesto non sicuro,
+// permesso negato) il testo resta comunque leggibile e selezionabile nella pagina.
+document.querySelectorAll('[data-copia]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var t = b.getAttribute('data-copia');
+    var fatto = function () { b.textContent = 'Copiato'; setTimeout(function () { b.textContent = 'Copia il testo'; }, 2200); };
+    var fallito = function () { b.textContent = 'Copia a mano'; setTimeout(function () { b.textContent = 'Copia il testo'; }, 2200); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(fatto, fallito);
+    } else {
+      fallito();
+    }
+  });
+});

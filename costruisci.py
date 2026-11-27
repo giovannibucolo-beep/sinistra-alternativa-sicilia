@@ -807,7 +807,25 @@ gruppi_lista = list(gruppi_mat.items())
 testa_mat = testa('Materiali', 'Materiali da scaricare', 'Logo, identità visiva, programma e propaganda: tutto pronto da usare per banchetti, assemblee e social.') + (nota_mat if mancanti_mat else '')
 blocchi_mat = S(testa_mat + f'<div class="capo"><div><h2>{e(gruppi_lista[0][0])}</h2></div></div><ul class="griglia tre">{"".join(gruppi_lista[0][1])}</ul>', 'fitta')
 blocchi_mat += ''.join(S(f'<div class="capo"><div><h2>{e(g)}</h2></div></div><ul class="griglia tre">{"".join(v)}</ul>', 'carta' if i % 2 == 0 else '') for i, (g, v) in enumerate(gruppi_lista[1:]))
-pagina('materiali.html', 'Materiali', 'Logo, identità visiva, programma da stampare, volantini e manifesti da scaricare e usare.',
+# Testi già scritti: chi fa propaganda copia e pubblica, senza riscrivere e senza aggiungere
+# promesse che il programma non fa. Gli stessi testi sono nel kit social, in un file di testo.
+def _testo_social(titolo, sintesi, dove):
+    return f'{titolo.upper()}. {sintesi}\n\nIl punto per intero: {dove}'
+
+
+pronti = [(f'Punto {p["numero"]} · {p["titolo"]}', _testo_social(p['slogan'].rstrip('.'), p['sintesi'], BASE + p['indirizzo'])) for p in PILASTRI]
+pronti.append(('Adesione', 'Un programma nato dalle lotte. Fuori dal centrodestra, fuori dal «campo largo».\n\n'
+               'Lascia i tuoi contatti: ti scriviamo per gli incontri nella tua provincia.\n'
+               + BASE + 'aderisci.html'))
+voci_pronti = ''.join(
+    f'<li><span class="scheda pronto"><span class="tx"><span class="k">{e(n)}</span>'
+    f'<p class="dettato">{e(t)}</p>'
+    f'<button type="button" class="btn b2" data-copia="{e(t)}">Copia il testo</button></span></span></li>'
+    for n, t in pronti)
+blocchi_mat += LIBERO('<div class="capo"><div><h2>Testi già scritti</h2>'
+                      '<p>Un testo per ciascun punto, uno per l’adesione. Copialo e pubblicalo con l’immagine che porta lo stesso numero.</p></div></div>'
+                      f'<ul class="griglia tre pronti">{voci_pronti}</ul>')
+pagina('materiali.html', 'Materiali', 'Logo, identità visiva, programma da stampare, volantini, manifesti e kit social da scaricare e usare.',
        blocchi_mat + ADERISCI, '', [('', 'Materiali')])
 
 # Crediti delle fotografie (le licenze Creative Commons chiedono autore, licenza e fonte)

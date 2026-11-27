@@ -433,3 +433,8 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
   .cifre strong { font-size: min(86px, 10svh); }
   .schermo .cifre { gap: 2.4svh 32px; } .schermo .cifre span { font-size: min(18px, 2.2svh); } .schermo .cifre small { font-size: min(12px, 1.7svh); }
 }
+
+/* Testi già scritti per i social: si leggono interi e si copiano con un tocco */
+.pronti .scheda { align-items: flex-start; }
+.pronto .dettato { margin: 6px 0 14px; white-space: pre-line; font-size: .95rem; line-height: 1.5; overflow-wrap: anywhere; }
+.pronto .btn { align-self: flex-start; }
