@@ -227,7 +227,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <div><h2>Il sito</h2><ul>{''.join(f'<li><a href="{r}{h}">{t}</a></li>' for h, t in MENU)}<li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}aderisci.html">Aderisci</a></li><li><a href="{r}materiali.html">Materiali</a></li><li><a href="{r}cerca.html">Cerca nel sito</a></li></ul></div>
 <div><h2>Contatti</h2><ul><li>{e(c['email'])}</li><li>{e(c['telefono'])}</li><li>{e(c['sede'])}</li></ul></div>
 <div><h2>Seguici</h2><ul><li>Facebook — {e(c['facebook'])}</li><li>Instagram — {e(c['instagram'])}</li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
-<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a></span>
+<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a>{icone_da_terzi()}</span>
 {'<span>Bozza dimostrativa: contatti, account e voci segnate «esempio» non sono reali.</span>' if SITO['bozza'] else ''}
 <span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
 </div>
@@ -350,6 +350,18 @@ def icona(nome):
 
 
 SERVIZI = pathlib.Path(__file__).resolve().parent / 'risorse' / 'loghi' / 'servizi'
+
+
+def icone_da_terzi():
+    """Se qualcuno ha caricato i loghi dei servizi, la licenza di chi li distribuisce può chiedere un credito
+    nel piede su ogni pagina che li usa. La nota compare da sola e sparisce da sola."""
+    if not SERVIZI.exists() or not any(SERVIZI.glob('*.svg')):
+        return ''
+    fonte = SITO.get('icone_fonte') or {}
+    if not fonte.get('nome') or not fonte.get('indirizzo'):
+        return ''
+    return (f' · Icone dei servizi di condivisione: <a href="{e(fonte["indirizzo"])}" target="_blank"'
+            f' rel="noopener">{e(fonte["nome"])}</a>')
 
 
 def segno_ufficiale(marchio):

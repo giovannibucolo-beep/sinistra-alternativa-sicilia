@@ -22,3 +22,14 @@ pittogramma: non si rompe niente.
 3. **Le condizioni vanno lette prima.** Sono marchi registrati: l'uso in un sito politico è
    l'ambito in cui le condizioni d'uso sono più restrittive, e la responsabilità è di chi pubblica.
    Finché nessuno le ha lette, questa cartella resta vuota.
+
+## Il credito nel piede
+
+Se carichi qui dentro anche un solo file, nel piede di ogni pagina compare da sola la riga
+«Icone dei servizi di condivisione: ‹nome›», con il collegamento. Nome e indirizzo si cambiano
+in `contenuti/sito.json`, voce `icone_fonte`. Se svuoti la cartella, la riga sparisce da sola.
+
+Serve perché chi distribuisce le icone può chiederlo. Icons8, per esempio, consente l'uso gratuito
+a condizione che nel piede di ogni pagina che le usa ci sia un collegamento a icons8.it; in
+alternativa si compra una licenza e il credito non serve. Verifica le condizioni di chi le distribuisce
+prima di caricarle: la riga automatica è un aiuto, non una garanzia.
