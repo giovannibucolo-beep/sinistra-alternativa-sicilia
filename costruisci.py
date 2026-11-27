@@ -215,7 +215,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <header class="testata">
 <a class="logo" href="{r}index.html"><img src="{r}risorse/loghi/sa-logo-orizzontale.svg" alt="{e(SITO['nome_logo'])} — pagina iniziale" width="174" height="42"></a>
 <button class="menu-b" type="button" aria-expanded="false" aria-controls="menu">Menù</button>
-<nav class="menu" id="menu" aria-label="Principale">{voci}<a class="btn" href="{r}aderisci.html">Aderisci</a></nav>
+<nav class="menu" id="menu" aria-label="Principale">{voci}<a class="lente" href="{r}cerca.html" title="Cerca nel sito">{icona('lente')}<span>Cerca nel sito</span></a><a class="btn" href="{r}aderisci.html">Aderisci</a></nav>
 </header>
 {bric}
 <main id="contenuto">
@@ -339,6 +339,7 @@ ICONE = {
     'megafono': '<path d="M2 9h5l12-6v18L7 15H2Z"/><path d="M7 15h3.4l1.2 7H8.2Z"/>',
     'busta': '<path fill-rule="evenodd" d="M2 4h20v16H2Zm2 3v10h16V7l-8 6Z"/>',
     'catena': '<path fill-rule="evenodd" d="M1 7h22v10H1Zm3 3v4h5v-4Zm11 0v4h5v-4ZM10.5 7h3v3h-3Zm0 7h3v3h-3Z"/>',
+    'lente': '<path fill-rule="evenodd" d="M10.5 1a9.5 9.5 0 1 0 5.6 17.2l5.1 5.1 2.1-2.1-5.1-5.1A9.5 9.5 0 0 0 10.5 1Zm0 3a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Z"/>',
 }
 
 

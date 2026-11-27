@@ -29,6 +29,27 @@
     rr.forEach(function (e) { o.observe(e); });
   } else rr.forEach(function (e) { e.classList.add('vis'); });
 
+  // La lente nell'intestazione: senza JavaScript porta alla pagina della ricerca, con JavaScript
+  // apre il campo lì dove sei. Chi scrive e preme invio arriva sulla pagina con la ricerca già fatta.
+  var lente = doc.querySelector('.menu a.lente');
+  if (lente && !/cerca\.html/.test(location.pathname)) {
+    lente.addEventListener('click', function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || !matchMedia('(min-width: 1180px)').matches) return;
+      ev.preventDefault();
+      var f = doc.createElement('form');
+      f.className = 'cerca-testa'; f.setAttribute('role', 'search'); f.action = lente.getAttribute('href');
+      var i = doc.createElement('input');
+      i.type = 'search'; i.name = 'q'; i.setAttribute('aria-label', 'Cerca nel sito'); i.placeholder = 'Cerca nel sito';
+      var b = doc.createElement('button');
+      b.type = 'submit'; b.innerHTML = lente.querySelector('svg').outerHTML;
+      b.setAttribute('aria-label', 'Avvia la ricerca');
+      f.appendChild(i); f.appendChild(b);
+      lente.replaceWith(f);
+      i.focus();
+      doc.addEventListener('keydown', function (k) { if (k.key === 'Escape') { f.replaceWith(lente); } });
+    });
+  }
+
   // Numeri che salgono, una volta sola. Il numero per intero è già nella pagina: questo è solo un ornamento.
   var cc = doc.querySelectorAll('.cifre strong[data-conta]');
   if (cc.length && 'IntersectionObserver' in window && !fermo) {

@@ -24,12 +24,20 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
 .menu a { display: flex; align-items: center; min-height: 60px; font-size: 20px; font-weight: 900; text-transform: uppercase; text-decoration: none; border-bottom: 2px solid var(--linea); }
 .menu a[aria-current] { color: var(--cremisi); }
 .menu a.btn { margin-top: 20px; justify-content: center; border: 0; color: #fff; }
+.menu a.lente { gap: 12px; }
+.menu a.lente .ic { flex: none; }
+.cerca-testa { display: flex; flex: none; flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 6px; }
+.cerca-testa input { min-width: 0; width: clamp(120px, 14vw, 200px); height: 40px; padding: 0 10px; font: 700 14px Montserrat, Arial, sans-serif; color: var(--nero); background: #fff; border: 2px solid var(--nero); }
+.cerca-testa button { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; color: #fff; background: var(--nero); border: 2px solid var(--nero); cursor: pointer; }
 @media (min-width: 1000px) {
   .menu-b { display: none; }
   .menu { position: static; display: flex; flex-direction: row; align-items: center; gap: clamp(12px, 1.8vw, 26px); padding: 0; overflow: visible; background: none; }
   .menu a { min-height: 44px; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; border-bottom: 3px solid transparent; }
   .menu a[aria-current] { color: var(--nero); border-bottom-color: var(--rosso); }
   .menu a.btn { margin: 0; min-height: 46px; padding: 0 18px; font-size: 13px; border: 3px solid var(--rosso); }
+  .menu a.lente { width: 44px; justify-content: center; border-bottom-color: transparent; }
+  .menu a.lente span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .menu a.lente[aria-current] { border-bottom-color: var(--rosso); }
 }
 
 /* ---------- elementi comuni ---------- */
