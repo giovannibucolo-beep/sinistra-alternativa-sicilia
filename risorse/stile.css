@@ -438,3 +438,14 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 .pronti .scheda { align-items: flex-start; }
 .pronto .dettato { margin: 6px 0 14px; white-space: pre-line; font-size: .95rem; line-height: 1.5; overflow-wrap: anywhere; }
 .pronto .btn { align-self: flex-start; }
+
+/* Cosa succede vicino a me */
+.vicino { display: flex; flex-direction: column; gap: 8px; max-width: 560px; margin-top: 10px; }
+.vicino .campo { display: flex; flex-direction: row; gap: 10px; }
+.vicino input { flex: 1 1 auto; min-width: 0; }
+.vicino .btn { flex: 0 0 auto; }
+.esito:not(:empty) { margin-top: 22px; padding: 20px 22px; border: 1px solid var(--riga); border-radius: 10px; }
+.esito h3 { margin: 4px 0 8px; }
+.esito p { margin: 0 0 8px; }
+.esito p:last-child { margin-bottom: 0; }
+.azioni-vicino { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }

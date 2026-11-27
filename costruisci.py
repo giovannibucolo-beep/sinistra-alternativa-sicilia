@@ -115,6 +115,8 @@ def testo(md):
 
 PILASTRI = cartella('pilastri')
 MATERIALI = json.loads((CONT / 'materiali.json').read_text(encoding='utf-8'))
+# Comune → provincia, per «Cosa succede vicino a me»: si rigenera con strumenti/scarica_comuni.py
+COMUNI = json.loads((CONT / 'comuni.json').read_text(encoding='utf-8'))
 NOTIZIE = sorted(cartella('notizie'), key=lambda n: n['giorno'], reverse=True)
 EVENTI = sorted(cartella('agenda'), key=lambda n: n['giorno'])
 TERRITORI = {t['titolo']: t for t in cartella('territori')}
@@ -696,7 +698,31 @@ for v in EVENTI:
            dati=None if v['esempio'] else {'@context': 'https://schema.org', '@type': 'Event', 'name': v['titolo'], 'startDate': v['data'] + (f"T{v['ora']}" if v.get('ora') else ''), 'location': {'@type': 'Place', 'name': v.get('luogo', '')}, 'organizer': {'@type': 'Organization', 'name': SITO['nome']}})
 
 # Territori
-pagina('territori/index.html', 'Territori', 'Nove province, un tavolo in ognuna: le lotte, gli incontri, come partecipare.', S(testa('Territori', 'Dov’è la tua Sicilia?', 'Scegli la provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.') + f'''<ul class="griglia tre">{''.join(f'<li><a class="scheda riv" href="{{r}}{t["indirizzo"]}"><span class="tx"><strong>{e(nome)}</strong><p>{e(t.get("lotte", ""))}</p><span class="vai">Vai →</span></span></a></li>' for nome, t in sorted(TERRITORI.items()))}</ul>''', 'carta fitta') + ADERISCI, 'territori', [('', 'Territori')])
+# Cosa succede vicino a me: chi scrive il proprio paese non deve sapere a quale provincia
+# appartiene né quale tavolo lo riguarda. Senza JavaScript restano le nove schede qui sotto.
+vicino_dati = {}
+for nome_t, t_ in sorted(TERRITORI.items()):
+    pross = next((v for v in FUTURI if v.get('provincia') == nome_t), None)
+    vicino_dati[nome_t] = {
+        'indirizzo': t_['indirizzo'],
+        'lotte': t_.get('lotte', ''),
+        'referente': t_.get('referente', ''),
+        'prossimo': ({'titolo': pross['titolo'], 'quando': data_estesa(pross['giorno']) + (' · ore ' + pross['ora'] if pross.get('ora') else ''),
+                      'luogo': pross.get('luogo', ''), 'indirizzo': pross['indirizzo']} if pross else None),
+    }
+pross_reg = FUTURI[0] if FUTURI else None
+vicino = ('<div class="capo"><div><h2>Cosa succede vicino a me</h2>'
+          '<p>Scrivi il tuo comune: ti diciamo quale tavolo ti riguarda e qual è il prossimo incontro.</p></div></div>'
+          '<form class="vicino" id="sa-vicino-form" autocomplete="off">'
+          '<label for="sa-comune">Il tuo comune</label>'
+          '<span class="campo"><input id="sa-comune" name="comune" type="text" placeholder="per esempio Niscemi" '
+          'list="sa-comuni-lista" required><button class="btn" type="submit">Cerca</button></span>'
+          f'<datalist id="sa-comuni-lista">{"".join(f"<option value=\"{e(c)}\">" for c in COMUNI)}</datalist>'
+          '</form><div class="esito" id="sa-vicino-esito" role="status" aria-live="polite"></div>'
+          f'<script type="application/json" id="sa-comuni">{json.dumps(COMUNI, ensure_ascii=False)}</script>'
+          f'<script type="application/json" id="sa-tavoli">{json.dumps(vicino_dati, ensure_ascii=False)}</script>')
+
+pagina('territori/index.html', 'Territori', 'Nove province, un tavolo in ognuna: le lotte, gli incontri, come partecipare.', S(vicino, 'carta') + S(testa('Territori', 'Dov’è la tua Sicilia?', 'Scegli la provincia: trovi le lotte aperte, il prossimo incontro e come partecipare.') + f'''<ul class="griglia tre">{''.join(f'<li><a class="scheda riv" href="{{r}}{t["indirizzo"]}"><span class="tx"><strong>{e(nome)}</strong><p>{e(t.get("lotte", ""))}</p><span class="vai">Vai →</span></span></a></li>' for nome, t in sorted(TERRITORI.items()))}</ul>''', 'carta fitta') + ADERISCI, 'territori', [('', 'Territori')])
 for nome, t in TERRITORI.items():
     inc = [v for v in EVENTI if v.get('provincia') == nome][:3]
     not_p = [n for n in NOTIZIE if n.get('provincia') == nome][:3]

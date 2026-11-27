@@ -136,3 +136,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 
 27. **PDF del programma.** `risorse/materiali/SA-programma-in-una-pagina.pdf` non si aggiorna
     da solo: dopo ogni modifica ai pilastri si rilancia `strumenti/programma_pdf.py`.
+
+28. **Comuni.** `contenuti/comuni.json` tiene i 391 comuni siciliani con la loro provincia e
+    si rigenera con `strumenti/scarica_comuni.py`. Serve a «Cosa succede vicino a me»: chi
+    scrive il proprio paese non deve sapere a quale tavolo appartiene. Senza JavaScript
+    restano le nove schede delle province: la funzione non è mai l'unica strada.

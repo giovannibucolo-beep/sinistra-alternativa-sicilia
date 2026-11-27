@@ -318,3 +318,74 @@ document.querySelectorAll('[data-copia]').forEach(function (b) {
     }
   });
 });
+
+// Cosa succede vicino a me: dal comune al tavolo della propria provincia.
+// Il confronto ignora accenti, apostrofi e maiuscole, così «Sant'Agata» trova «Sant’Agata».
+(function () {
+  var modulo = document.getElementById('sa-vicino-form');
+  var esito = document.getElementById('sa-vicino-esito');
+  var dati = document.getElementById('sa-comuni');
+  var tavoli = document.getElementById('sa-tavoli');
+  if (!modulo || !esito || !dati || !tavoli) { return; }
+  var COMUNI, TAVOLI;
+  try { COMUNI = JSON.parse(dati.textContent); TAVOLI = JSON.parse(tavoli.textContent); } catch (err) { return; }
+
+  function piatto(t) {
+    return t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/['’`.\-]/g, ' ')
+            .replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+  var indice = {};
+  Object.keys(COMUNI).forEach(function (c) { indice[piatto(c)] = c; });
+  var chiavi = Object.keys(indice);
+
+  function esc(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  modulo.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var scritto = piatto(modulo.comune.value || '');
+    if (!scritto) { esito.innerHTML = ''; return; }
+    var nome = indice[scritto];
+    if (!nome) {
+      var vicini = chiavi.filter(function (k) { return k.indexOf(scritto) === 0; }).slice(0, 6);
+      if (vicini.length === 1) {
+        nome = indice[vicini[0]];
+      } else if (vicini.length > 1) {
+        esito.innerHTML = '<p class="k">Quale dei due?</p><p>' + vicini.map(function (k) {
+          return '<button type="button" class="btn b2" data-comune="' + esc(indice[k]) + '">' + esc(indice[k]) + '</button>';
+        }).join(' ') + '</p>';
+        return;
+      } else {
+        esito.innerHTML = '<p>Non trovo questo comune fra i 391 della Sicilia. Controlla come l’hai scritto, '
+          + 'oppure scegli la provincia qui sotto.</p>';
+        return;
+      }
+    }
+    var prov = COMUNI[nome];
+    var t = TAVOLI[prov];
+    if (!t) { esito.innerHTML = ''; return; }
+    var righe = '<p class="k">' + esc(nome) + ' · provincia di ' + esc(prov) + '</p>';
+    righe += '<h3>Il tavolo della provincia di ' + esc(prov) + '</h3>';
+    if (t.lotte) { righe += '<p>Le lotte aperte: ' + esc(t.lotte) + '.</p>'; }
+    if (t.prossimo) {
+      righe += '<p><strong>Prossimo incontro:</strong> ' + esc(t.prossimo.titolo) + ' — '
+        + esc(t.prossimo.quando) + (t.prossimo.luogo ? ' · ' + esc(t.prossimo.luogo) : '')
+        + ' <a href="../' + esc(t.prossimo.indirizzo) + '">Dettagli →</a></p>';
+    } else {
+      righe += '<p>Nessun incontro già fissato in questa provincia: il tavolo si sta formando. '
+        + 'Lascia i contatti e ti scriviamo per il primo.</p>';
+    }
+    righe += '<p class="azioni-vicino"><a class="btn" href="../aderisci.html?provincia=' + encodeURIComponent(prov)
+      + '">Aderisci dalla provincia di ' + esc(prov) + '</a>'
+      + '<a class="btn b2" href="../' + esc(t.indirizzo) + '">La pagina della provincia</a></p>';
+    esito.innerHTML = righe;
+  });
+
+  esito.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-comune]');
+    if (!b) { return; }
+    modulo.comune.value = b.getAttribute('data-comune');
+    modulo.requestSubmit ? modulo.requestSubmit() : modulo.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
+})();
