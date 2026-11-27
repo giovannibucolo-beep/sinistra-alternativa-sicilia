@@ -443,8 +443,37 @@ pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="aper
        dati={'@context': 'https://schema.org', '@type': 'Organization', 'name': SITO['nome'], 'alternateName': 'Sinistra Alternativa Sicilia', 'areaServed': 'Sicilia', 'url': BASE, 'logo': BASE + 'risorse/loghi/sa-contrassegno.png', 'description': SITO['descrizione']})
 
 # Chi siamo
-p = CHI; sz = SZ_CHI; forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M); oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
-pagina('chi-siamo.html', p['titolo'], p['sintesi'], S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}<div class="testo">{testo(sz.get("", ""))}</div></div>') + S(f'<header class="capo-p"><h2>I numeri</h2></header>{NUMERI}') + S(f'<div class="capo"><div><h2>Le forze del coordinamento</h2></div><a href="{{r}}metodo.html">Come lavoriamo →</a></div><ul class="griglia quattro forze">{"".join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)}<li><a class="scheda nera" href="{{r}}aderisci.html"><span class="tx"><strong>Manchi tu</strong><span class="vai">Aderisci →</span></span></a></li></ul><p class="nota">{e(oss)}</p>', 'carta') + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
+p = CHI; sz = SZ_CHI
+forze = re.findall(r'^- (.*)$', sz.get('Le forze del coordinamento', ''), re.M)
+oss = re.sub(r'^- .*$', '', sz.get('Le forze del coordinamento', ''), flags=re.M).strip()
+
+SPECIALI = ('', 'I numeri', 'Le forze del coordinamento')
+corpo_chi = S(f'<div class="col2">{testa(p["occhiello"], e(p["titolone"]), e(p["sintesi"]))}'
+              f'<div class="testo">{testo(sz.get("", ""))}</div></div>')
+# Ogni altra sezione scritta in «Chi siamo» diventa una schermata, nell'ordine in cui è scritta.
+# Prima venivano buttate via in silenzio: chi scriveva dal pannello non se ne accorgeva.
+for _titolo, _corpo in sezioni(p['corpo']):
+    if _titolo in SPECIALI:
+        continue
+    # Una sezione lunga non entra in una schermata intera: va a scorrimento libero, altrimenti si taglia.
+    _schermata = LIBERO if len(_corpo) > 700 else S
+    corpo_chi += _schermata(f'<header class="capo-p riv"><h2>{sa(_titolo)}</h2></header>'
+                            f'<div class="testo lungo">{testo(_corpo)}</div>')
+    if _titolo == 'Una sola radice':
+        corpo_chi += S(f'<header class="capo-p riv"><h2>I numeri</h2></header>{NUMERI}')
+corpo_chi += S(f'<div class="capo"><div><h2>Le forze del coordinamento</h2></div>'
+               f'<a href="{{r}}metodo.html">Come lavoriamo →</a></div>'
+               f'<ul class="griglia quattro forze">'
+               + ''.join(f"<li><span class=scheda><span class=tx><strong>{e(x)}</strong></span></span></li>" for x in forze)
+               + '<li><a class="scheda nera" href="{r}aderisci.html"><span class="tx"><strong>Manchi tu</strong>'
+                 '<span class="vai">Aderisci →</span></span></a></li></ul>'
+               + f'<p class="nota">{e(oss)}</p>', 'carta')
+pagina('chi-siamo.html', p['titolo'], p['sintesi'], corpo_chi + ADERISCI, 'chi-siamo', [('', 'Chi siamo')])
+
+# Controllo: nessuna sezione scritta deve sparire dalla pagina
+_mancanti = [x for x, _ in sezioni(p['corpo']) if x and x not in SPECIALI and sa(x) not in corpo_chi]
+if _mancanti:
+    raise SystemExit('ERRORE: sezioni di «Chi siamo» non mostrate in pagina: ' + ', '.join(_mancanti))
 
 # Programma
 schede = ''.join(f'''<li><a class="scheda pil riv" href="{{r}}{p['indirizzo']}"><span class="tx"><span class="n">{p['numero']}</span><strong>{e(p['titolo'])}</strong><p>{e(p['sintesi'])}</p><span class="vai">Le proposte →</span></span></a></li>''' for p in PILASTRI)

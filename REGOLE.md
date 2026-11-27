@@ -90,3 +90,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 ## 18. Niente doppioni fra barra e piede
 - Nel piede non si ripete quello che sta già nella barra in cima, che è sempre visibile. Il piede porta solo quello che la barra non ha: le pagine di servizio, i contatti per esteso, i canali, le note legali.
 - Chi aggiunge una voce alla barra la toglie dal piede, e viceversa. La prova è meccanica: l'elenco dei collegamenti della barra e quello del piede non devono avere nessun indirizzo in comune.
+
+## 19. Una sezione scritta deve comparire in pagina
+- Se qualcuno scrive una sezione in un contenuto, quella sezione va mostrata. Il modello di «Chi siamo» ne mostrava solo tre e buttava via il resto senza dire niente: chi scriveva dal pannello non se ne accorgeva.
+- Ora ogni sezione diventa una schermata nell'ordine in cui è scritta, e la costruzione si ferma con un errore se una sezione non finisce in pagina. Lo stesso vale per qualunque modello si aggiunga in futuro: o mostra tutto, o si ferma.
+- Una sezione lunga (oltre 700 caratteri) non entra in una schermata intera: va a scorrimento libero. Se no il testo si taglia, e la prova delle schermate lo segnala.
