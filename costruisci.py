@@ -271,7 +271,8 @@ def condividi(titolo, percorso):
            ('Email', '', 'busta', f'mailto:?subject={t}&body={u}')]
     link = ''
     for n, marchio, ic, v in vie:
-        link += f'<a href="{v}" target="_blank" rel="noopener">{segno_ufficiale(marchio) or icona(ic)}<span>{n}</span></a>'
+        # l'indirizzo va protetto: dentro un attributo la & nuda non è HTML valido
+        link += f'<a href="{e(v)}" target="_blank" rel="noopener">{segno_ufficiale(marchio) or icona(ic)}<span>{n}</span></a>'
     copia = f'<button type="button" data-copia="{e(BASE + percorso)}">{icona("catena")}<span>Copia il link</span></button>'
     return f'<div class="condividi"><span class="k">Condividi</span>{link}{copia}</div>'
 

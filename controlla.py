@@ -6,6 +6,7 @@ import pathlib, re, sys
 from html.parser import HTMLParser
 OUT = pathlib.Path(__file__).parent / 'pubblico'
 errori, avvisi = [], []
+foto_mancanti = set()
 
 
 class Lettore(HTMLParser):
@@ -55,12 +56,21 @@ for f in pagine:
             if ancora and ancora not in L.ids: errori.append(f'{nome}: àncora inesistente #{ancora}')
             continue
         dest = (f.parent / percorso).resolve()
-        if not dest.exists(): (avvisi if '/risorse/img/' in str(dest) else errori).append(f'{nome}: ' + ('fotografia non ancora scaricata' if '/risorse/img/' in str(dest) else 'collegamento rotto') + f' → {h}')
+        if not dest.exists():
+            if '/risorse/img/' in str(dest):
+                # In pubblicazione le foto si scaricano prima del controllo: se mancano qui, manca
+                # solo la copia locale. Una riga sola invece di una per pagina, o il rumore nasconde il resto.
+                foto_mancanti.add(dest.name)
+            else:
+                errori.append(f'{nome}: collegamento rotto → {h}')
 for t, dove in titoli.items():
     if len(dove) > 1: errori.append(f'titolo ripetuto «{t}» in: {", ".join(dove)}')
 for f in OUT.rglob('*'):
     # i materiali da scaricare sono pesanti per natura: si scaricano apposta, non si caricano con la pagina
     if f.is_file() and f.stat().st_size > 600_000 and 'risorse/materiali/' not in f.as_posix(): avvisi.append(f'{f.relative_to(OUT)}: file pesante ({f.stat().st_size // 1024} KB)')
+if foto_mancanti:
+    avvisi.append(f'{len(foto_mancanti)} fotografie non sono sul disco locale: si scaricano in pubblicazione '
+                  f'(strumenti/scarica_foto.py per averle anche qui)')
 for a in avvisi: print('AVVISO  ', a)
 for x in errori: print('ERRORE  ', x)
 # Le intestazioni dei contenuti devono essere YAML valido: è ciò che legge anche il pannello di scrittura
@@ -78,5 +88,19 @@ for f in sorted((OUT.parent / 'contenuti').glob('*/*.md')):
 for f in sorted((OUT / 'risorse' / 'img').glob('*')):
     if f.suffix.lower() in ('.png', '.jpeg', '.webp', '.tif', '.tiff', '.gif', '.bmp', '.heic', '.heif', '.avif'): errori.append(f'risorse/img/{f.name}: fotografia non convertita in JPEG ottimizzato')
     elif f.suffix == '.jpg' and f.stat().st_size > 350 * 1024: errori.append(f'risorse/img/{f.name}: fotografia non ottimizzata ({f.stat().st_size // 1024} KB, massimo 350)')
+# L'HTML deve essere valido: un browser perdona quasi tutto, un lettore di schermo e un
+# motore di ricerca no. Qui si ferma la pubblicazione, non si segnala soltanto.
+try:
+    import html5lib
+    from html5lib.html5parser import ParseError
+    for f in sorted(OUT.rglob('*.html')):
+        try:
+            html5lib.HTMLParser(strict=True).parse(f.read_text(encoding='utf-8'))
+        except ParseError as errore_h:
+            errori.append(f'{f.relative_to(OUT)}: HTML non valido · {str(errore_h).splitlines()[0]}')
+except ImportError:
+    avvisi.append('html5lib non installato: la validità dell’HTML non è stata controllata '
+                  '(pip install -r requirements.txt)')
+
 print(f'Controllate {len(pagine)} pagine: {len(errori)} errori, {len(avvisi)} avvisi')
 sys.exit(1 if errori else 0)
