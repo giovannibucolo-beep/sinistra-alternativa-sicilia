@@ -125,6 +125,8 @@ Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione:
 
 ### Prima di toccare il codice
 
+`python3 strumenti/prova_accesso.py` esamina l'accessibilità di ogni pagina nel browser: contrasto, descrizioni delle immagini, etichette dei campi, ordine dei titoli.
+
 `python3 strumenti/prova_uscita.py` costruisce il sito due volte — com'era in git e com'è adesso — e dice se è cambiato qualcosa che non doveva. Da lanciare dopo ogni modifica al generatore che non deve cambiare l'aspetto del sito.
 
 - `strumenti/anteprime.py` ridisegna le immagini di anteprima per i social; `strumenti/prova_resa.py` apre ogni pagina a cinque misure, dal telefono al computer; `strumenti/prova_schermate.py` verifica che su computer nessun blocco resti tagliato. Servono Playwright e Chrome.

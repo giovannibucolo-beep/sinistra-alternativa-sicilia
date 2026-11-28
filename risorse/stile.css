@@ -411,7 +411,7 @@ dl.elenco { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px
 .scheda.mat .varianti + .btn { margin-top: 10px; }
 
 @media (min-width: 1000px) and (min-height: 600px) { .schermo .scheda.mat p { -webkit-line-clamp: unset; display: block; overflow: visible; } }
-.varianti a { color: #fff; background: var(--rosso); border-color: var(--rosso); }
+.varianti a { color: #fff; background: var(--cremisi); border-color: var(--cremisi); }
 .varianti a:hover { color: #fff; background: var(--nero); border-color: var(--nero); }
 
 /* Stili che prima stavano dentro le pagine: fuori di lì, così il sito può vietare tutto ciò che non arriva da qui */

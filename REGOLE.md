@@ -163,3 +163,9 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
     non il numero di versione: se il file cambia l'indirizzo cambia da sé e il browser di chi
     è già stato sul sito non serve una copia vecchia. Non c'è più niente da ricordarsi di
     alzare a mano. Le fotografie restano legate alla versione: non cambiano mai a parità di nome.
+
+33. **Accessibilità.** `strumenti/prova_accesso.py` esamina ogni pagina nel browser e deve
+    chiudere a zero: contrasto del testo almeno 4.5 (3 per quello grande), ogni immagine con
+    la sua descrizione, ogni comando con un nome, ogni campo con l'etichetta, i titoli senza
+    salti di livello. Il rosso acceso `#EC3657` è un segno — cifre, righe, monogramma — e non
+    va mai usato come fondo sotto il testo: lì si usa il cremisi `#B01030`.
