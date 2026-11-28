@@ -18,7 +18,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Prepara lo strumento che ottimizza le fotografie
-        run: python3 -m pip install --quiet --break-system-packages pillow pillow-heif || python3 -m pip install --quiet pillow pillow-heif
+        run: python3 -m pip install --quiet --break-system-packages -r requirements.txt || python3 -m pip install --quiet -r requirements.txt
       - name: Scarica le fotografie da Wikimedia Commons
         run: python3 strumenti/scarica_foto.py
       - name: Costruisce le pagine

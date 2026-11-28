@@ -112,6 +112,14 @@ Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione:
 
 ## Per chi lavora al codice
 
-- `python3 costruisci.py` costruisce il sito in `pubblico/` (solo libreria standard).
+- `pip install -r requirements.txt` installa le dipendenze, bloccate a una versione precisa.
+- `python3 costruisci.py` costruisce il sito in `pubblico/`.
 - `python3 controlla.py` lo controlla.
 - `strumenti/anteprime.py` ridisegna le immagini di anteprima per i social; `strumenti/prova_resa.py` apre ogni pagina a cinque misure, dal telefono al computer; `strumenti/prova_schermate.py` verifica che su computer nessun blocco resti tagliato. Servono Playwright e Chrome.
+
+## Licenze
+
+Testi e materiali di propaganda sono CC BY-SA 4.0: chiunque può stamparli e
+diffonderli citando la fonte. Il codice è MIT. Il simbolo e il logo restano della
+coalizione. Le fotografie hanno ciascuna la propria licenza, nella pagina dei
+crediti. Tutto per esteso in `LICENZA.md`.

@@ -1,0 +1,8 @@
+# Dipendenze della pubblicazione, bloccate a una versione precisa.
+# Senza blocco, il giorno in cui esce una versione incompatibile il sito smette
+# di pubblicarsi senza che nessuno abbia toccato niente.
+# Per aggiornarle: cambiare il numero qui, lanciare la pubblicazione e tenere la
+# modifica solo se i controlli passano.
+pillow==13.0.0
+pillow-heif==1.9.0
+PyYAML==6.0.4
