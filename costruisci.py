@@ -217,7 +217,9 @@ def mappa(corrente=''):
 if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir()
-shutil.copytree(RIS, OUT / 'risorse')
+# `materiali/social` è il piano di lavoro di stampa/costruisci_social.py: le immagini sciolte
+# servono solo a comporre SA-social-kit.zip, e nessuna pagina le collega. Non si pubblicano.
+shutil.copytree(RIS, OUT / 'risorse', ignore=shutil.ignore_patterns('social'))
 # Il pannello di scrittura viene copiato così com'è: non è una pagina del sito, non entra
 # nel menù, non va nella mappa del sito e non è indicizzabile.
 if (QUI / 'admin').exists():

@@ -1,3 +1,7 @@
 pubblico/
 __pycache__/
 .DS_Store
+
+# Le immagini sciolte del kit social: servono solo a comporre SA-social-kit.zip,
+# che invece sta in git perche e il file che la gente scarica.
+risorse/materiali/social/

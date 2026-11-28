@@ -150,3 +150,11 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
 30. **Dipendenze.** Stanno in `requirements.txt`, bloccate a una versione precisa. Non si
     installa niente «all'ultima versione» nella pubblicazione: un aggiornamento di terzi non
     deve poter fermare il sito da solo.
+
+31. **Materiali generati.** Volantini, manifesti, PDF del programma e kit social sono file
+    prodotti da `stampa/` e `strumenti/`, ma restano in git: sono quello che la gente scarica,
+    e farli rigenerare a ogni pubblicazione legherebbe l'uscita del sito a un browser
+    installato al volo. Si rigenerano e si committano quando cambia il contenuto, non a ogni
+    ritocco: git non dimentica, ogni copia pesa per sempre. Le immagini sciolte del kit social
+    (`risorse/materiali/social/`) non stanno in git e non si pubblicano: servono solo a
+    comporre lo zip.
