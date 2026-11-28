@@ -141,3 +141,12 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
     si rigenera con `strumenti/scarica_comuni.py`. Serve a «Cosa succede vicino a me»: chi
     scrive il proprio paese non deve sapere a quale tavolo appartiene. Senza JavaScript
     restano le nove schede delle province: la funzione non è mai l'unica strada.
+
+29. **Codice.** Il generatore è `costruisci.py` (quali pagine esistono) più il pacchetto
+    `sito/` (i pezzi riusabili: testi, impaginazione, guscio). Dopo ogni modifica al codice
+    che non deve cambiare l'aspetto del sito si lancia `strumenti/prova_uscita.py`: costruisce
+    il sito prima e dopo e dice se è cambiato qualcosa che non doveva.
+
+30. **Dipendenze.** Stanno in `requirements.txt`, bloccate a una versione precisa. Non si
+    installa niente «all'ultima versione» nella pubblicazione: un aggiornamento di terzi non
+    deve poter fermare il sito da solo.

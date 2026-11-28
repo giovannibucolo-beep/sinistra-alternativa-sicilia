@@ -5,8 +5,13 @@ Solo libreria standard di Python: gira ovunque, anche nella pubblicazione automa
 Uso:  python3 costruisci.py              (sito pubblico: i file con «bozza: sì» restano fuori)
       python3 costruisci.py --anteprima  (anteprima privata: entrano anche le bozze, con etichetta)
 """
-import datetime, html, json, urllib.parse, pathlib, re, shutil, sys, unicodedata
+import datetime, html, json, urllib.parse, pathlib, re, shutil, sys
 import yaml
+
+from sito.testi import e, MESI, MESI3, slug, data_estesa, sa, sezioni, in_linea, cifre, testo, ics_testo, a_gruppi
+from sito.impagina import S, LIBERO, ICONE, icona, PAROLE, testa, testa_numerata, intesta
+from sito import guscio
+from sito.guscio import pagina
 
 QUI = pathlib.Path(__file__).parent
 CONT, RIS, OUT = QUI / 'contenuti', QUI / 'risorse', QUI / 'pubblico'
@@ -14,20 +19,8 @@ SITO = json.loads((CONT / 'sito.json').read_text(encoding='utf-8'))
 BASE = SITO['indirizzo'].rstrip('/') + '/'
 OGGI = datetime.date.today()
 ANTEPRIMA = '--anteprima' in sys.argv
-MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre']
-MESI3 = ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC']
 PROVINCE = ['Agrigento', 'Caltanissetta', 'Catania', 'Enna', 'Messina', 'Palermo', 'Ragusa', 'Siracusa', 'Trapani']
 SIGLE = [('TP', 'Trapani', ''), ('PA', 'Palermo', ''), ('ME', 'Messina', 'me'), ('AG', 'Agrigento', ''), ('CL', 'Caltanissetta', ''), ('EN', 'Enna', ''), ('CT', 'Catania', ''), ('RG', 'Ragusa', 'rg'), ('SR', 'Siracusa', '')]
-e = html.escape
-
-
-def slug(s):
-    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
-    return re.sub(r'[^a-z0-9]+', '-', s).strip('-')
-
-
-def data_estesa(d):
-    return f'{d.day} {MESI[d.month - 1]} {d.year}'
 
 
 # ---------- lettura dei contenuti ----------
@@ -64,55 +57,6 @@ def cartella(nome):
     return [x for x in tutte if ANTEPRIMA or not x['bozza']]
 
 
-def sezioni(md):
-    """Divide un testo nei suoi capitoli `## Titolo`: restituisce [(titolo, testo), ...]; il primo può avere titolo vuoto."""
-    parti = re.split(r'^## (.+)$', md, flags=re.M)
-    out = [('', parti[0].strip())] if parti[0].strip() else []
-    return out + [(parti[i].strip(), parti[i + 1].strip()) for i in range(1, len(parti), 2)]
-
-
-def in_linea(s):
-    s = e(s, quote=False)
-    s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
-    return re.sub(r'\[([^\]]+)\]\((https?://[^)\s]+|[^)\s]+\.html[^)\s]*)\)', lambda m: f'<a href="{m.group(2)}"' + (' rel="noopener"' if m.group(2).startswith('http') else '') + f'>{m.group(1)}</a>', s)
-
-
-def cifre(righe):
-    """Numeri in evidenza. Una riga per numero: `= numero | che cosa dice | da dove viene`.
-    Il numero è già scritto per intero nella pagina: il conteggio che sale è solo un ornamento di chi ha il
-    browser acceso, e chi ha chiesto meno animazioni lo vede fermo."""
-    voci = []
-    for r in righe:
-        parti = [x.strip() for x in r.lstrip()[2:].split('|')]
-        numero = in_linea(parti[0])
-        detto = in_linea(parti[1]) if len(parti) > 1 else ''
-        fonte = in_linea(parti[2]) if len(parti) > 2 else ''
-        voci.append(f'<li><strong data-conta>{numero}</strong><span>{detto}</span>'
-                    + (f'<small>{fonte}</small>' if fonte else '') + '</li>')
-    return '<ul class="cifre riv">' + ''.join(voci) + '</ul>'
-
-
-def testo(md):
-    """Testo semplice: righe vuote separano i capoversi, `## ` titolo, `### ` sottotitolo, `- ` elenco,
-    `= numero | che cosa dice | fonte` numeri in evidenza, **grassetto**, [testo](indirizzo)."""
-    out = []
-    for blocco in re.split(r'\n\s*\n', md.strip()):
-        righe = [r for r in blocco.strip().splitlines() if r.strip()]
-        if not righe:
-            continue
-        if righe[0].startswith('### '):
-            out.append(f'<h3>{in_linea(righe[0][4:])}</h3>')
-        elif righe[0].startswith('## '):
-            out.append(f'<h2>{sa(in_linea(righe[0][3:]))}</h2>')
-        elif all(r.lstrip().startswith('= ') for r in righe):
-            out.append(cifre(righe))
-        elif all(r.lstrip().startswith('- ') for r in righe):
-            out.append('<ul>' + ''.join(f'<li>{in_linea(r.lstrip()[2:])}</li>' for r in righe) + '</ul>')
-        else:
-            out.append(f'<p>{in_linea(" ".join(r.strip() for r in righe))}</p>')
-    return '\n'.join(out)
-
-
 PILASTRI = cartella('pilastri')
 MATERIALI = json.loads((CONT / 'materiali.json').read_text(encoding='utf-8'))
 # Comune → provincia, per «Cosa succede vicino a me»: si rigenera con strumenti/scarica_comuni.py
@@ -132,12 +76,6 @@ for v in EVENTI:
 for nome, t in TERRITORI.items():
     t['indirizzo'] = f'territori/{slug(nome)}.html'
 FUTURI = [v for v in EVENTI if not v['passato']]
-def sa(t, variante=''):
-    """REGOLA DEL SITO: «la Sicilia (che) SA …» si scrive con il monogramma al posto della parola. `variante`: '' su chiaro, 'nero' su fondo nero, 'rosso' su fondo rosso."""
-    file = {'': 'sa-monogramma.svg', 'nero': 'sa-monogramma-negativo-su-nero.svg', 'rosso': 'sa-monogramma-bianco.svg'}[variante]
-    return re.sub(r'(?i)(sicilia)(\s+che)?\s+sa\b', lambda m: (f'{m.group(1)} <span class="nsa">che ' if m.group(2) else f'<span class="nsa">{m.group(1)} ') + f'<img class="sa" src="{{r}}risorse/loghi/{file}" alt="SA" width="65" height="42"></span>', t)
-
-
 CONTATTI = SITO['contatti']
 AVVISO_BOZZA = bool(SITO.get('avviso_bozza', SITO.get('bozza')))
 
@@ -166,12 +104,6 @@ def pronto_per_il_definitivo():
         raise SystemExit('ERRORE: «bozza» è stata messa a false ma mancano ancora:\n  - '
                          + '\n  - '.join(manca)
                          + '\nRimetti «bozza»: true oppure completa queste voci in contenuti/sito.json.')
-
-
-def ics_testo(s):
-    """Nel formato dei calendari la virgola, il punto e virgola e la barra rovesciata vanno protetti,
-    altrimenti l'appuntamento arriva troncato."""
-    return str(s).replace('\\', '\\\\').replace(',', '\\,').replace(';', '\\;').replace('\n', '\\n')
 
 
 def google_calendario(v, inizio, fine, con_ora):
@@ -208,105 +140,6 @@ def segni(x):
 # ---------- parti comuni ----------
 MENU = [('chi-siamo.html', 'Chi siamo'), ('programma/index.html', 'Programma'), ('notizie/index.html', 'Notizie'), ('agenda/index.html', 'Agenda'), ('territori/index.html', 'Territori'), ('contatti.html', 'Contatti')]
 PAGINE_FATTE = []
-
-
-ST = SITO.get('statistiche', {})
-COOKIE_ATTIVI = bool(ST.get('google_analytics') or ST.get('meta_pixel'))
-
-
-def misure(r):
-    """Strumenti di misura: nulla se non sono configurati. Quelli con cookie partono solo dopo il consenso (sito.js)."""
-    if not (ST.get('goatcounter') or COOKIE_ATTIVI):
-        return ''
-    return '<script type="application/json" id="sa-misure">' + json.dumps({'gc': ST.get('goatcounter', ''), 'ga': ST.get('google_analytics', ''), 'fb': ST.get('meta_pixel', ''), 'r': r}) + '</script>\n'
-
-
-def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='generale', tipo='website', dati=None, ricerca=None, immagine=None):
-    """Scrive una pagina completa: testata, briciole, contenuto, piede. `percorso` è relativo alla radice del sito."""
-    r = '../' * percorso.count('/')
-    voci = ''.join(f'<a href="{r}{h}"' + (' aria-current="page"' if h.split('/')[0].replace('.html', '') == sezione else '') + f'>{t}</a>' for h, t in MENU)
-    bric = ''
-    if briciole:
-        bric = '<nav class="briciole" aria-label="Percorso"><ol>' + f'<li><a href="{r}index.html">Home</a></li>' + ''.join(f'<li><a href="{r}{h}">{e(t)}</a></li>' if h else f'<li aria-current="page">{e(t)}</li>' for h, t in briciole) + '</ol></nav>'
-    c = SITO['contatti']
-    titolo_pieno = f"{(ricerca or (titolo, ''))[0]} | {SITO['nome']}" if percorso != 'index.html' else f"{SITO['nome']} — Sicilia, Regionali 2027"
-    if ricerca and ricerca[1]: descrizione_r = ricerca[1]
-    else: descrizione_r = descrizione
-    grafo = [dati] if dati else []
-    if briciole:
-        grafo.append({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': BASE}] + [{'@type': 'ListItem', 'position': i + 2, 'name': t, 'item': BASE + (h or percorso)} for i, (h, t) in enumerate(briciole)]})
-    if immagine:
-        grafo.append({'@context': 'https://schema.org', '@type': 'ImageObject', 'contentUrl': BASE + 'risorse/img/' + immagine['file'] + '.jpg', 'name': immagine['soggetto'], 'creditText': immagine['autore'], 'creator': {'@type': 'Person' if immagine['autore'] != 'Commissione europea' else 'Organization', 'name': immagine['autore']}, 'license': immagine['licenza_url'], 'acquireLicensePage': BASE + 'crediti.html'})
-    invia = SITO['modulo'].get('invia_a', '') or ''
-    invia = invia.split('/')[0] + '//' + invia.split('/')[2] if invia.startswith('http') else ''
-    verifica = f'<meta name="google-site-verification" content="{e(SITO["google_verifica"])}">\n' if SITO.get('google_verifica') else ''
-    robot = '' if SITO['indicizzabile'] else '<meta name="robots" content="noindex, nofollow">\n'
-    ld = ''.join(f'<script type="application/ld+json">{json.dumps(g, ensure_ascii=False)}</script>\n' for g in grafo)
-    pagina_html = f'''<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="utf-8">
-<script>document.documentElement.className = "js";</script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; form-action 'self' {invia}; base-uri 'none'; connect-src 'self' {invia}">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-{robot}{verifica}<title>{e(titolo_pieno)}</title>
-<meta name="description" content="{e(descrizione_r)}">
-<link rel="canonical" href="{BASE}{'' if percorso == 'index.html' else percorso}">
-<meta property="og:type" content="{tipo}">
-<meta property="og:site_name" content="{e(SITO['nome'])}">
-<meta property="og:title" content="{e(titolo)}">
-<meta property="og:description" content="{e(descrizione)}">
-<meta property="og:url" content="{BASE}{'' if percorso == 'index.html' else percorso}">
-<meta property="og:image" content="{BASE}risorse/og/{og}.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="it_IT">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#000000">
-<link rel="icon" href="{r}risorse/loghi/sa-icona.svg" type="image/svg+xml">
-<link rel="icon" href="{r}risorse/loghi/sa-icona-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="{r}risorse/loghi/sa-icona-180.png">
-<link rel="manifest" href="{r}sito.webmanifest">
-<link rel="alternate" type="application/rss+xml" title="Notizie" href="{r}notizie/feed.xml">
-<link rel="preload" href="{r}risorse/font/montserrat-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{r}risorse/stile.css?v={SITO['versione']}">
-{ld}</head>
-<body>
-<a class="salta" href="#contenuto">Salta al contenuto</a>
-<header class="testata">
-<a class="logo" href="{r}index.html"><img src="{r}risorse/loghi/sa-logo-orizzontale.svg" alt="{e(SITO['nome_logo'])} — pagina iniziale" width="174" height="42"></a>
-<button class="menu-b" type="button" aria-expanded="false" aria-controls="menu">Menù</button>
-<nav class="menu" id="menu" aria-label="Principale">{voci}<a class="lente" href="{r}cerca.html" title="Cerca nel sito">{icona('lente')}<span>Cerca nel sito</span></a><a class="btn" href="{r}aderisci.html">Aderisci</a></nav>
-</header>
-{bric}
-<main id="contenuto">
-{corpo.replace('{r}', r)}
-</main>
-<footer class="piede schermo">
-<div class="in">
-<div><img class="logo-f" src="{r}risorse/loghi/sa-logo-orizzontale-negativo-su-nero.svg" alt="{e(SITO['nome_logo'])}" width="330" height="80"><p class="piede-desc">{e(SITO['descrizione'])}</p></div>
-<div><h2>Altre pagine</h2><ul><li><a href="{r}metodo.html">Come lavoriamo</a></li><li><a href="{r}materiali.html">Materiali da scaricare</a></li><li><a href="{r}notizie/feed.xml">Notizie in RSS</a></li></ul></div>
-{voci_contatto([('', c.get('email')), ('', c.get('telefono')), ('', c.get('sede'))], 'Contatti')}
-{voci_contatto([('Facebook — ', c.get('facebook')), ('Instagram — ', c.get('instagram'))], 'Seguici')}
-<div class="fondo"><span>Committente responsabile: {e(SITO['committente'])} · <a href="{r}privacy.html">Informativa privacy</a> · <a href="{r}note-legali.html">Note legali</a> · <a href="{r}cookie.html">Cookie</a> · <a href="{r}crediti.html">Crediti fotografici</a>{icone_da_terzi()}</span>
-{'<span>Bozza: i contatti del coordinamento non sono ancora pubblicati e il programma attende il voto dell’assemblea.</span>' if AVVISO_BOZZA else ''}
-<span class="ver">Versione {SITO['versione']} · aggiornato il {data_estesa(OGGI)}</span></div>
-</div>
-</footer>
-{'<div class="bozza" aria-hidden="true">' + ('ANTEPRIMA PRIVATA · CON BOZZE' if ANTEPRIMA else 'BOZZA DIMOSTRATIVA') + '</div>' if AVVISO_BOZZA or ANTEPRIMA else ''}
-{misure(r)}<script src="{r}risorse/sito.js?v={SITO['versione']}" defer></script>
-</body>
-</html>
-'''
-    f = OUT / percorso
-    f.parent.mkdir(parents=True, exist_ok=True)
-    f.write_text(pagina_html, encoding='utf-8')
-    PAGINE_FATTE.append(percorso)
-
-
-def intesta(occhiello, titolo, sotto=''):
-    return f'<div class="intesta"><div class="in"><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</div></div>'
 
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'strumenti'))
@@ -396,34 +229,8 @@ if (QUI / 'admin').exists():
 # Ogni `S(...)` è una schermata intera: quando la pagina si ferma, nessun blocco resta tagliato.
 # Unica eccezione dichiarata: `LIBERO(...)`, per il testo lungo di una notizia e per la pagina da stampare.
 # ====================================================================================================
-def S(dentro, classe=''):
-    return f'<section class="schermo {classe}"><div class="in">{dentro}</div></section>'
-
-
-def LIBERO(dentro):
-    return f'<section class="schermo libero"><div class="in">{dentro}</div></section>'
-
-
 # Pittogrammi nostri, disegnati qui: dicono l'azione, non il marchio. I loghi di WhatsApp, Telegram e
 # Facebook sono marchi registrati e non si riproducono, nemmeno ridisegnati.
-ICONE = {
-    'bolla': '<path d="M2 3h20v13h-9l-7 5v-5H2Z"/>',
-    'invio': '<path d="m12 1 7 8h-5v7h-4V9H5Z"/><path d="M3 13h4v5h10v-5h4v9H3Z"/>',
-    'megafono': '<path d="M2 9h5l12-6v18L7 15H2Z"/><path d="M7 15h3.4l1.2 7H8.2Z"/>',
-    'busta': '<path fill-rule="evenodd" d="M2 4h20v16H2Zm2 3v10h16V7l-8 6Z"/>',
-    'catena': '<path fill-rule="evenodd" d="M1 7h22v10H1Zm3 3v4h5v-4Zm11 0v4h5v-4ZM10.5 7h3v3h-3Zm0 7h3v3h-3Z"/>',
-    'lente': '<path fill-rule="evenodd" d="M10.5 1a9.5 9.5 0 1 0 5.6 17.2l5.1 5.1 2.1-2.1-5.1-5.1A9.5 9.5 0 0 0 10.5 1Zm0 3a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13Z"/>',
-    'calendario': '<path fill-rule="evenodd" d="M6 1h3v2h6V1h3v2h4v20H2V3h4Zm14 7H4v13h16Zm-13 3h4v4H7Z"/>',
-}
-
-
-def icona(nome):
-    """Pieno, non filettato: il segno deve avere la stessa massa dei caratteri del sito e gli stessi angoli vivi.
-    Il colore lo eredita dal pulsante, così sul fondo nero diventa bianco da sé."""
-    return (f'<svg class="ic" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" '
-            f'aria-hidden="true" focusable="false">{ICONE[nome]}</svg>')
-
-
 SERVIZI = pathlib.Path(__file__).resolve().parent / 'risorse' / 'loghi' / 'servizi'
 
 
@@ -467,28 +274,6 @@ def condividi(titolo, percorso):
     return f'<div class="condividi"><span class="k">Condividi</span>{link}{copia}</div>'
 
 
-PAROLE = {1: 'uno', 2: 'due', 3: 'tre', 4: 'quattro', 5: 'cinque', 6: 'sei', 7: 'sette', 8: 'otto', 9: 'nove', 10: 'dieci'}
-
-
-def testa_numerata(numero, quanti, cosa, titolo, sotto=''):
-    """Testa con il numero grande, da manifesto: la cifra è il segno, non un sopratitolo in maiuscolo."""
-    quanti_ = PAROLE.get(quanti, str(quanti))
-    return (f'<header class="capo-p numerata riv"><p class="ordinale"><b>{e(numero)}</b>'
-            f'<i>{e(cosa)}<br>di {quanti_}</i></p><h1>{sa(titolo)}</h1>'
-            + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>')
-
-
-def testa(occhiello, titolo, sotto=''):
-    """Niente sopratitolo: la briciola in cima e la voce accesa nel menù dicono già la sezione, e la
-    micro-etichetta maiuscola sopra ogni titolo è la cosa che fa sembrare uguali tutte le pagine.
-    L'`occhiello` resta nella firma perché è il nome della sezione e lo usa chi chiama."""
-    return f'<header class="capo-p riv"><h1>{sa(titolo)}</h1>' + (f'<p class="sott">{sotto}</p>' if sotto else '') + '</header>'
-
-
-def a_gruppi(lista, n):
-    return [lista[i:i + n] for i in range(0, len(lista), n)]
-
-
 ADERISCI = S(f'<h2>{sa("Il programma si scrive ai tavoli", "rosso")}</h2><p class="sott">Comitati, collettivi, sindacati, singole e singoli: lascia i tuoi contatti, ti scriviamo per gli incontri nel tuo territorio.</p><div class="azioni"><a class="btn bw" href="{{r}}aderisci.html">Aderisci ora</a></div>', 'su-rosso centro')
 
 
@@ -519,6 +304,13 @@ def striscia_pilastri(corrente=None):
 
 
 striscia_p = striscia_pilastri()
+# Il guscio di ogni pagina (testata, menù, briciole, piede) vive in sito/guscio.py.
+# Qui gli diamo i dati del sito: da questo punto in poi `pagina(...)` è pronta.
+guscio.configura(SITO=SITO, BASE=BASE, OUT=OUT, MENU=MENU, PAGINE_FATTE=PAGINE_FATTE,
+                 OGGI=OGGI, ANTEPRIMA=ANTEPRIMA, AVVISO_BOZZA=AVVISO_BOZZA,
+                 data_estesa=data_estesa, icone_da_terzi=icone_da_terzi, voci_contatto=voci_contatto)
+
+
 pagina('index.html', SITO['nome'], SITO['descrizione'], f'''<section class="apertura schermo-a">
 <div class="sx"><h1>La Sicilia che <img src="{{r}}risorse/loghi/sa-monogramma.svg" alt="SA" width="649" height="418"></h1>
 <ul class="verbi">{verbi}</ul>
@@ -891,12 +683,12 @@ if senza_pagina:
 pagina('crediti.html', 'Crediti fotografici', 'Autori, licenze e fonti delle fotografie usate nel sito.', S(testa('Fotografie', 'Crediti fotografici', 'Le fotografie vengono da Wikimedia Commons e restano dei loro autori. Qui, per ognuna, l’autore, la licenza, l’originale e la pagina in cui compare: è questa la nostra attribuzione, come le licenze consentono.') + '<a class="vai-a" href="#elenco">Vedi l’elenco ↓</a>') + LIBERO(f'<ul class="crediti" id="elenco">{righe_crediti}</ul>'), '', [('', 'Crediti fotografici')])
 # Cookie e statistiche: la pagina dice sempre e solo ciò che il sito fa davvero (si aggiorna da contenuti/sito.json)
 righe_ck = []
-if COOKIE_ATTIVI: righe_ck.append(('sa-consenso', 'Questo sito', 'Tecnico', '6 mesi', 'Ricorda la scelta fatta sui cookie (memoria del dispositivo, non è un cookie)'))
-if ST.get('goatcounter'): righe_ck.append(('nessuno', 'GoatCounter', 'Statistiche senza cookie', '—', 'Conta le pagine viste senza salvare nulla sul dispositivo e senza riconoscere le persone'))
-if ST.get('google_analytics'): righe_ck.append(('_ga, _ga_*', 'Google Analytics', 'Statistiche', 'Fino a 2 anni', 'Statistiche di visita. Solo dopo il consenso'))
-if ST.get('meta_pixel'): righe_ck.append(('_fbp, _fbc', 'Meta (Facebook, Instagram)', 'Campagne social', 'Fino a 3 mesi', 'Misura delle campagne sui social. Solo dopo il consenso'))
+if guscio.COOKIE_ATTIVI: righe_ck.append(('sa-consenso', 'Questo sito', 'Tecnico', '6 mesi', 'Ricorda la scelta fatta sui cookie (memoria del dispositivo, non è un cookie)'))
+if guscio.ST.get('goatcounter'): righe_ck.append(('nessuno', 'GoatCounter', 'Statistiche senza cookie', '—', 'Conta le pagine viste senza salvare nulla sul dispositivo e senza riconoscere le persone'))
+if guscio.ST.get('google_analytics'): righe_ck.append(('_ga, _ga_*', 'Google Analytics', 'Statistiche', 'Fino a 2 anni', 'Statistiche di visita. Solo dopo il consenso'))
+if guscio.ST.get('meta_pixel'): righe_ck.append(('_fbp, _fbc', 'Meta (Facebook, Instagram)', 'Campagne social', 'Fino a 3 mesi', 'Misura delle campagne sui social. Solo dopo il consenso'))
 tab_ck = ('<table class="tab-cookie"><thead><tr><th>Nome</th><th>Servizio</th><th>Categoria</th><th>Durata</th><th>A che cosa serve</th></tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<td>{e(x)}</td>' for x in rg) + '</tr>' for rg in righe_ck) + '</tbody></table>') if righe_ck else '<p><strong>Oggi il sito non usa cookie e non misura le visite.</strong> Non c’è nulla da accettare o rifiutare. Caratteri e immagini sono ospitati sul sito: nessuna chiamata a servizi esterni.</p>'
-gest_ck = ('<p>Alla prima visita un avviso chiede la scelta: «Accetta tutto», «Rifiuta» o «Personalizza». Rifiutare, o chiudere con la ×, non cambia nulla: il sito funziona allo stesso modo e nessuno strumento con cookie viene caricato. La scelta vale sei mesi e si può cambiare quando si vuole.</p><div class="azioni"><button class="btn" type="button" data-cookie-scelta>Cambia la tua scelta</button></div>') if COOKIE_ATTIVI else '<p>Non essendoci cookie, non c’è nessun consenso da dare.</p>'
+gest_ck = ('<p>Alla prima visita un avviso chiede la scelta: «Accetta tutto», «Rifiuta» o «Personalizza». Rifiutare, o chiudere con la ×, non cambia nulla: il sito funziona allo stesso modo e nessuno strumento con cookie viene caricato. La scelta vale sei mesi e si può cambiare quando si vuole.</p><div class="azioni"><button class="btn" type="button" data-cookie-scelta>Cambia la tua scelta</button></div>') if guscio.COOKIE_ATTIVI else '<p>Non essendoci cookie, non c’è nessun consenso da dare.</p>'
 corpo_ck = f'''<div class="testo"><h2>1. Che cosa sono i cookie</h2><p>Piccoli file che un sito salva sul dispositivo di chi lo visita. Quelli tecnici servono a far funzionare il sito; quelli di terze parti servono a statistiche o pubblicità e richiedono il consenso.</p>
 <h2>2. Che cosa usa questo sito</h2>{tab_ck}
 <h2>3. Consenso e come cambiarlo</h2>{gest_ck}

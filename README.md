@@ -115,6 +115,18 @@ Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione:
 - `pip install -r requirements.txt` installa le dipendenze, bloccate a una versione precisa.
 - `python3 costruisci.py` costruisce il sito in `pubblico/`.
 - `python3 controlla.py` lo controlla.
+### Dove sta che cosa
+
+- `costruisci.py` — il copione: quali pagine esistono e che cosa contengono. Si legge dall'alto in basso.
+- `sito/testi.py` — dal testo scritto dai compagni all'HTML (titoli, elenchi, numeri in evidenza, la regola del monogramma «SA»).
+- `sito/impagina.py` — i pezzi sempre uguali: la schermata, la testa di pagina, i pittogrammi.
+- `sito/guscio.py` — il guscio di ogni pagina: testata, menù, briciole, piede, dati per i motori di ricerca. Quasi mai da aprire.
+- `controlla.py` — i controlli che fermano la pubblicazione.
+
+### Prima di toccare il codice
+
+`python3 strumenti/prova_uscita.py` costruisce il sito due volte — com'era in git e com'è adesso — e dice se è cambiato qualcosa che non doveva. Da lanciare dopo ogni modifica al generatore che non deve cambiare l'aspetto del sito.
+
 - `strumenti/anteprime.py` ridisegna le immagini di anteprima per i social; `strumenti/prova_resa.py` apre ogni pagina a cinque misure, dal telefono al computer; `strumenti/prova_schermate.py` verifica che su computer nessun blocco resti tagliato. Servono Playwright e Chrome.
 
 ## Licenze
