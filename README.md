@@ -125,6 +125,10 @@ Sono nel file `REGOLE.md`. Due vengono controllate da sole a ogni pubblicazione:
 
 ### Prima di toccare il codice
 
+`python3 strumenti/prova_collegamenti.py` apre le fonti citate negli articoli e dice quali non rispondono più (serve una rete che arrivi fuori: lo fa da solo il controllo settimanale su GitHub).
+
+`python3 strumenti/prova_resa.py --webkit` prova le pagine sul motore di Safari e degli iPhone.
+
 `python3 strumenti/prova_accesso.py` esamina l'accessibilità di ogni pagina nel browser: contrasto, descrizioni delle immagini, etichette dei campi, ordine dei titoli.
 
 `python3 strumenti/prova_uscita.py` costruisce il sito due volte — com'era in git e com'è adesso — e dice se è cambiato qualcosa che non doveva. Da lanciare dopo ogni modifica al generatore che non deve cambiare l'aspetto del sito.

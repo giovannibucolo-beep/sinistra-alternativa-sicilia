@@ -1,0 +1,83 @@
+# Controlli lenti che non devono bloccare la pubblicazione: le fonti citate esistono ancora?
+# il sito si vede su Safari? Girano una volta a settimana e, se qualcosa non va, aprono una
+# segnalazione sul deposito invece di fermare il sito.
+name: Controlli settimanali
+on:
+  schedule:
+    # lunedì alle 6:40 UTC, cioè le 7:40 in Italia: l'esito è lì quando qualcuno si sveglia
+    - cron: '40 6 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: controlli-settimanali
+  cancel-in-progress: true
+jobs:
+  controlli:
+    runs-on: ubuntu-latest
+    steps:
+      # Bloccato a una versione precisa: un'azione aggiornata da altri non entra senza che lo decidiamo noi
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Prepara gli strumenti
+        run: |
+          python3 -m pip install --quiet --break-system-packages -r requirements.txt || python3 -m pip install --quiet -r requirements.txt
+          python3 -m pip install --quiet --break-system-packages playwright || python3 -m pip install --quiet playwright
+          python3 -m playwright install --with-deps webkit
+      - name: Scarica le fotografie da Wikimedia Commons
+        run: python3 strumenti/scarica_foto.py
+      - name: Costruisce le pagine
+        run: python3 costruisci.py
+      - name: Le fonti citate rispondono ancora?
+        id: collegamenti
+        run: python3 strumenti/prova_collegamenti.py | tee /tmp/collegamenti.txt
+      - name: Il sito si vede su Safari (motore WebKit)?
+        if: always()
+        id: safari
+        run: python3 strumenti/prova_resa.py --webkit | tee /tmp/safari.txt
+      - name: Se qualcosa non va, apri una segnalazione
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPOSITO: ${{ github.repository }}
+          CORSA: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        # Nessuna azione di terzi: una chiamata diretta, niente da bloccare a un'impronta
+        # e niente codice altrui che gira con il permesso di scrivere sul deposito.
+        run: |
+          python3 - <<'FINE'
+          import json, os, urllib.request
+
+          def leggi(p):
+              try:
+                  return open(p, encoding='utf-8').read()[-4000:]
+              except OSError:
+                  return '(non eseguito)'
+
+          corpo = '\n'.join([
+              'Il controllo settimanale ha trovato qualcosa. Non è il sito a essere giù: è un esame che non passa.',
+              '', '## Fonti citate', '```', leggi('/tmp/collegamenti.txt'), '```',
+              '## Resa su Safari (WebKit)', '```', leggi('/tmp/safari.txt'), '```',
+              '', f"[Il registro completo]({os.environ['CORSA']})",
+          ])
+
+          def chiama(percorso, dati=None, metodo='GET'):
+              r = urllib.request.Request(
+                  'https://api.github.com/repos/' + os.environ['DEPOSITO'] + percorso,
+                  data=json.dumps(dati).encode() if dati else None, method=metodo,
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                           'Accept': 'application/vnd.github+json',
+                           'Content-Type': 'application/json'})
+              with urllib.request.urlopen(r, timeout=30) as risposta:
+                  return json.load(risposta)
+
+          aperte = chiama('/issues?state=open&labels=controllo-settimanale')
+          if aperte:
+              chiama(f"/issues/{aperte[0]['number']}/comments", {'body': corpo}, 'POST')
+              print('aggiunto un commento alla segnalazione', aperte[0]['number'])
+          else:
+              nuova = chiama('/issues', {'title': 'Controllo settimanale: qualcosa non passa',
+                                         'body': corpo, 'labels': ['controllo-settimanale']}, 'POST')
+              print('aperta la segnalazione', nuova['number'])
+          FINE

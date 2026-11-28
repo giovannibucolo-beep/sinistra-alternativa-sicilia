@@ -102,5 +102,17 @@ except ImportError:
     avvisi.append('html5lib non installato: la validità dell’HTML non è stata controllata '
                   '(pip install -r requirements.txt)')
 
+# Peso di una pagina: quello che una persona scarica davvero per leggerla, foto escluse
+# (le foto sono già sotto i 350 KB per la regola 8 e arrivano dopo, man mano che si scorre).
+# La soglia è pensata per la rete mobile di un paese dell'entroterra, non per la fibra.
+MASSIMO_PAGINA = 250 * 1024
+comune = sum((OUT / r).stat().st_size for r in ('risorse/stile.css', 'risorse/sito.js') if (OUT / r).exists())
+for f in sorted(OUT.rglob('*.html')):
+    if f.relative_to(OUT).as_posix().startswith('admin/'):
+        continue
+    peso = f.stat().st_size + comune
+    if peso > MASSIMO_PAGINA:
+        errori.append(f'{f.relative_to(OUT)}: pagina pesante ({peso // 1024} KB con stile e copione, massimo {MASSIMO_PAGINA // 1024})')
+
 print(f'Controllate {len(pagine)} pagine: {len(errori)} errori, {len(avvisi)} avvisi')
 sys.exit(1 if errori else 0)

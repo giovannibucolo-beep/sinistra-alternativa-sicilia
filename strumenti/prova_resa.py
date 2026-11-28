@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Apre ogni pagina a misura telefono e computer: sbordi orizzontali, tasti troppo piccoli, errori di script. Serve Playwright."""
+"""Apre ogni pagina a misura telefono e computer: sbordi orizzontali, tasti troppo piccoli, errori di script.
+
+  python3 strumenti/prova_resa.py            con Chrome
+  python3 strumenti/prova_resa.py --webkit   con WebKit, il motore di Safari e di tutti i
+                                             browser su iPhone: è il motore che rompe cose
+                                             diverse dagli altri, e metà della Sicilia ha un iPhone.
+
+Serve Playwright.
+"""
 import pathlib, json, sys, http.server, threading, functools
 from playwright.sync_api import sync_playwright
 OUT = pathlib.Path(__file__).parent.parent / 'pubblico'
@@ -7,7 +15,9 @@ srv = http.server.ThreadingHTTPServer(('127.0.0.1', 8791), functools.partial(htt
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 guai = 0
 with sync_playwright() as p:
-    b = p.chromium.launch(channel='chrome', args=['--no-sandbox'])
+    motore = '--webkit' in sys.argv
+    b = p.webkit.launch() if motore else p.chromium.launch(channel='chrome', args=['--no-sandbox'])
+    print('motore:', 'WebKit (Safari, iPhone)' if motore else 'Chrome')
     for f in sorted(OUT.rglob('*.html')):
         if f.relative_to(OUT).as_posix().startswith('admin/'): continue  # pannello di scrittura, non è una pagina del sito
         nome = str(f.relative_to(OUT))

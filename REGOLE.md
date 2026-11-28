@@ -169,3 +169,12 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
     la sua descrizione, ogni comando con un nome, ogni campo con l'etichetta, i titoli senza
     salti di livello. Il rosso acceso `#EC3657` è un segno — cifre, righe, monogramma — e non
     va mai usato come fondo sotto il testo: lì si usa il cremisi `#B01030`.
+
+34. **Peso delle pagine.** Nessuna pagina supera i 250 KB contando foglio di stile e copione
+    (le foto arrivano dopo, man mano che si scorre). La soglia è pensata per la rete mobile
+    di un paese dell'entroterra: `controlla.py` ferma la pubblicazione se una pagina sfora.
+
+35. **Controlli settimanali.** Ogni lunedì mattina GitHub verifica due cose che non devono
+    bloccare la pubblicazione ma non possono restare incontrollate: che le fonti citate negli
+    articoli rispondano ancora, e che il sito si veda sul motore di Safari (metà della Sicilia
+    ha un iPhone). Se qualcosa non va apre una segnalazione sul deposito.
