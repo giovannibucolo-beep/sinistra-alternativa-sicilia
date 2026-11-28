@@ -158,3 +158,8 @@ Nero di base, rosso SA (#EC3657) per accenti e pulsanti, cremisi (#B01030) per l
     ritocco: git non dimentica, ogni copia pesa per sempre. Le immagini sciolte del kit social
     (`risorse/materiali/social/`) non stanno in git e non si pubblicano: servono solo a
     comporre lo zip.
+
+32. **Cache.** Il foglio di stile e il copione portano in coda l'impronta del loro contenuto,
+    non il numero di versione: se il file cambia l'indirizzo cambia da sé e il browser di chi
+    è già stato sul sito non serve una copia vecchia. Non c'è più niente da ricordarsi di
+    alzare a mano. Le fotografie restano legate alla versione: non cambiano mai a parità di nome.

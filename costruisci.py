@@ -309,7 +309,7 @@ def striscia_pilastri(corrente=None):
 striscia_p = striscia_pilastri()
 # Il guscio di ogni pagina (testata, menù, briciole, piede) vive in sito/guscio.py.
 # Qui gli diamo i dati del sito: da questo punto in poi `pagina(...)` è pronta.
-guscio.configura(SITO=SITO, BASE=BASE, OUT=OUT, MENU=MENU, PAGINE_FATTE=PAGINE_FATTE,
+guscio.configura(SITO=SITO, BASE=BASE, OUT=OUT, RIS=RIS, MENU=MENU, PAGINE_FATTE=PAGINE_FATTE,
                  OGGI=OGGI, ANTEPRIMA=ANTEPRIMA, AVVISO_BOZZA=AVVISO_BOZZA,
                  data_estesa=data_estesa, icone_da_terzi=icone_da_terzi, voci_contatto=voci_contatto)
 

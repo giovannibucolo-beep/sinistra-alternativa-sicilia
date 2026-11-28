@@ -4,10 +4,21 @@ Chi lavora al sito quasi mai deve aprire questo file: qui c'è ciò che tutte le
 hanno in comune. `costruisci.py` lo accende una volta con `configura(...)` e poi chiama
 `pagina(...)` per ciascuna pagina.
 """
-import datetime, json, pathlib
+import datetime, hashlib, json, pathlib
 
 from .testi import e, sa
 from .impagina import icona
+
+def impronta(file):
+    """Le prime otto cifre dell'impronta del file.
+
+    Il foglio di stile e il copione si chiamano sempre allo stesso modo: senza un pezzo
+    che cambia, il browser di chi è già stato sul sito continua a usare la copia vecchia.
+    Legarlo al contenuto, e non al numero di versione scritto a mano, toglie di mezzo
+    l'errore umano: se il file cambia, l'indirizzo cambia; se non cambia, resta in cache.
+    """
+    return hashlib.sha256(file.read_bytes()).hexdigest()[:8] if file.exists() else '0'
+
 
 def configura(**valori):
     """Accende il guscio con i dati e le funzioni del sito.
@@ -20,6 +31,9 @@ def configura(**valori):
     globals().update(valori)
     globals()['ST'] = valori['SITO'].get('statistiche', {})
     globals()['COOKIE_ATTIVI'] = bool(ST.get('google_analytics') or ST.get('meta_pixel'))
+    ris = valori['RIS']
+    globals()['V_CSS'] = impronta(ris / 'stile.css')
+    globals()['V_JS'] = impronta(ris / 'sito.js')
 
 
 def misure(r):
@@ -78,7 +92,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 <link rel="manifest" href="{r}sito.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="Notizie" href="{r}notizie/feed.xml">
 <link rel="preload" href="{r}risorse/font/montserrat-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{r}risorse/stile.css?v={SITO['versione']}">
+<link rel="stylesheet" href="{r}risorse/stile.css?v={V_CSS}">
 {ld}</head>
 <body>
 <a class="salta" href="#contenuto">Salta al contenuto</a>
@@ -103,7 +117,7 @@ def pagina(percorso, titolo, descrizione, corpo, sezione='', briciole=None, og='
 </div>
 </footer>
 {'<div class="bozza" aria-hidden="true">' + ('ANTEPRIMA PRIVATA · CON BOZZE' if ANTEPRIMA else 'BOZZA DIMOSTRATIVA') + '</div>' if AVVISO_BOZZA or ANTEPRIMA else ''}
-{misure(r)}<script src="{r}risorse/sito.js?v={SITO['versione']}" defer></script>
+{misure(r)}<script src="{r}risorse/sito.js?v={V_JS}" defer></script>
 </body>
 </html>
 '''
