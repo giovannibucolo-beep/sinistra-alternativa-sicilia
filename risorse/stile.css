@@ -77,7 +77,7 @@ img { display: block; max-width: 100%; height: auto; } a { color: inherit; }
 .cal-v { border-color: transparent; background: none; }
 .cal-d b { font-size: 14px; font-weight: 800; color: var(--campo); }
 .cal-d.oggi { border-color: var(--nero); }
-.cal-d.pieno { color: #fff; background: var(--rosso); border-color: var(--rosso); text-decoration: none; }
+.cal-d.pieno { color: #fff; background: var(--cremisi); border-color: var(--cremisi); text-decoration: none; }
 .cal-d.pieno b { color: #fff; } .cal-d.pieno:hover, .cal-d.pieno:focus-visible { background: var(--nero); border-color: var(--nero); }
 .cal-d.pieno span { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; line-height: 1.2; overflow: hidden; }
 .cal-d.pieno.fatto { background: var(--campo); border-color: var(--campo); }
@@ -157,7 +157,7 @@ figure.foto { margin: 0; }
 /* ---------- agenda ---------- */
 .eventi { display: flex; flex-direction: column; }
 .evento { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 2px solid var(--linea); text-decoration: none; }
-.evento .d { flex: 0 0 76px; padding: 8px 0; text-align: center; font-weight: 900; line-height: 1.05; color: #fff; background: var(--rosso); }
+.evento .d { flex: 0 0 76px; padding: 8px 0; text-align: center; font-weight: 900; line-height: 1.05; color: #fff; background: var(--cremisi); }
 .evento .d b { display: block; font-size: 30px; } .evento .d small { font-size: 11px; letter-spacing: 1px; }
 .evento.passato .d { background: var(--grigio); }
 .evento strong { display: block; font-size: 18px; font-weight: 900; line-height: 1.15; text-transform: uppercase; } .evento span { font-size: 15px; }
@@ -180,7 +180,7 @@ figure.foto { margin: 0; }
 .mappa { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 620px; }
 .mappa a { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 78px; padding: 4px 2px; font-size: 17px; font-weight: 900; text-decoration: none; color: var(--nero); background: #fff; border: 3px solid var(--nero); }
 .mappa a small { font-size: 10px; font-weight: 700; } .mappa .me { grid-column: 3 / 5; } .mappa .rg { grid-column: 3; }
-.mappa a[aria-current], .mappa a:hover { color: #fff; background: var(--rosso); border-color: var(--rosso); }
+.mappa a[aria-current], .mappa a:hover { color: #fff; background: var(--cremisi); border-color: var(--cremisi); }
 
 /* ---------- modulo ---------- */
 form { display: flex; flex-direction: column; gap: 16px; padding: 24px; background: #fff; border: 2px solid var(--linea); }
@@ -280,7 +280,7 @@ img.sa { display: inline-block; height: 1.06em; width: auto; margin: 0 .06em; ve
    Su telefono i blocchi restano in colonna, uno sotto l'altro.
    ==================================================================================================== */
 .schermo { padding: 44px var(--lato); } .schermo > .in { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
-.schermo.carta { background: var(--carta); } .schermo.su-rosso { color: #fff; background: var(--rosso); } .schermo.su-rosso .k { color: #fff; }
+.schermo.carta { background: var(--carta); } .schermo.su-rosso { color: #fff; background: var(--cremisi); } .schermo.su-rosso .k { color: #fff; }
 .capo-p { display: flex; flex-direction: column; gap: 12px; } .capo-p .sott, .schermo .sott { font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; max-width: 34em; }
 .col2, .colonna { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 .riquadro-nero { padding: 22px; color: #fff; background: var(--nero); } .riquadro-nero .k { color: var(--rosso); } .riquadro-nero h2 { margin: 6px 0; font-size: clamp(22px, 3vw, 32px); }
